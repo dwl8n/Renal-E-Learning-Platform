@@ -1,0 +1,21 @@
+.ai-page { padding: 28px 32px; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+
+.ai-page__inner {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ai-page__header { margin-bottom: 16px; flex-shrink: 0; }
+
+.ai-page__chat-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
