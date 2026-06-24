@@ -1,0 +1,355 @@
+.infection-module .module-sidebar__title {
+  line-height: 1.25;
+}
+
+.infection-source-card {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.infection-source-card__item {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--grey-100);
+  color: var(--text-500);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.infection-source-card__item:last-child {
+  border-bottom: 0;
+}
+
+.infection-reading {
+  max-width: 760px;
+}
+
+.infection-micro-map {
+  margin-top: 22px;
+  padding: 12px;
+  border: 1px solid var(--teal-100);
+  border-radius: var(--radius-lg);
+  background: var(--teal-50);
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.infection-micro-map div {
+  min-height: 62px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.infection-micro-map span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--teal-600);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.infection-micro-map strong {
+  color: var(--text-700);
+  font-size: 11px;
+}
+
+.infection-task {
+  max-width: 840px;
+}
+
+.infection-scenario-card p,
+.infection-case-card p {
+  color: var(--text-500);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.infection-ppe-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.infection-ppe-choice,
+.infection-pill,
+.infection-option {
+  border: 2px solid var(--grey-200);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-700);
+  font-weight: 650;
+  transition: border-color .12s, background .12s, transform .1s;
+}
+
+.infection-ppe-choice {
+  min-height: 54px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.infection-ppe-choice:hover:not(:disabled),
+.infection-pill:hover:not(:disabled),
+.infection-option:hover:not(:disabled) {
+  border-color: var(--teal-400);
+  background: var(--teal-50);
+}
+
+.infection-ppe-choice--selected,
+.infection-pill--selected,
+.infection-option--selected {
+  border-color: var(--teal-500);
+  background: var(--teal-50);
+  color: var(--teal-700);
+}
+
+.infection-source-line {
+  margin-top: 7px;
+  color: var(--teal-700);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.infection-sequence-board {
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.infection-sequence-board__picked {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.infection-sequence-slot {
+  min-height: 72px;
+  padding: 12px;
+  border: 1.5px dashed var(--grey-200);
+  border-radius: var(--radius-md);
+  background: var(--grey-50);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infection-sequence-slot--filled {
+  border-style: solid;
+  border-color: var(--teal-100);
+  background: var(--teal-50);
+}
+
+.infection-sequence-slot span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--teal-600);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.infection-sequence-slot strong {
+  color: var(--text-700);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.infection-sequence-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.infection-pill {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.infection-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.infection-station-task {
+  max-width: 1040px;
+}
+
+.infection-station-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 18px;
+}
+
+.infection-options {
+  display: grid;
+  gap: 10px;
+}
+
+.infection-option {
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.infection-option span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--grey-100);
+  color: var(--text-500);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.infection-option--correct {
+  border-color: var(--green-500);
+  background: var(--green-100);
+  color: var(--green-600);
+}
+
+.infection-option--wrong {
+  border-color: var(--red-400);
+  background: var(--red-100);
+  color: var(--red-600);
+}
+
+.infection-option--correct span {
+  background: var(--green-500);
+  color: #fff;
+}
+
+.infection-option--wrong span {
+  background: var(--red-500);
+  color: #fff;
+}
+
+.infection-timer-stack {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.infection-zone-card,
+.infection-timer-card {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--grey-200);
+  background: #fff;
+}
+
+.infection-zone-card strong,
+.infection-timer-card span,
+.infection-timer-card strong {
+  display: block;
+}
+
+.infection-zone-card strong {
+  color: var(--text-900);
+  font-size: 13px;
+}
+
+.infection-zone-card p,
+.infection-timer-card p {
+  margin-top: 4px;
+  color: var(--text-500);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.infection-zone-card--clean {
+  border-color: var(--green-500);
+  background: var(--green-100);
+}
+
+.infection-zone-card--dirty {
+  border-color: var(--amber-400);
+  background: var(--amber-100);
+}
+
+.infection-timer-card {
+  background: linear-gradient(135deg, #fff, var(--teal-50));
+}
+
+.infection-timer-card span {
+  color: var(--text-300);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.infection-timer-card strong {
+  margin-top: 4px;
+  color: var(--teal-700);
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+
+.infection-case-card {
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(42,168,212,.12), transparent 35%),
+    var(--surface);
+}
+
+.infection-case-card__label {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: var(--teal-700);
+  background: var(--teal-50);
+  border: 1px solid var(--teal-100);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.infection-case-card h3 {
+  margin-top: 12px;
+  color: var(--text-900);
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+@media (max-width: 980px) {
+  .infection-station-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .infection-timer-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .infection-micro-map,
+  .infection-ppe-grid,
+  .infection-sequence-board__picked,
+  .infection-timer-stack {
+    grid-template-columns: 1fr;
+  }
+}

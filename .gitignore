@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+bardia-ai-mvp/node_modules/
+
+# Build output
+dist/
+build/
+bardia-ai-mvp/dist/
+
+# Environment variables (NEVER commit these)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+bardia-ai-mvp/.env
+bardia-ai-mvp/backend/.env
+
+# Claude Code internal files
+.claude
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/

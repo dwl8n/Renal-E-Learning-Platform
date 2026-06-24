@@ -51,7 +51,6 @@ export const STUDENT_SNAPSHOTS = {
       'cerner':             'locked',
     },
     questTaskProgress: {
-      'infection-control': { reading: true, 'ppe-lab': true, 'station-safety': true, 'isolation-cases': true },
       'fluid-volume': { reading: true, scenario1: true },
       'bloodwork-values': {},
       'intradialytic-fluid': {},
@@ -81,7 +80,6 @@ export const STUDENT_SNAPSHOTS = {
       'cerner':             'locked',
     },
     questTaskProgress: {
-      'infection-control': { reading: true },
       'fluid-volume': {},
       'bloodwork-values': {},
       'intradialytic-fluid': {},
@@ -109,7 +107,6 @@ export const STUDENT_SNAPSHOTS = {
       'cerner':             'locked',
     },
     questTaskProgress: {
-      'infection-control': { reading: true, 'ppe-lab': true, 'station-safety': true, 'isolation-cases': true },
       'fluid-volume': {},
       'bloodwork-values': {},
       'intradialytic-fluid': {},
@@ -145,7 +142,6 @@ const BASE_PROGRESS = {
   xp: 0,
   questStatus: { ...FRESH_QUEST_STATUS },
   questTaskProgress: {
-    'infection-control': {},
     'fluid-volume': {},
     'bloodwork-values': {},
     'intradialytic-fluid': {},
