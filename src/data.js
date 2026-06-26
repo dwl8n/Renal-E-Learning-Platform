@@ -731,6 +731,135 @@ export const GLOSSARY = [
   { term: 'UF Profile', def: 'A programmed pattern of UFR changes over the course of a dialysis treatment. Some patients tolerate a higher UFR early (when interstitial reserves are high) and need a lower rate toward the end.', quest: 'intradialytic-fluid' },
 ];
 
+// ─── Phoebe Case (Clinical Walkthrough — Bloodwork module) ───────────────────
+export const PHOEBE_CASE = {
+  patient: {
+    name: 'Phoebe',
+    treatment: '4 hr HD · 3×/week',
+    access: 'Right IJ tunnelled CVC (in situ since 2015)',
+    dialysate: '2K bath',
+  },
+  phases: [
+    {
+      id: 'adequacy',
+      title: 'Phase 1: Dialysis Adequacy',
+      subtitle: 'BUN · Creatinine · Kt/V',
+      intro: 'Before reviewing electrolytes, we assess whether dialysis is doing its job. Kt/V measures how much urea was cleared relative to the patient\'s size.',
+      annotation: {
+        title: 'Kt/V & URR Targets',
+        body: 'The GRH minimum Kt/V per treatment is 1.4. Phoebe\'s Kt/V is 1.55 — above target. Her URR of 70.1% also exceeds the 65% threshold, confirming adequate clearance.',
+      },
+      kpis: [
+        { label: 'Kt/V', value: '1.55', target: '≥ 1.4',  status: 'ok' },
+        { label: 'URR',  value: '70.1%', target: '≥ 65%', status: 'ok' },
+      ],
+      rangeBars: [
+        { key: 'preBUN',     label: 'Pre-Dialysis BUN',  value: 20.4, unit: 'mmol/L', critLow: null, normal: '2.5–7.1', critHigh: null, displayNote: 'Elevated — expected in ESRD' },
+        { key: 'postBUN',    label: 'Post-Dialysis BUN', value: 6.1,  unit: 'mmol/L', critLow: null, normal: '2.5–7.1', critHigh: null },
+        { key: 'creatinine', label: 'Creatinine',         value: 671,  unit: 'µmol/L', critLow: null, normal: '62–115',  critHigh: null, displayNote: 'Elevated — expected in ESRD' },
+      ],
+      question: {
+        text: 'Based on Phoebe\'s Kt/V of 1.55 and URR of 70.1%, is she adequately dialyzed?',
+        options: [
+          'Yes — both markers exceed their targets',
+          'No — Kt/V must be ≥ 2.0 to be adequate',
+          'Unclear — sodium levels must be reviewed first',
+        ],
+        correct: 0,
+        explanation: 'Phoebe is well-dialyzed. Her Kt/V of 1.55 exceeds the GRH minimum of 1.4, and her URR of 70.1% exceeds the 65% threshold. Pre-dialysis BUN is high (expected in ESRD) — what matters is the relative clearance, not the absolute pre-value.',
+      },
+    },
+    {
+      id: 'electrolytes',
+      title: 'Phase 2: Electrolytes',
+      subtitle: 'K⁺ · Na⁺ · HCO₃⁻',
+      intro: 'Electrolytes must be reviewed each treatment. Potassium is the most urgent — a critical high can cause fatal arrhythmia. Sodium often reflects hydration status in dialysis patients.',
+      annotation: {
+        title: 'Hyponatraemia in Dialysis',
+        body: 'Sodium of 131 mmol/L is below normal. In dialysis patients this most often reflects fluid overload (dilutional hyponatraemia) rather than true sodium loss. The 2K bath is appropriate — Phoebe\'s potassium is within normal range.',
+      },
+      rangeBars: [
+        { key: 'k',    label: 'Potassium',   value: 4.8, unit: 'mmol/L', critLow: 3.0, normal: '3.5–5.0', critHigh: 6.0 },
+        { key: 'na',   label: 'Sodium',      value: 131, unit: 'mmol/L', critLow: 120, normal: '135–145', critHigh: 155 },
+        { key: 'hco3', label: 'Bicarbonate', value: 25,  unit: 'mmol/L', critLow: 15,  normal: '22–29',   critHigh: 35  },
+      ],
+      question: {
+        text: 'Phoebe\'s sodium is 131 mmol/L. What does this most likely indicate in a dialysis patient?',
+        options: [
+          'Fluid overload (dilutional hyponatraemia) — the most common cause in dialysis',
+          'True sodium loss — the patient needs IV sodium supplementation immediately',
+          'This is a normal sodium range for dialysis patients',
+        ],
+        correct: 0,
+        explanation: 'In hemodialysis patients, hyponatraemia is almost always dilutional — caused by excess fluid intake between sessions. At 131 mmol/L it is below normal (135–145), but well above the critical threshold of 120. Fluid compliance counselling and monitoring are the primary interventions.',
+      },
+    },
+    {
+      id: 'minerals',
+      title: 'Phase 3: Minerals & Bone',
+      subtitle: 'Ca²⁺ · PO₄ · PTH',
+      intro: 'CKD disrupts the balance between calcium, phosphorus, and PTH — a condition called CKD-MBD. Untreated, it leads to progressive bone disease and cardiovascular calcification.',
+      annotation: {
+        title: 'The CKD-MBD Cycle',
+        body: 'Declining kidney function → phosphorus rises, vitamin D falls → serum calcium drops → PTH rises to compensate → calcium is mobilised from bone → bone disease progresses. Managing all three values together is essential.',
+      },
+      rangeBars: [
+        { key: 'ca',   label: 'Calcium',    value: 1.92, unit: 'mmol/L', critLow: 1.75, normal: '2.12–2.52', critHigh: 3.0  },
+        { key: 'phos', label: 'Phosphorus', value: 1.49, unit: 'mmol/L', critLow: null, normal: '0.97–1.45', critHigh: 1.78 },
+        { key: 'pth',  label: 'PTH',        value: 18.9, unit: 'pmol/L', critLow: null, normal: '1.6–6.9',   critHigh: 585  },
+      ],
+      question: {
+        text: 'Phoebe\'s calcium is 1.92 mmol/L — below normal but above the critical threshold of 1.75. What is the appropriate nursing response?',
+        options: [
+          'Notify the physician — calcium is below normal and should be reviewed in the context of CKD-MBD',
+          'No action needed — calcium is above the critical low threshold of 1.75',
+          'Give IV calcium gluconate immediately',
+        ],
+        correct: 0,
+        explanation: 'While 1.92 is above the critical threshold (1.75 mmol/L), it is below normal (2.12–2.52). Combined with elevated phosphorus and PTH, this pattern is consistent with CKD-MBD. The physician should be notified to review Phoebe\'s calcitriol and phosphate binder regimen.',
+      },
+    },
+    {
+      id: 'hematology',
+      title: 'Phase 4: Haematology & Nutrition',
+      subtitle: 'Hgb · Ferritin · TSAT · Albumin',
+      intro: 'Anaemia is nearly universal in ESRD due to reduced erythropoietin production. Iron stores must be assessed alongside hemoglobin before adjusting EPO therapy.',
+      annotation: {
+        title: 'EPO & Iron: The Two-Key System',
+        body: 'EPO stimulates red blood cell production, but iron is the raw material. Without adequate iron, EPO is ineffective. Before increasing EPO, confirm iron status: Ferritin (iron stores) and TSAT (functional iron availability) must both meet dialysis targets.',
+      },
+      rangeBars: [
+        { key: 'hgb',      label: 'Hemoglobin', value: 90,  unit: 'g/L',  critLow: 70,  normal: '100–115', critHigh: 200 },
+        { key: 'ferritin', label: 'Ferritin',    value: 184, unit: 'µg/L', critLow: 100, normal: '200–500', critHigh: 800, displayNote: 'Below dialysis target of >200 µg/L' },
+        { key: 'tsat',     label: 'TSAT',        value: 23,  unit: '%',    critLow: 20,  normal: '20–50',   critHigh: null },
+        { key: 'alb',      label: 'Albumin',     value: 31,  unit: 'g/L',  critLow: 25,  normal: '35–50',   critHigh: null },
+      ],
+      question: {
+        text: 'Phoebe\'s Hgb is 90 g/L (below target). Ferritin is 184 µg/L and TSAT is 23%. What is the most appropriate next step?',
+        options: [
+          'Increase the EPO dose — hemoglobin is below target',
+          'Consider IV iron first — ferritin is below the dialysis target of 200 µg/L and stores should be replenished before adjusting EPO',
+          'Arrange a blood transfusion — Hgb is critically low',
+          'No action needed — TSAT of 23% is within range',
+        ],
+        correct: 1,
+        explanation: 'Phoebe\'s Hgb of 90 g/L is below the dialysis target (100–115 g/L), but ferritin of 184 µg/L is just under the dialysis target of >200 µg/L. Iron stores should be replenished before increasing EPO — EPO is ineffective without adequate iron. TSAT of 23% is borderline. A transfusion is not indicated at 90 g/L (critical threshold: <70). Notify the physician to review iron supplementation.',
+      },
+    },
+  ],
+  summary: [
+    { label: 'Dialysis Adequacy', finding: 'Adequate — Kt/V 1.55, URR 70.1%',                              status: 'ok'   },
+    { label: 'Potassium',         finding: '4.8 mmol/L — within normal range on 2K bath',                   status: 'ok'   },
+    { label: 'Sodium',            finding: '131 mmol/L — dilutional hyponatraemia; review fluid compliance', status: 'warn' },
+    { label: 'Bicarbonate',       finding: '25 mmol/L — within normal range',                                status: 'ok'   },
+    { label: 'Calcium',           finding: '1.92 mmol/L — below normal; notify physician',                   status: 'warn' },
+    { label: 'Phosphorus',        finding: '1.49 mmol/L — above dialysis target; review phosphate binders',  status: 'warn' },
+    { label: 'PTH',               finding: '18.9 pmol/L — elevated; review CKD-MBD management plan',         status: 'warn' },
+    { label: 'Hemoglobin',        finding: '90 g/L — below target; consider IV iron before EPO adjustment',  status: 'warn' },
+    { label: 'Albumin',           finding: '31 g/L — below normal; nutritional review indicated',             status: 'warn' },
+  ],
+};
+
 // ─── BVM Reading Pages (Intradialytic Fluid Removal module) ───────────────────
 export const BVM_READING_PAGES = [
   {

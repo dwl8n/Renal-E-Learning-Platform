@@ -46,9 +46,9 @@ export default function Progress() {
           <div className="progress-header card">
             <div className="progress-header__avatar">
               <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="24" fill="var(--teal-100)"/>
-                <circle cx="24" cy="20" r="10" fill="var(--teal-300)"/>
-                <path d="M6 44c0-10 7.2-16 18-16s18 6 18 16" fill="var(--teal-200)"/>
+                <circle cx="24" cy="24" r="24" fill="var(--teal-200)"/>
+                {/* <circle cx="24" cy="20" r="10" fill="var(--teal-300)"/>
+                <path d="M6 44c2-10 7.2-16 18-16s18 6 18 16" fill="var(--teal-200)"/> */}
               </svg>
             </div>
             <div className="progress-header__info">

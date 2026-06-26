@@ -1,28 +1,36 @@
 :root {
   --teal-900: #053645;
+  --teal-800: #063f56;
   --teal-700: #0a5570;
   --teal-600: #127090;
   --teal-500: #1a8ab0;
   --teal-400: #2aa8d4;
+  --teal-300: #5dc4e6;
+  --teal-200: #a8dfef;
   --teal-100: #d6f0f8;
   --teal-50:  #edf8fc;
 
   --red-600: #b52d2d;
   --red-500: #d94040;
   --red-400: #e05252;
+  --red-200: #fbc4c4;
   --red-100: #fde8e8;
 
   --green-600: #1e8a47;
   --green-500: #27ae60;
+  --green-200: #a9ecc6;
   --green-100: #d5f5e3;
 
+  --amber-700: #9a6300;
   --amber-600: #c17d00;
   --amber-500: #f0a500;
+  --amber-200: #fde098;
   --amber-100: #fef3cd;
 
   --grey-600: #5a6a7a;
   --grey-400: #95a5a6;
   --grey-200: #d4dde4;
+  --grey-150: #e4e9ed;
   --grey-100: #eef1f4;
   --grey-50:  #f5f7f9;
 

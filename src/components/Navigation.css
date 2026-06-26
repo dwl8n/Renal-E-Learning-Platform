@@ -90,6 +90,11 @@
   align-items: center;
 }
 
+.nav__signout:hover {
+  color: var(--red-400) !important;
+  background: rgba(255, 80, 80, .08) !important;
+}
+
 /* Badge dot */
 .nav__badge {
   position: absolute;
