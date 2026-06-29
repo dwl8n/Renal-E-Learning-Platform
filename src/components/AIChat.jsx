@@ -53,7 +53,7 @@ export default function AIChat({ fullPage = false }) {
           <div className="aichat-panel fade-in">
             <div className="aichat-panel__header">
               <span className="aichat-panel__title">
-                <AISparkle /> AI Assistant
+                <AISparkle /> Practice Assistant
               </span>
               <button className="aichat-panel__close" onClick={() => dispatch({ type: 'AI_CLOSE' })}>
                 ✕
@@ -98,7 +98,7 @@ export default function AIChat({ fullPage = false }) {
         <button
           className={`aichat-fab ${state.aiChatOpen ? 'aichat-fab--active' : ''}`}
           onClick={() => dispatch({ type: 'AI_TOGGLE' })}
-          aria-label="AI Assistant"
+          aria-label="Practice Assistant"
         >
           {state.aiChatOpen ? <span style={{fontSize:18}}>✕</span> : <ChatBubble />}
         </button>
@@ -114,8 +114,8 @@ export default function AIChat({ fullPage = false }) {
         {isEmpty && (
           <div className="aichat-empty aichat-empty--full">
             <AISparkle size={40} />
-            <h3>Hemodialysis AI Assistant</h3>
-            <p>Ask questions, get explanations, or request a quiz. I'm here to support your orientation learning.</p>
+            <h3>Hemodialysis Practice Assistant</h3>
+            <p>Ask questions, get explanations, or request a practice quiz for orientation learning.</p>
             <div className="aichat-suggestions aichat-suggestions--full">
               {SUGGESTED.map(s => (
                 <button key={s} className="aichat-suggestion" onClick={() => send(s)}>{s}</button>

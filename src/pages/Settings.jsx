@@ -64,7 +64,7 @@ export default function Settings() {
           <SettingsRow label="Training Reminders" desc="Get reminders to continue your orientation">
             <ToggleSwitch value={false} onChange={() => {}} disabled />
           </SettingsRow>
-          <SettingsRow label="Completion Alerts" desc="Notify when you earn a badge or complete a quest">
+          <SettingsRow label="Completion Alerts" desc="Notify when you complete a module or assessment">
             <ToggleSwitch value={true} onChange={() => {}} disabled />
           </SettingsRow>
           <div className="settings-stub-note">Notifications will be configurable once the platform is connected to user accounts.</div>
@@ -72,7 +72,7 @@ export default function Settings() {
 
         {/* Progress */}
         <SettingsSection title="Demo Progress">
-          <SettingsRow label="Reset Demo Progress" desc="Clears all quest progress and XP — useful for restarting the demo">
+          <SettingsRow label="Reset Demo Progress" desc="Clears module progress and points for restarting the demo">
             {!confirmReset ? (
               <button className="btn btn--outline btn--sm" onClick={() => setConfirmReset(true)}>Reset Progress</button>
             ) : (
@@ -83,7 +83,7 @@ export default function Settings() {
             )}
           </SettingsRow>
           {confirmReset && (
-            <div className="settings-warn">This will reset all quest progress, XP, and activity feed data. This action cannot be undone.</div>
+            <div className="settings-warn">This will reset module progress, points, and activity feed data. This action cannot be undone.</div>
           )}
         </SettingsSection>
 

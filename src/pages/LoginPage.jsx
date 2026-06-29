@@ -28,8 +28,9 @@ export default function LoginPage() {
     }, 400);
   }
 
-  const admins   = MOCK_USERS.filter(u => u.role === 'admin');
-  const students = MOCK_USERS.filter(u => u.role === 'student');
+  const master   = MOCK_USERS.filter(u => u.master);
+  const trainers = MOCK_USERS.filter(u => u.role === 'admin' && !u.master);
+  const trainees = MOCK_USERS.filter(u => u.role === 'student');
 
   return (
     <div className="login-bg">
@@ -37,10 +38,12 @@ export default function LoginPage() {
         {/* Header */}
         <div className="login-card__header">
           <div className="login-logo">
-            <span className="login-logo__icon">⚕</span>
+            <svg width="34" height="34" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+              <path d="M6 16h4l2.5-6 3.5 11 2.5-7 1.5 2H24" stroke="#fff" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <h1 className="login-card__title">Renal E-Learning Platform</h1>
-          <p className="login-card__subtitle">Grand River Hospital · Dialysis Unit</p>
+          <h1 className="login-card__title">Hospital Training Portal</h1>
+          <p className="login-card__subtitle">Sign in to access assigned courses and policy learning</p>
         </div>
 
         {/* Form */}
@@ -84,15 +87,22 @@ export default function LoginPage() {
         <details className="login-creds">
           <summary className="login-creds__toggle">Sample credentials</summary>
           <div className="login-creds__body">
-            <p className="login-creds__group-label">Administrators</p>
-            {admins.map(u => (
+            <p className="login-creds__group-label">Master Regulator</p>
+            {master.map(u => (
               <div key={u.id} className="login-creds__row">
                 <span className="login-creds__name">{u.fullName}</span>
                 <code className="login-creds__code">{u.username} / {u.password}</code>
               </div>
             ))}
-            <p className="login-creds__group-label" style={{ marginTop: 10 }}>Students</p>
-            {students.map(u => (
+            <p className="login-creds__group-label" style={{ marginTop: 10 }}>Trainers</p>
+            {trainers.map(u => (
+              <div key={u.id} className="login-creds__row">
+                <span className="login-creds__name">{u.fullName}</span>
+                <code className="login-creds__code">{u.username} / {u.password}</code>
+              </div>
+            ))}
+            <p className="login-creds__group-label" style={{ marginTop: 10 }}>Trainees</p>
+            {trainees.map(u => (
               <div key={u.id} className="login-creds__row">
                 <span className="login-creds__name">{u.fullName}</span>
                 <code className="login-creds__code">{u.username} / {u.password}</code>

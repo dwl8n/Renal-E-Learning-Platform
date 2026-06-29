@@ -7,6 +7,10 @@ import FluidRemovalModule from '../modules/FluidRemovalModule';
 import './Tasks.css';
 
 const TASK_QUESTS = Object.values(QUESTS).filter(q => q.type === 'task' || q.type === 'mixed');
+const TYPE_LABEL = {
+  task: 'Module',
+  mixed: 'Practice',
+};
 
 export default function Tasks() {
   const { state, dispatch } = useApp();
@@ -30,11 +34,10 @@ export default function Tasks() {
 
   return (
     <div className="tasks-page fade-in" style={{display:'flex',height:'100%',overflow:'hidden'}}>
-      {/* Quest Selector sidebar */}
       <div className="tasks-sidebar">
         <div className="tasks-sidebar__header">
-          <h2>Task Quests</h2>
-          <p>Select a quest to begin or continue.</p>
+          <h2>Modules</h2>
+          <p>Select an available module to begin or continue.</p>
         </div>
         <div className="tasks-quest-list">
           {TASK_QUESTS.map(q => {
@@ -51,7 +54,7 @@ export default function Tasks() {
                 disabled={isLocked}
               >
                 <div className="tasks-quest-item__top">
-                  <span className={`tag tag--${q.type}`}>{q.type}</span>
+                  <span className={`tag tag--${q.type}`}>{TYPE_LABEL[q.type] || 'Module'}</span>
                   {isNew && <span className="badge badge--teal" style={{fontSize:10}}>New</span>}
                   {!isNew && status === 'complete' && <span className="badge badge--green" style={{fontSize:10}}>✓ Done</span>}
                   {!isNew && status === 'in-progress' && <span className="badge badge--amber" style={{fontSize:10}}>In Progress</span>}
@@ -83,8 +86,8 @@ export default function Tasks() {
                 <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
               </svg>
             </div>
-            <h3>Select a quest to begin</h3>
-            <p>Choose an available quest from the sidebar to start working on it.</p>
+            <h3>Select a module to begin</h3>
+            <p>Choose an available module from the sidebar to start working on it.</p>
             <div className="tasks-working-badge">
               <span className="badge badge--green">✓ Fully Working</span>
               <span>Fluid Volume · Intradialytic Fluid · Infection Control</span>
@@ -120,7 +123,7 @@ function StubModule({ quest, status }) {
   return (
     <div className="stub-module fade-in">
       <div className="stub-module__tag">
-        <span className={`tag tag--${quest.type}`}>{quest.type}</span>
+        <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Module'}</span>
       </div>
       <h2>{quest.title}</h2>
       <p className="stub-module__desc">{quest.description}</p>
@@ -132,7 +135,7 @@ function StubModule({ quest, status }) {
           <li>Interactive practice exercises</li>
           <li>Case studies with decision-branching</li>
           {quest.type === 'mixed' && <li>Video demonstrations</li>}
-          <li>Progress tracking and XP reward</li>
+          <li>Progress tracking and completion status</li>
         </ul>
       </div>
     </div>

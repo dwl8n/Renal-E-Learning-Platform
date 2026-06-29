@@ -11,7 +11,7 @@ const ASSESSMENT_TOTAL = ASSESSMENT_QUESTIONS.length;
 const TRAINER_TABS = [
   ['overview', 'Overview'],
   ['learners', 'Learners'],
-  ['quests', 'Quest controls'],
+  ['quests', 'Module controls'],
   ['lessons', 'Lesson data'],
   ['builder', 'AI builder'],
 ];
@@ -648,6 +648,8 @@ function createDraftState() {
 export default function AdminDashboard() {
   const { state, dispatch } = useApp();
   const { currentUser } = state;
+  const isMaster = Boolean(currentUser?.master);
+  const roleLabel = isMaster ? 'Master Regulator' : 'Trainer';
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedStudentId, setSelectedStudentId] = useState(4);
   const [learnerDrawerTab, setLearnerDrawerTab] = useState('summary');
@@ -753,10 +755,14 @@ export default function AdminDashboard() {
     <div className="admin-bg">
       <header className="admin-header">
         <div className="admin-header__left">
-          <span className="admin-header__logo">⚕</span>
+          <span className="admin-header__logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 30 30" fill="none">
+              <path d="M6 16h4l2.5-6 3.5 11 2.5-7 1.5 2H24" stroke="#fff" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
           <div>
             <div className="admin-header__title">Renal E-Learning Platform</div>
-            <div className="admin-header__sub">Trainer command centre</div>
+            <div className="admin-header__sub">{isMaster ? 'Master Regulator console' : 'Trainer command centre'}</div>
           </div>
         </div>
 
@@ -773,6 +779,9 @@ export default function AdminDashboard() {
         </nav>
 
         <div className="admin-header__right">
+          <span className={`admin-role-badge ${isMaster ? 'admin-role-badge--master' : ''}`}>
+            {roleLabel}
+          </span>
           <div className="admin-header__user">
             <span className="admin-header__user-name">{currentUser?.fullName}</span>
             <span className="admin-header__user-role">{currentUser?.title}</span>
@@ -902,7 +911,7 @@ function OverviewPanel({ students, atRisk, avgXP, avgComplete, enabledArtifacts,
         <section className="admin-section admin-panel">
           <PanelHeader
             title="Learners needing trainer attention"
-            subtitle="Based on existing quest status, assessment records and staged interventions."
+            subtitle="Based on existing module status, assessment records and staged interventions."
           />
           <div className="admin-attention-list">
             {atRisk.map((student) => (
@@ -918,7 +927,7 @@ function OverviewPanel({ students, atRisk, avgXP, avgComplete, enabledArtifacts,
         </section>
 
         <section className="admin-section admin-panel">
-          <PanelHeader title="AI source-to-quest workflow" subtitle="n8n-style stages, mapped to this app." />
+          <PanelHeader title="AI source-to-module workflow" subtitle="n8n-style stages, mapped to this app." />
           <div className="admin-mini-workflow">
             {['Upload files', 'Analyze source', 'Draft activities', 'Trainer review', 'Attach to quest'].map((step, index) => (
               <div key={step}>
@@ -929,7 +938,7 @@ function OverviewPanel({ students, atRisk, avgXP, avgComplete, enabledArtifacts,
           </div>
           <div className="admin-note">
             The current MVP stores a refined/cached potassium draft. A funded version can replace
-            the analysis stage with Gemini, Claude, OpenAI or local models without changing this trainer workflow.
+            the analysis stage with an approved external or local model service without changing this trainer workflow.
           </div>
         </section>
       </div>
@@ -1028,7 +1037,7 @@ function LearnerPanel({
           <>
             <div className="admin-student-metrics">
               <Metric label="Current focus" value={selectedStudent.activeQuest.title} />
-              <Metric label="Quest completion" value={`${selectedStudent.completion}%`} />
+              <Metric label="Module completion" value={`${selectedStudent.completion}%`} />
               <Metric label="Bloodwork score" value={selectedStudent.scorePct === null ? 'Not attempted' : `${selectedStudent.scorePct}%`} />
             </div>
 
@@ -1197,8 +1206,8 @@ function QuestControlPanel({ questSettings, selectedQuestId, onSelectQuest, onTo
     <div className="admin-grid admin-grid--quests">
       <section className="admin-section admin-panel">
         <PanelHeader
-          title="Quest controls"
-          subtitle="Trainer-side controls for the same QUESTS object powering the learner path."
+          title="Module controls"
+          subtitle="Trainer-side controls for the same modules powering the learner path."
         />
         <div className="admin-quest-control-grid">
           {QUEST_LIST.map((quest) => {
@@ -1247,7 +1256,7 @@ function QuestControlPanel({ questSettings, selectedQuestId, onSelectQuest, onTo
           <Metric label="Learner path status" value={questSettings[selectedQuestId]?.visible ? 'Visible' : 'Hidden'} />
           <Metric label="Trainer review" value={questSettings[selectedQuestId]?.trainerReview ? 'Required' : 'Not required'} />
           <Metric label="AI draft" value={questSettings[selectedQuestId]?.aiDraftAttached ? 'Attached' : 'Not attached'} />
-          <button className="btn btn--primary" onClick={onOpenBuilder}>Open builder for this quest</button>
+          <button className="btn btn--primary" onClick={onOpenBuilder}>Open builder for this module</button>
         </div>
         <div className="admin-note">
           “Remove” hides the quest in this trainer control layer for the MVP. It does not delete the source QUESTS object or student code.
@@ -1278,7 +1287,7 @@ function AIBuilderPanel({
         />
 
         <div className="admin-builder-target">
-          <label htmlFor="quest-target">Attach draft to existing quest</label>
+          <label htmlFor="quest-target">Attach draft to existing module</label>
           <select id="quest-target" value={selectedQuestId} onChange={(event) => onSelectQuest(event.target.value)}>
             {QUEST_LIST.map((quest) => (
               <option key={quest.id} value={quest.id}>{quest.title}</option>
@@ -1314,7 +1323,7 @@ function AIBuilderPanel({
       <section className="admin-section admin-panel">
         <PanelHeader
           title="Draft artifacts"
-          subtitle="Trainer can add/remove generated pieces before attaching anything to the quest."
+          subtitle="Trainer can add/remove generated pieces before attaching anything to the module."
         />
         <div className="admin-artifact-list">
           {AI_DRAFT_ARTIFACTS.map((artifact) => (
@@ -1350,9 +1359,9 @@ function AIBuilderPanel({
           <span>✓ Weakness packs can be assigned manually</span>
           <span>{questSettings?.aiDraftAttached ? '✓ Draft attached to quest' : '○ Draft not attached yet'}</span>
         </div>
-        <button className="btn btn--primary" onClick={onAttach}>Attach draft to selected quest</button>
+        <button className="btn btn--primary" onClick={onAttach}>Attach draft to selected module</button>
         <button className="btn btn--outline" onClick={onCreateAssignment}>Create learner remediation</button>
-        <button className="btn btn--ghost" onClick={onRemoveDraft}>Remove draft from quest</button>
+        <button className="btn btn--ghost" onClick={onRemoveDraft}>Remove draft from module</button>
         <div className="admin-note">
           This does not overwrite the learner module yet. It creates a trainer-approved plan that correlates
           the MVP content with the real app’s quest structure.

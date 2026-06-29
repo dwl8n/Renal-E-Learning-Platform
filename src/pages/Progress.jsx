@@ -17,6 +17,11 @@ const STATUS_LABEL = {
   unlocked: 'Available',
   locked: 'Locked',
 };
+const TYPE_LABEL = {
+  task: 'Module',
+  mixed: 'Practice',
+  assessment: 'Assessment',
+};
 
 export default function Progress() {
   const { state, dispatch, level, xpInLevel, xpToNext, xpPct } = useApp();
@@ -60,7 +65,7 @@ export default function Progress() {
                 <div className="progress-bar-fill" style={{width:`${xpPct}%`, height:'100%'}} />
               </div>
               <div className="progress-header__xp">
-                <span className="progress-header__xp-val">{totalXP.toLocaleString()} / {(totalXP - xpInLevel + xpToNext).toLocaleString()} XP</span>
+                <span className="progress-header__xp-val">{totalXP.toLocaleString()} / {(totalXP - xpInLevel + xpToNext).toLocaleString()} points</span>
                 {pendingCount > 0 && (
                   <span className="badge badge--amber" style={{fontSize:11}}>{pendingCount} uncollected</span>
                 )}
@@ -69,8 +74,8 @@ export default function Progress() {
             <button
               className={`quest-tree-btn ${treeView ? 'quest-tree-btn--active' : ''}`}
               onClick={() => setTreeView(v => !v)}
-              title={treeView ? 'Hide quest tree' : 'Show quest map'}
-              aria-label="Toggle quest map"
+              title={treeView ? 'Hide course map' : 'Show course map'}
+              aria-label="Toggle course map"
             >
               <MapIcon />
             </button>
@@ -120,7 +125,7 @@ export default function Progress() {
               ))}
               {xpQuests.length === 0 && activeQuests.length === 0 && journalNotifications.length === 0 && (
                 <div style={{textAlign:'center', padding:'40px 0', color:'var(--text-300)', fontSize:14}}>
-                  All quests complete. Check the quest map for upcoming content.
+                  All modules complete. Check the course map for upcoming content.
                 </div>
               )}
             </div>
@@ -191,7 +196,7 @@ function ActiveQuestCard({ quest, status, taskProgress, isNew, dispatch }) {
         <span className="pquest-card__title">{quest.title}</span>
         <div className="pquest-card__tags">
           {isNew && <span className="badge badge--teal" style={{fontSize:10}}>New</span>}
-          <span className={`tag tag--${quest.type}`}>{quest.type}</span>
+          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Module'}</span>
         </div>
       </div>
       <p className="pquest-card__desc">{quest.description}</p>
@@ -229,8 +234,8 @@ function XPQuestCard({ quest, pendingXP, dispatch }) {
       <div className="pquest-card__header">
         <span className="pquest-card__title">{quest.title}</span>
         <div className="pquest-card__tags">
-          <span className={`tag tag--${quest.type}`}>{quest.type}</span>
-          <span className="pquest-card__xp-badge">⭐ {pendingXP} XP</span>
+          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Module'}</span>
+          <span className="pquest-card__xp-badge">⭐ {pendingXP} pts</span>
         </div>
       </div>
       <p className="pquest-card__desc">{quest.description}</p>
@@ -245,7 +250,7 @@ function XPQuestCard({ quest, pendingXP, dispatch }) {
   );
 }
 
-// ─── SVG Quest Tree ───────────────────────────────────────────────────────────
+// ─── SVG Course Map ───────────────────────────────────────────────────────────
 function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
   return (
     <div style={{overflowX:'auto'}}>
@@ -325,8 +330,8 @@ function QuestTooltip({ questId, questStatus, pendingXP }) {
   return (
     <div className="quest-tooltip">
       <div className="quest-tooltip__top">
-        <span className={`tag tag--${q.type}`}>{q.type}</span>
-        <span className="quest-card__xp">{q.xp} XP</span>
+        <span className={`tag tag--${q.type}`}>{TYPE_LABEL[q.type] || 'Module'}</span>
+        <span className="quest-card__xp">{q.xp} pts</span>
       </div>
       <h3 className="quest-tooltip__title">{q.title}</h3>
       <p className="quest-tooltip__desc">{q.description}</p>
@@ -334,7 +339,7 @@ function QuestTooltip({ questId, questStatus, pendingXP }) {
         <span className={`badge badge--${status === 'complete' ? 'green' : status === 'in-progress' ? 'amber' : status === 'unlocked' ? 'teal' : 'grey'}`}>
           {STATUS_LABEL[status]}
         </span>
-        {hasPending && <span className="badge badge--amber">⭐ XP ready</span>}
+        {hasPending && <span className="badge badge--amber">Points ready</span>}
         {status !== 'locked' && (
           <span style={{fontSize:12, color:'var(--text-300)'}}>
             {status === 'complete' ? 'Click to review' : status === 'in-progress' ? 'Click to continue' : 'Click to start'}

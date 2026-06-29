@@ -5,6 +5,10 @@ import BloodworkModule from '../modules/BloodworkModule';
 import './Tasks.css';
 
 const ASSESSMENT_QUESTS = Object.values(QUESTS).filter(q => q.type === 'assessment' || q.type === 'mixed');
+const TYPE_LABEL = {
+  assessment: 'Assessment',
+  mixed: 'Practice',
+};
 
 export default function Assessments() {
   const { state, dispatch } = useApp();
@@ -38,7 +42,7 @@ export default function Assessments() {
       <div className="tasks-sidebar">
         <div className="tasks-sidebar__header">
           <h2>Assessments</h2>
-          <p>Formal knowledge tests. Pass threshold: 80%.</p>
+          <p>Official checks and assessment-ready practice.</p>
         </div>
         <div className="tasks-quest-list">
           {ASSESSMENT_QUESTS.map(q => {
@@ -56,7 +60,7 @@ export default function Assessments() {
                 disabled={isLocked}
               >
                 <div className="tasks-quest-item__top">
-                  <span className={`tag tag--${q.type}`}>{q.type}</span>
+                  <span className={`tag tag--${q.type}`}>{TYPE_LABEL[q.type] || 'Assessment'}</span>
                   {isNew && <span className="badge badge--teal" style={{fontSize:10}}>New</span>}
                   {!isNew && passed && <span className="badge badge--green" style={{fontSize:10}}>✓ Passed</span>}
                   {!isNew && status === 'in-progress' && !passed && <span className="badge badge--amber" style={{fontSize:10}}>In Progress</span>}
@@ -68,7 +72,7 @@ export default function Assessments() {
                     <div className="progress-bar-wrap" style={{height:4,flex:1}}>
                       <div className="progress-bar-fill" style={{width:`${Math.round((done/q.taskCount)*100)}%`,height:'100%'}} />
                     </div>
-                    <span style={{fontSize:11,color:'var(--text-300)'}}>{done}/{q.taskCount} tasks</span>
+                    <span style={{fontSize:11,color:'var(--text-300)'}}>{done}/{q.taskCount} items</span>
                   </div>
                 )}
                 {isLocked && <div className="tasks-quest-item__prereq">Requires: {q.prereqs.map(p => QUESTS[p]?.title).join(', ')}</div>}
@@ -114,7 +118,7 @@ function StubAssessment({ quest }) {
   return (
     <div className="stub-module fade-in">
       <div className="stub-module__tag">
-        <span className={`tag tag--${quest.type}`}>{quest.type}</span>
+        <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Assessment'}</span>
       </div>
       <h2>{quest.title}</h2>
       <p className="stub-module__desc">{quest.description}</p>

@@ -2,6 +2,7 @@ import { useApp } from './context';
 import Navigation from './components/Navigation';
 import AIChat from './components/AIChat';
 import JournalPanel from './components/JournalPanel';
+import CourseCatalogue from './pages/CourseCatalogue';
 import Progress from './pages/Progress';
 import Tasks from './pages/Tasks';
 import Assessments from './pages/Assessments';
@@ -27,6 +28,7 @@ export default function App() {
     <div className="app">
       <Navigation />
       <div className="app__body">
+        {page === 'catalogue'   && <CourseCatalogue />}
         {page === 'progress'    && <Progress />}
         {page === 'tasks'       && <Tasks />}
         {page === 'assessments' && <Assessments />}

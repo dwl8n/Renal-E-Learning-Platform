@@ -42,7 +42,7 @@ export default function BloodworkModule({ questId, onTaskComplete, taskProgress,
     <div className="module-layout">
       <aside className="module-sidebar">
         <div className="module-sidebar__header">
-          <span className="tag tag--assessment">Assessment Quest</span>
+          <span className="tag tag--assessment">Official Assessment</span>
           <h3 className="module-sidebar__title">Bloodwork Values</h3>
         </div>
         <div className="module-tasklist">

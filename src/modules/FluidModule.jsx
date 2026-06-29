@@ -17,7 +17,7 @@ export default function FluidModule({ questId, onTaskComplete, taskProgress }) {
     <div className="module-layout">
       <aside className="module-sidebar">
         <div className="module-sidebar__header">
-          <span className="tag tag--task">Task Quest</span>
+          <span className="tag tag--task">Module</span>
           <h3 className="module-sidebar__title">Fluid Volume Calculation</h3>
         </div>
         <div className="module-tasklist">

@@ -1,58 +1,66 @@
 :root {
-  --teal-900: #053645;
-  --teal-800: #063f56;
-  --teal-700: #0a5570;
-  --teal-600: #127090;
-  --teal-500: #1a8ab0;
-  --teal-400: #2aa8d4;
-  --teal-300: #5dc4e6;
-  --teal-200: #a8dfef;
-  --teal-100: #d6f0f8;
-  --teal-50:  #edf8fc;
+  /* --- Brand blue ramp (Microsoft Fluent "communication blue").
+     Variable names kept as --teal-* so existing references cascade. --- */
+  --teal-900: #004578;
+  --teal-800: #004f86;
+  --teal-700: #005a9e;
+  --teal-600: #106ebe;
+  --teal-500: #0078d4;
+  --teal-400: #2b88d8;
+  --teal-300: #a3cef0;
+  --teal-200: #c7e0f4;
+  --teal-100: #deecf9;
+  --teal-50:  #eff6fc;
 
-  --red-600: #b52d2d;
-  --red-500: #d94040;
-  --red-400: #e05252;
-  --red-200: #fbc4c4;
-  --red-100: #fde8e8;
+  /* Danger / critical only */
+  --red-600: #a4262c;
+  --red-500: #d13438;
+  --red-400: #e04e4e;
+  --red-200: #f1bcbe;   /* zone fill (lab range bar) */
+  --red-100: #fde7e9;
 
-  --green-600: #1e8a47;
-  --green-500: #27ae60;
-  --green-200: #a9ecc6;
-  --green-100: #d5f5e3;
+  /* Success */
+  --green-600: #0e700e;
+  --green-500: #107c10;
+  --green-200: #bfe7bf;   /* zone fill (lab range bar) */
+  --green-100: #dff6dd;
 
-  --amber-700: #9a6300;
-  --amber-600: #c17d00;
-  --amber-500: #f0a500;
-  --amber-200: #fde098;
-  --amber-100: #fef3cd;
+  /* Warning */
+  --amber-700: #8a6d00;
+  --amber-600: #8a6d00;
+  --amber-500: #ffb900;
+  --amber-200: #ffe7a0;   /* zone fill (lab range bar) */
+  --amber-100: #fff4ce;
 
-  --grey-600: #5a6a7a;
-  --grey-400: #95a5a6;
-  --grey-200: #d4dde4;
-  --grey-150: #e4e9ed;
-  --grey-100: #eef1f4;
-  --grey-50:  #f5f7f9;
+  /* Neutral (Fluent neutral ramp) */
+  --grey-600: #605e5c;
+  --grey-400: #a19f9d;
+  --grey-300: #c8c6c4;
+  --grey-200: #edebe9;
+  --grey-150: #e8e6e4;
+  --grey-100: #f3f2f1;
+  --grey-50:  #faf9f8;
 
-  --bg:        #f2f6f9;
+  --bg:        #f3f2f1;
   --surface:   #ffffff;
-  --text-900:  #0f1d2a;
-  --text-700:  #1f3244;
-  --text-500:  #3d5166;
-  --text-300:  #7a8fa0;
+  --text-900:  #201f1e;
+  --text-700:  #323130;
+  --text-500:  #605e5c;
+  --text-300:  #8a8886;
 
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  16px;
-  --radius-xl:  24px;
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  8px;
+  --radius-xl:  12px;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.10);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+  /* Fluent depth elevation — subtle, layered */
+  --shadow-sm: 0 0.3px 0.9px rgba(0,0,0,.07), 0 1.6px 3.6px rgba(0,0,0,.11);
+  --shadow-md: 0 0.6px 1.8px rgba(0,0,0,.08), 0 3.2px 7.2px rgba(0,0,0,.12);
+  --shadow-lg: 0 1.2px 3.6px rgba(0,0,0,.09), 0 6.4px 14.4px rgba(0,0,0,.13);
 
   --nav-h: 60px;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -74,6 +82,8 @@ h1, h2, h3, h4 {
   font-family: var(--font-display);
   color: var(--text-900);
   line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -.01em;
 }
 
 button {
@@ -128,11 +138,12 @@ input {
 .btn:active { transform: translateY(1px); }
 
 .btn--primary {
-  background: var(--teal-600);
+  background: var(--teal-500);
   color: #fff;
-  box-shadow: 0 2px 6px rgba(10,85,112,.25);
+  box-shadow: none;
 }
-.btn--primary:hover { background: var(--teal-700); }
+.btn--primary:hover { background: var(--teal-600); }
+.btn--primary:active { background: var(--teal-700); }
 
 .btn--outline {
   background: transparent;
@@ -208,6 +219,7 @@ input {
 .status-dot--in-progress { background: var(--amber-500); }
 .status-dot--unlocked   { background: var(--teal-500); }
 .status-dot--locked     { background: var(--grey-400); }
+.status-dot--preview    { background: var(--grey-300); }
 
 /* Inline glossary links (in task content and AI responses) */
 .glossary-link {

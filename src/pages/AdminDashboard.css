@@ -77,6 +77,27 @@
   color: rgba(255,255,255,.55);
 }
 
+.admin-role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff;
+}
+
+.admin-role-badge--master {
+  background: rgba(255,185,0,.18);
+  border-color: rgba(255,185,0,.5);
+  color: #ffd76a;
+}
+
 .admin-logout-btn {
   height: 34px;
   padding: 0 16px;
@@ -138,7 +159,7 @@
   border-radius: 99px;
   padding: 4px 10px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -208,7 +229,7 @@
 .admin-path-card > span {
   color: rgba(255,255,255,.62);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -269,7 +290,7 @@
 .admin-stat-card__num {
   font-family: var(--font-display);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--teal-600);
   line-height: 1;
   margin-bottom: 6px;
@@ -390,7 +411,7 @@
   color: var(--green-600);
   background: var(--green-100);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -429,7 +450,7 @@
   color: #fff;
   background: var(--teal-600);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-mini-workflow > div:not(:last-child)::after {
@@ -477,7 +498,7 @@
   padding: 10px 14px;
   text-align: left;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
   color: var(--text-300);
@@ -518,7 +539,7 @@
 .admin-level {
   font-family: var(--font-display);
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--teal-600);
 }
 
@@ -624,7 +645,7 @@
 .admin-metric span {
   color: var(--text-300);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
 }
@@ -677,7 +698,7 @@
   color: var(--amber-600);
   background: var(--amber-100);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-weakness-box p {
@@ -698,7 +719,7 @@
   margin-bottom: 7px;
   color: var(--text-500);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-assignment-control > div {
@@ -745,7 +766,7 @@
   margin-top: 3px;
   color: var(--teal-700);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-assignment-list article p,
@@ -764,7 +785,7 @@
   color: var(--teal-600);
   background: transparent;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-link-btn:hover {
@@ -828,7 +849,7 @@
   color: var(--text-500);
   background: var(--grey-100);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-control-row {
@@ -846,7 +867,7 @@
   color: var(--text-300);
   background: #fff;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-toggle--on {
@@ -912,7 +933,7 @@
   color: rgba(255,255,255,.86);
   background: rgba(255,255,255,.12);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-source-package {
@@ -946,7 +967,7 @@
   margin-top: 3px;
   color: var(--teal-700);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-source-package p {
@@ -1000,7 +1021,7 @@
   color: var(--teal-700);
   font-size: 11px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-artifact p {
@@ -1040,7 +1061,7 @@
   margin-top: -22px;
   color: rgba(255,255,255,.76);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-review-checks {
@@ -1111,7 +1132,7 @@
   background: #fff;
   border: 1px solid var(--teal-100);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-lesson-hero-card,
@@ -1204,7 +1225,7 @@
   color: var(--teal-700);
   font-size: 11px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-lesson-sequence,
@@ -1401,7 +1422,7 @@
   background: transparent;
   color: var(--text-300);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -1457,14 +1478,14 @@
 .admin-bar-row > span {
   color: var(--text-500);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-bar-row em {
   color: var(--text-300);
   font-size: 10px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: capitalize;
   text-align: right;
 }
@@ -1559,7 +1580,7 @@
   margin-top: 2px;
   color: var(--teal-700);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .admin-question-signal-list p {

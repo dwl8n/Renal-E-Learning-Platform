@@ -23,12 +23,14 @@ function getNextLevelXp(level) {
 
 // ─── Mock user database ────────────────────────────────────────────────────────
 export const MOCK_USERS = [
+  { id: 8, username: 'master',  password: 'master123', role: 'admin',  fullName: 'Master Administrator', title: 'Full platform access', master: true },
   { id: 1, username: 'admin',   password: 'admin123', role: 'admin',   fullName: 'Dr. Sarah Mitchell', title: 'Charge Nurse' },
   { id: 2, username: 'jpatel',  password: 'admin456', role: 'admin',   fullName: 'Dr. James Patel',    title: 'Unit Manager' },
   { id: 3, username: 'msantos', password: 'admin789', role: 'admin',   fullName: 'Maria Santos',       title: 'Clinical Educator' },
   { id: 4, username: 'emma',    password: 'student1', role: 'student', fullName: 'Emma Thompson',  cohort: '2026-Spring' },
   { id: 5, username: 'liam',    password: 'student2', role: 'student', fullName: 'Liam Okafor',    cohort: '2026-Spring' },
   { id: 6, username: 'priya',   password: 'student3', role: 'student', fullName: 'Priya Nair',     cohort: '2026-Winter' },
+  { id: 7, username: 'noah',    password: 'student4', role: 'student', fullName: 'Noah Williams',  cohort: '2026-Summer' },
 ];
 
 // ─── Pre-baked student progress snapshots ─────────────────────────────────────
@@ -58,6 +60,11 @@ export const STUDENT_SNAPSHOTS = {
     },
     pendingXP: { 'introduction': 600 },
     assessmentScoreRecord: {},
+    preAssessmentResults: {
+      'renal-dialysis': { score: 5, band: 'experienced' },
+    },
+    courseRequests: [],
+    courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [
       { id: 'n-initial-xp', type: 'xp', questId: 'introduction', questTitle: 'Introduction', amount: 600, dismissed: false, ts: Date.now() - 7200000 },
     ],
@@ -88,6 +95,11 @@ export const STUDENT_SNAPSHOTS = {
     },
     pendingXP: {},
     assessmentScoreRecord: {},
+    preAssessmentResults: {
+      'renal-dialysis': { score: 2, band: 'novice' },
+    },
+    courseRequests: [],
+    courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [],
     journalEntries: [],
   },
@@ -118,6 +130,11 @@ export const STUDENT_SNAPSHOTS = {
     assessmentScoreRecord: {
       'bloodwork-values': { score: 22, passed: true },
     },
+    preAssessmentResults: {
+      'renal-dialysis': { score: 4, band: 'developing' },
+    },
+    courseRequests: [],
+    courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [],
     journalEntries: ['introduction', 'fluid-volume', 'bloodwork-values', 'intradialytic-fluid'],
   },
@@ -141,7 +158,7 @@ const FRESH_QUEST_STATUS = {
 };
 
 const BASE_PROGRESS = {
-  page: 'progress',
+  page: 'catalogue',
   xp: 0,
   questStatus: { ...FRESH_QUEST_STATUS },
   questTaskProgress: {
@@ -159,10 +176,14 @@ const BASE_PROGRESS = {
   journalTarget: null,
   aiChatOpen: false,
   aiMessages: [],
+  selectedCourseId: 'renal-dialysis',
   selectedQuestId: null,
   assessmentActive: false,
   assessmentScore: null,
   assessmentScoreRecord: {},
+  preAssessmentResults: {},
+  courseRequests: [],
+  courseEnrollments: ['renal-dialysis'],
 };
 
 const initialState = {
@@ -185,6 +206,9 @@ function reducer(state, action) {
           questTaskProgress:     snap.questTaskProgress     ?? BASE_PROGRESS.questTaskProgress,
           pendingXP:             snap.pendingXP             ?? {},
           assessmentScoreRecord: snap.assessmentScoreRecord ?? {},
+          preAssessmentResults:  snap.preAssessmentResults  ?? {},
+          courseRequests:        snap.courseRequests        ?? [],
+          courseEnrollments:     snap.courseEnrollments     ?? BASE_PROGRESS.courseEnrollments,
           notifications:         snap.notifications         ?? [],
           journalEntries:        snap.journalEntries        ?? [],
         };
@@ -205,6 +229,43 @@ function reducer(state, action) {
     }
 
     case 'SELECT_QUEST': return { ...state, selectedQuestId: action.questId };
+
+    case 'SELECT_COURSE':
+      return { ...state, selectedCourseId: action.courseId, page: 'catalogue', selectedQuestId: null };
+
+    case 'ENROLL_COURSE':
+      return {
+        ...state,
+        selectedCourseId: action.courseId,
+        page: 'catalogue',
+        courseEnrollments: state.courseEnrollments.includes(action.courseId)
+          ? state.courseEnrollments
+          : [...state.courseEnrollments, action.courseId],
+        notifications: [
+          { id: `n-course-${Date.now()}`, type: 'course', text: 'Course added to your learner catalogue.', dismissed: false, ts: Date.now() },
+          ...state.notifications,
+        ],
+      };
+
+    case 'REQUEST_COURSE_ACCESS':
+      if (state.courseRequests.includes(action.courseId)) return state;
+      return {
+        ...state,
+        courseRequests: [...state.courseRequests, action.courseId],
+        notifications: [
+          { id: `n-request-${Date.now()}`, type: 'course', text: 'Access request saved for trainer review.', dismissed: false, ts: Date.now() },
+          ...state.notifications,
+        ],
+      };
+
+    case 'COMPLETE_PRE_ASSESSMENT':
+      return {
+        ...state,
+        preAssessmentResults: {
+          ...state.preAssessmentResults,
+          [action.courseId]: { score: action.score, band: action.band },
+        },
+      };
 
     // ─── Task completion ─────────────────────────────────────────────────────
     case 'COMPLETE_TASK': {

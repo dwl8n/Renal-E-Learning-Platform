@@ -12,9 +12,9 @@ export default function Navigation() {
     <nav className="nav">
       <div className="nav__brand">
         <div className="nav__logo">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="13" stroke="var(--teal-400)" strokeWidth="2"/>
-            <path d="M7 14 Q10 8 14 14 Q18 20 21 14" stroke="var(--red-400)" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="28" height="28" rx="7" fill="var(--teal-500)"/>
+            <path d="M6 16h4l2.5-6 3.5 11 2.5-7 1.5 2H24" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
         <span className="nav__title">eTrainer</span>
@@ -22,11 +22,19 @@ export default function Navigation() {
 
       <div className="nav__items">
         <button
+          className={`nav__item ${page === 'catalogue' ? 'nav__item--active' : ''}`}
+          onClick={() => navTo('catalogue')}
+        >
+          <CourseIcon />
+          <span className="nav__label">Courses</span>
+        </button>
+
+        <button
           className={`nav__item ${page === 'progress' ? 'nav__item--active' : ''}`}
           onClick={() => navTo('progress')}
         >
           <MapIcon />
-          <span className="nav__label">Progress</span>
+          <span className="nav__label">Course Map</span>
         </button>
 
         <button
@@ -37,7 +45,7 @@ export default function Navigation() {
             <TaskIcon />
             {badges.tasks && <span className="nav__badge" aria-label="New content" />}
           </span>
-          <span className="nav__label">Tasks</span>
+          <span className="nav__label">Modules</span>
         </button>
 
         <button
@@ -67,7 +75,7 @@ export default function Navigation() {
           onClick={() => navTo('ai')}
         >
           <AIIcon />
-          <span className="nav__label">AI Assistant</span>
+          <span className="nav__label">Practice Assistant</span>
         </button>
       </div>
 
@@ -88,6 +96,16 @@ export default function Navigation() {
         <span className="nav__label">Sign Out</span>
       </button>
     </nav>
+  );
+}
+
+function CourseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19V6.5A2.5 2.5 0 0 1 6.5 4H20v15H6.5A2.5 2.5 0 0 0 4 21"/>
+      <path d="M8 8h8"/>
+      <path d="M8 12h6"/>
+    </svg>
   );
 }
 

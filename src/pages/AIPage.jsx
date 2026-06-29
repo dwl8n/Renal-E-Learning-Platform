@@ -6,8 +6,8 @@ export default function AIPage() {
     <div className="ai-page fade-in">
       <div className="ai-page__inner">
         <div className="ai-page__header">
-          <h1 className="page-title">AI Assistant</h1>
-          <p className="page-subtitle">Context-aware support for hemodialysis orientation learning.</p>
+          <h1 className="page-title">Practice Assistant</h1>
+          <p className="page-subtitle">Context-aware practice support for hemodialysis orientation learning.</p>
         </div>
         <div className="ai-page__chat-wrap card">
           <AIChat fullPage />

@@ -200,7 +200,7 @@ export default function InfectionControlModule({ questId, onTaskComplete, taskPr
     <div className="module-layout infection-module">
       <aside className="module-sidebar">
         <div className="module-sidebar__header">
-          <span className="tag tag--task">Task Quest</span>
+          <span className="tag tag--task">Module</span>
           <h3 className="module-sidebar__title">Infection Control & Hep B</h3>
         </div>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context';
-import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES } from '../data';
+import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, QUESTS } from '../data';
 import './JournalPanel.css';
 
 const JOURNAL_CONTENT = {
@@ -232,7 +232,7 @@ function GlossaryTab({ search, setSearch, targetSlug }) {
             >
               <div className="glossary-entry__term">{g.term}</div>
               <div className="glossary-entry__def">{g.def}</div>
-              {g.quest && <div className="glossary-entry__quest">Related quest: {g.quest}</div>}
+              {g.quest && <div className="glossary-entry__quest">Related module: {QUESTS[g.quest]?.title || g.quest}</div>}
             </div>
           );
         })}
