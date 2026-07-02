@@ -82,7 +82,7 @@ export default function CourseCatalogue() {
   }
 
   function openTask(task) {
-    dispatch({ type: 'NAV', page: task.type === 'assessment' ? 'assessments' : 'tasks' });
+    dispatch({ type: 'NAV', page: 'tasks' });
     dispatch({ type: 'SELECT_QUEST', questId: task.id });
     dispatch({ type: 'MARK_QUEST_SEEN', questId: task.id });
   }
