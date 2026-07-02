@@ -18,7 +18,7 @@ const STATUS_LABEL = {
   locked: 'Locked',
 };
 const TYPE_LABEL = {
-  task: 'Module',
+  task: 'Task',
   mixed: 'Practice',
   assessment: 'Assessment',
 };
@@ -125,7 +125,7 @@ export default function Progress() {
               ))}
               {xpQuests.length === 0 && activeQuests.length === 0 && journalNotifications.length === 0 && (
                 <div style={{textAlign:'center', padding:'40px 0', color:'var(--text-300)', fontSize:14}}>
-                  All modules complete. Check the course map for upcoming content.
+                  All tasks complete. Check the course map for upcoming content.
                 </div>
               )}
             </div>
@@ -139,13 +139,10 @@ export default function Progress() {
 function handleNodeClick(questId, state, dispatch) {
   const status = state.questStatus[questId];
   if (status === 'locked') return;
-  const q = QUESTS[questId];
-  dispatch({ type: 'NAV', page: q.type === 'assessment' ? 'assessments' : 'tasks' });
+  dispatch({ type: 'NAV', page: 'tasks' });
   dispatch({ type: 'SELECT_QUEST', questId });
   dispatch({ type: 'MARK_QUEST_SEEN', questId });
 }
-
-function pageFor(q) { return q.type === 'assessment' ? 'assessments' : 'tasks'; }
 
 // ─── Card components ──────────────────────────────────────────────────────────
 
@@ -179,7 +176,7 @@ function ActiveQuestCard({ quest, status, taskProgress, isNew, dispatch }) {
   const progress = Math.round((completedTasks / quest.taskCount) * 100);
 
   function open() {
-    dispatch({ type: 'NAV', page: pageFor(quest) });
+    dispatch({ type: 'NAV', page: 'tasks' });
     dispatch({ type: 'SELECT_QUEST', questId: quest.id });
     dispatch({ type: 'MARK_QUEST_SEEN', questId: quest.id });
   }
@@ -196,7 +193,7 @@ function ActiveQuestCard({ quest, status, taskProgress, isNew, dispatch }) {
         <span className="pquest-card__title">{quest.title}</span>
         <div className="pquest-card__tags">
           {isNew && <span className="badge badge--teal" style={{fontSize:10}}>New</span>}
-          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Module'}</span>
+          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Task'}</span>
         </div>
       </div>
       <p className="pquest-card__desc">{quest.description}</p>
@@ -234,7 +231,7 @@ function XPQuestCard({ quest, pendingXP, dispatch }) {
       <div className="pquest-card__header">
         <span className="pquest-card__title">{quest.title}</span>
         <div className="pquest-card__tags">
-          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Module'}</span>
+          <span className={`tag tag--${quest.type}`}>{TYPE_LABEL[quest.type] || 'Task'}</span>
           <span className="pquest-card__xp-badge">⭐ {pendingXP} pts</span>
         </div>
       </div>
@@ -330,7 +327,7 @@ function QuestTooltip({ questId, questStatus, pendingXP }) {
   return (
     <div className="quest-tooltip">
       <div className="quest-tooltip__top">
-        <span className={`tag tag--${q.type}`}>{TYPE_LABEL[q.type] || 'Module'}</span>
+        <span className={`tag tag--${q.type}`}>{TYPE_LABEL[q.type] || 'Task'}</span>
         <span className="quest-card__xp">{q.xp} pts</span>
       </div>
       <h3 className="quest-tooltip__title">{q.title}</h3>

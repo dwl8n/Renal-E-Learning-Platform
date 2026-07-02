@@ -28,6 +28,50 @@
   letter-spacing: -.01em;
 }
 
+/* Course context brand */
+.nav__brand--course {
+  gap: 6px;
+  margin-right: 16px;
+}
+
+.nav__exit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  color: var(--text-500);
+  background: transparent;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+
+.nav__exit:hover {
+  background: var(--grey-100);
+  color: var(--text-900);
+}
+
+.nav__course-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-900);
+  letter-spacing: -.01em;
+  background: transparent;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background .15s;
+}
+
+.nav__course-title:hover {
+  background: var(--grey-100);
+}
+
 .nav__items {
   display: flex;
   align-items: center;

@@ -1,82 +1,100 @@
 import { useApp } from '../context';
+import { COURSE_CATALOG } from '../courseData';
 import './Navigation.css';
 
 export default function Navigation() {
   const { state, dispatch } = useApp();
-  const { page, badges } = state;
+  const { page, badges, activeCourseId } = state;
 
   const navTo = (p) => dispatch({ type: 'NAV', page: p });
   const openJournal = () => dispatch({ type: 'JOURNAL_OPEN' });
 
+  const activeCourse = activeCourseId
+    ? COURSE_CATALOG.find((c) => c.id === activeCourseId)
+    : null;
+
   return (
     <nav className="nav">
-      <div className="nav__brand">
-        <div className="nav__logo">
-          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-            <rect x="1" y="1" width="28" height="28" rx="7" fill="var(--teal-500)"/>
-            <path d="M6 16h4l2.5-6 3.5 11 2.5-7 1.5 2H24" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+      {activeCourse ? (
+        <div className="nav__brand nav__brand--course">
+          <button
+            className="nav__exit"
+            onClick={() => dispatch({ type: 'EXIT_COURSE' })}
+            title="Back to catalogue"
+            aria-label="Exit course"
+          >
+            <BackIcon />
+          </button>
+          <button
+            className="nav__course-title"
+            onClick={() => navTo('catalogue')}
+            title="Course home"
+          >
+            {activeCourse.title}
+          </button>
         </div>
-        <span className="nav__title">eTrainer</span>
-      </div>
+      ) : (
+        <div className="nav__brand">
+          <div className="nav__logo">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+              <rect x="1" y="1" width="28" height="28" rx="7" fill="var(--teal-500)"/>
+              <path d="M6 16h4l2.5-6 3.5 11 2.5-7 1.5 2H24" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <span className="nav__title">eTrainer</span>
+        </div>
+      )}
 
       <div className="nav__items">
-        <button
-          className={`nav__item ${page === 'catalogue' ? 'nav__item--active' : ''}`}
-          onClick={() => navTo('catalogue')}
-        >
-          <CourseIcon />
-          <span className="nav__label">Courses</span>
-        </button>
+        {activeCourse ? (
+          <>
+            <button
+              className={`nav__item ${page === 'tasks' ? 'nav__item--active' : ''}`}
+              onClick={() => navTo('tasks')}
+            >
+              <span className="nav__icon-wrap">
+                <TaskIcon />
+                {badges.tasks && <span className="nav__badge" aria-label="New content" />}
+              </span>
+              <span className="nav__label">Modules</span>
+            </button>
 
-        <button
-          className={`nav__item ${page === 'progress' ? 'nav__item--active' : ''}`}
-          onClick={() => navTo('progress')}
-        >
-          <MapIcon />
-          <span className="nav__label">Course Map</span>
-        </button>
+            <button
+              className={`nav__item ${page === 'progress' ? 'nav__item--active' : ''}`}
+              onClick={() => navTo('progress')}
+            >
+              <MapIcon />
+              <span className="nav__label">Progress</span>
+            </button>
 
-        <button
-          className={`nav__item ${page === 'tasks' ? 'nav__item--active' : ''}`}
-          onClick={() => navTo('tasks')}
-        >
-          <span className="nav__icon-wrap">
-            <TaskIcon />
-            {badges.tasks && <span className="nav__badge" aria-label="New content" />}
-          </span>
-          <span className="nav__label">Modules</span>
-        </button>
+            <button
+              className="nav__item"
+              onClick={openJournal}
+            >
+              <span className="nav__icon-wrap">
+                <BookIcon />
+                {badges.journal && <span className="nav__badge" aria-label="New journal content" />}
+              </span>
+              <span className="nav__label">Journal</span>
+            </button>
 
-        <button
-          className={`nav__item ${page === 'assessments' ? 'nav__item--active' : ''}`}
-          onClick={() => navTo('assessments')}
-        >
-          <span className="nav__icon-wrap">
-            <AssessIcon />
-            {badges.assessments && <span className="nav__badge" aria-label="New content" />}
-          </span>
-          <span className="nav__label">Assessments</span>
-        </button>
-
-        <button
-          className="nav__item"
-          onClick={openJournal}
-        >
-          <span className="nav__icon-wrap">
-            <BookIcon />
-            {badges.journal && <span className="nav__badge" aria-label="New journal content" />}
-          </span>
-          <span className="nav__label">Journal</span>
-        </button>
-
-        <button
-          className={`nav__item ${page === 'ai' ? 'nav__item--active' : ''}`}
-          onClick={() => navTo('ai')}
-        >
-          <AIIcon />
-          <span className="nav__label">Practice Assistant</span>
-        </button>
+            <button
+              className={`nav__item ${page === 'ai' ? 'nav__item--active' : ''}`}
+              onClick={() => navTo('ai')}
+            >
+              <AIIcon />
+              <span className="nav__label">Practice Assistant</span>
+            </button>
+          </>
+        ) : (
+          <button
+            className={`nav__item ${page === 'catalogue' ? 'nav__item--active' : ''}`}
+            onClick={() => navTo('catalogue')}
+          >
+            <CourseIcon />
+            <span className="nav__label">Courses</span>
+          </button>
+        )}
       </div>
 
       <button
@@ -99,6 +117,13 @@ export default function Navigation() {
   );
 }
 
+function BackIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
 function CourseIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -108,7 +133,6 @@ function CourseIcon() {
     </svg>
   );
 }
-
 function MapIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

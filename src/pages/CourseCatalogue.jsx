@@ -6,9 +6,11 @@ import {
   PRE_ASSESSMENT_QUESTIONS,
   getCourseDetail,
   getCourseModuleDetails,
-  getCourseModules,
+  getCourseModulesForCourse,
   getCourseProgress,
   getKnowledgeBand,
+  getModuleProgress,
+  getModuleStatus,
 } from '../courseData';
 import './CourseCatalogue.css';
 
@@ -25,7 +27,8 @@ const MODULE_TYPE_LABEL = {
   assessment: 'Official assessment',
 };
 
-function getModuleProgress(module, questTaskProgress, status) {
+// Progress within a single task (quest) — used on task detail page
+function getModuleTaskProgress(module, questTaskProgress, status) {
   if (status === 'complete') return 100;
   if (!module.taskCount) return 0;
   const progress = questTaskProgress[module.id] || {};
@@ -43,13 +46,12 @@ function getModuleStatusLabel(status, progress, live) {
 
 export default function CourseCatalogue() {
   const { state, dispatch } = useApp();
-  const { currentUser, selectedCourseId, questStatus, questTaskProgress, preAssessmentResults, courseRequests, courseEnrollments } = state;
+  const { currentUser, selectedCourseId, activeCourseId, questStatus, questTaskProgress, preAssessmentResults, courseRequests, courseEnrollments } = state;
   const [answers, setAnswers] = useState({});
-  const [activeView, setActiveView] = useState('catalogue');
   const [selectedModuleId, setSelectedModuleId] = useState(null);
 
-  const selectedCourse = COURSE_CATALOG.find((course) => course.id === selectedCourseId) || COURSE_CATALOG[0];
-  const selectedModules = useMemo(() => getCourseModules(selectedCourse), [selectedCourse]);
+  const selectedCourse = COURSE_CATALOG.find((course) => course.id === (activeCourseId || selectedCourseId)) || COURSE_CATALOG[0];
+  const courseModules = useMemo(() => getCourseModulesForCourse(selectedCourse), [selectedCourse]);
   const selectedModuleDetails = useMemo(() => getCourseModuleDetails(selectedCourse), [selectedCourse]);
   const selectedCourseDetail = useMemo(() => getCourseDetail(selectedCourse), [selectedCourse]);
   const selectedModuleDetail = selectedModuleDetails.find((module) => module.id === selectedModuleId);
@@ -59,33 +61,14 @@ export default function CourseCatalogue() {
   const preAssessment = preAssessmentResults[selectedCourse.id];
   const requested = courseRequests.includes(selectedCourse.id);
 
-  function selectCourse(course) {
-    dispatch({ type: 'SELECT_COURSE', courseId: course.id });
-    setSelectedModuleId(null);
-  }
-
   function enterCourse(course) {
-    dispatch({ type: 'SELECT_COURSE', courseId: course.id });
-    setSelectedModuleId(null);
-    setActiveView('course');
-  }
-
-  function handlePrimary(course) {
     if (course.status === 'request') {
       dispatch({ type: 'REQUEST_COURSE_ACCESS', courseId: course.id });
-      enterCourse(course);
-      return;
-    }
-    if (course.status === 'restricted') {
-      enterCourse(course);
-      return;
-    }
-    if (course.status === 'open') {
+    } else if (course.status === 'open') {
       dispatch({ type: 'ENROLL_COURSE', courseId: course.id });
-      enterCourse(course);
-      return;
     }
-    enterCourse(course);
+    dispatch({ type: 'ENTER_COURSE', courseId: course.id });
+    setSelectedModuleId(null);
   }
 
   function savePreAssessment() {
@@ -98,29 +81,48 @@ export default function CourseCatalogue() {
     });
   }
 
-  function openModule(module) {
-    dispatch({ type: 'NAV', page: module.type === 'assessment' ? 'assessments' : 'tasks' });
-    dispatch({ type: 'SELECT_QUEST', questId: module.id });
-    dispatch({ type: 'MARK_QUEST_SEEN', questId: module.id });
+  function openTask(task) {
+    dispatch({ type: 'NAV', page: task.type === 'assessment' ? 'assessments' : 'tasks' });
+    dispatch({ type: 'SELECT_QUEST', questId: task.id });
+    dispatch({ type: 'MARK_QUEST_SEEN', questId: task.id });
+  }
+
+  function openOfficialAssessment() {
+    const allTasks = selectedModuleDetails;
+    const assessment = allTasks.find((t) => t.type === 'assessment');
+    if (assessment) openTask(assessment);
   }
 
   function openModuleDetail(module) {
     setSelectedModuleId(module.id);
-    setActiveView('module');
   }
 
-  function openOfficialAssessment() {
-    const assessment = selectedModules.find((module) => module.type === 'assessment') || selectedModules[selectedModules.length - 1];
-    if (assessment) openModule(assessment);
-  }
+  // Inside a course: show course detail (or module detail)
+  if (activeCourseId) {
+    if (selectedModuleDetail) {
+      return (
+        <div className="page catalogue-page fade-in">
+          <div className="catalogue-shell">
+            <ModuleDetailPage
+              course={selectedCourse}
+              module={selectedModuleDetail}
+              status={selectedModuleStatus}
+              progress={getModuleTaskProgress(selectedModuleDetail, questTaskProgress, selectedModuleStatus)}
+              onBack={() => setSelectedModuleId(null)}
+              onStart={() => openTask(selectedModuleDetail)}
+            />
+          </div>
+        </div>
+      );
+    }
 
-  if (activeView === 'course') {
     return (
       <div className="page catalogue-page fade-in">
         <div className="catalogue-shell">
           <CourseDetailPage
             course={selectedCourse}
             detail={selectedCourseDetail}
+            courseModules={courseModules}
             modules={selectedModuleDetails}
             progress={getCourseProgress(selectedCourse, questStatus)}
             requested={requested}
@@ -132,35 +134,15 @@ export default function CourseCatalogue() {
             onAnswer={(questionId, points) => setAnswers((current) => ({ ...current, [questionId]: points }))}
             onSavePreAssessment={savePreAssessment}
             onOpenAssessment={openOfficialAssessment}
-            onBack={() => {
-              setActiveView('catalogue');
-              setSelectedModuleId(null);
-            }}
             onSelectModule={openModuleDetail}
-            onPrimary={() => handlePrimary(selectedCourse)}
+            onPrimary={() => enterCourse(selectedCourse)}
           />
         </div>
       </div>
     );
   }
 
-  if (activeView === 'module' && selectedModuleDetail) {
-    return (
-      <div className="page catalogue-page fade-in">
-        <div className="catalogue-shell">
-          <ModuleDetailPage
-            course={selectedCourse}
-            module={selectedModuleDetail}
-            status={selectedModuleStatus}
-            progress={getModuleProgress(selectedModuleDetail, questTaskProgress, selectedModuleStatus)}
-            onBack={() => setActiveView('course')}
-            onStart={() => openModule(selectedModuleDetail)}
-          />
-        </div>
-      </div>
-    );
-  }
-
+  // Outside a course: catalogue grid
   return (
     <div className="page catalogue-page fade-in">
       <div className="catalogue-shell">
@@ -176,65 +158,31 @@ export default function CourseCatalogue() {
           </div>
         </header>
 
-        <div className="catalogue-layout">
-          <section className="catalogue-grid" aria-label="Courses">
-            {COURSE_CATALOG.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                progress={getCourseProgress(course, questStatus)}
-                active={course.id === selectedCourse.id}
-                requested={courseRequests.includes(course.id)}
-                enrolled={courseEnrollments.includes(course.id)}
-                onSelect={() => selectCourse(course)}
-                onPrimary={() => handlePrimary(course)}
-              />
-            ))}
-          </section>
-
-          <aside className="course-panel" aria-label={`${selectedCourse.title} overview`}>
-            <CoursePanelHeader course={selectedCourse} requested={requested} progress={getCourseProgress(selectedCourse, questStatus)} />
-
-            {selectedCourse.id === 'renal-dialysis' ? (
-              <>
-                <PreAssessmentPanel
-                  result={preAssessment}
-                  answers={answers}
-                  onAnswer={(questionId, points) => setAnswers((current) => ({ ...current, [questionId]: points }))}
-                  onSave={savePreAssessment}
-                  onOpenAssessment={openOfficialAssessment}
-                />
-
-                <ModuleOverview
-                  modules={selectedModuleDetails}
-                  questStatus={questStatus}
-                  questTaskProgress={questTaskProgress}
-                  preAssessment={preAssessment}
-                  onOpenModule={openModuleDetail}
-                />
-              </>
-            ) : (
-              <AccessPreview
-                course={selectedCourse}
-                requested={requested}
-                enrolled={courseEnrollments.includes(selectedCourse.id)}
-                onPrimary={() => handlePrimary(selectedCourse)}
-              />
-            )}
-          </aside>
+        <div className="catalogue-grid-layout">
+          {COURSE_CATALOG.map((course) => (
+            <CourseCard
+              key={course.id}
+              course={course}
+              progress={getCourseProgress(course, questStatus)}
+              requested={courseRequests.includes(course.id)}
+              enrolled={courseEnrollments.includes(course.id)}
+              onEnter={() => enterCourse(course)}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function CourseCard({ course, progress, active, requested, enrolled, onSelect, onPrimary }) {
+function CourseCard({ course, progress, requested, enrolled, onEnter }) {
   const status = STATUS_COPY[course.status] || STATUS_COPY.restricted;
-  const primaryLabel = requested ? 'Requested' : enrolled && course.status === 'open' ? 'Continue' : course.actionLabel;
   const badgeLabel = requested ? 'Requested' : enrolled && course.status === 'open' ? 'Enrolled' : status.badge;
+  const actionLabel = requested ? 'Requested' : enrolled ? 'Continue' : course.actionLabel;
+  const isPrimary = course.status !== 'restricted' && course.status !== 'request';
 
   return (
-    <article className={`course-card ${active ? 'course-card--active' : ''}`} onClick={onSelect}>
+    <article className="course-card" onClick={onEnter} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onEnter()}>
       <div className="course-card__visual" style={{ '--accent': course.accent }}>
         {course.image ? (
           <img src={course.image} alt="" />
@@ -255,16 +203,12 @@ function CourseCard({ course, progress, active, requested, enrolled, onSelect, o
           <div className="course-card__progress" aria-label={`${progress}% complete`}>
             <span style={{ width: `${progress}%` }} />
           </div>
-          <button
-            className={course.status === 'restricted' || course.status === 'request' ? 'btn btn--outline btn--sm' : 'btn btn--primary btn--sm'}
-            onClick={(event) => {
-              event.stopPropagation();
-              onPrimary();
-            }}
-            disabled={requested}
+          <span
+            className={isPrimary ? 'btn btn--primary btn--sm' : 'btn btn--outline btn--sm'}
+            aria-hidden="true"
           >
-            {primaryLabel}
-          </button>
+            {actionLabel}
+          </span>
         </div>
       </div>
     </article>
@@ -292,7 +236,7 @@ function CoursePanelHeader({ course, requested, progress }) {
 function CourseDetailPage({
   course,
   detail,
-  modules,
+  courseModules,
   progress,
   requested,
   enrolled,
@@ -303,19 +247,16 @@ function CourseDetailPage({
   onAnswer,
   onSavePreAssessment,
   onOpenAssessment,
-  onBack,
-  onSelectModule,
   onPrimary,
 }) {
   const status = STATUS_COPY[course.status] || STATUS_COPY.restricted;
   const accessLabel = requested ? 'Access requested' : course.status === 'open' && enrolled ? 'Enrolled' : course.accessLabel;
-  const primaryLabel = requested ? 'Requested' : enrolled && course.status === 'open' ? 'Continue' : course.actionLabel;
 
   return (
     <div className="course-detail">
       <div className="detail-topbar">
-        <button className="btn btn--ghost btn--sm" onClick={onBack}>Back to catalogue</button>
         <span className={`badge badge--${status.tone}`}>{accessLabel}</span>
+        <span>{progress}% complete</span>
       </div>
 
       <section className="course-detail-hero" style={{ '--accent': course.accent }}>
@@ -327,13 +268,7 @@ function CourseDetailPage({
             <span>{course.type}</span>
             <span>{course.modality}</span>
             <span>{course.estimate}</span>
-            <span>{progress}% complete</span>
           </div>
-          {course.status !== 'restricted' && (
-            <button className="btn btn--primary" onClick={onPrimary} disabled={requested}>
-              {primaryLabel}
-            </button>
-          )}
         </div>
         <div className="course-detail-hero__visual" aria-hidden="true">
           {course.image ? <img src={course.image} alt="" /> : <CourseGlyph area={course.clinicalArea} />}
@@ -350,7 +285,7 @@ function CourseDetailPage({
         </div>
       </section>
 
-      {course.id === 'renal-dialysis' ? (
+      {course.id === 'renal-dialysis' && (
         <PreAssessmentPanel
           result={preAssessment}
           answers={answers}
@@ -358,39 +293,66 @@ function CourseDetailPage({
           onSave={onSavePreAssessment}
           onOpenAssessment={onOpenAssessment}
         />
-      ) : (
-        <AccessPreview course={course} requested={requested} enrolled={enrolled} onPrimary={onPrimary} />
       )}
 
       <section className="course-modules" aria-label={`${course.title} modules`}>
         <div className="course-modules__head">
           <div>
-            <p className="catalogue-kicker">Choose a module</p>
-            <h2>Module boxes</h2>
+            <p className="catalogue-kicker">Course content</p>
+            <h2>Modules</h2>
           </div>
-          <span>{modules.length} modules</span>
+          <span>{courseModules.length} modules</span>
         </div>
 
         <div className="module-card-grid">
-          {modules.map((module) => {
-            const statusValue = questStatus[module.id] || (module.live ? 'locked' : 'preview');
-            const percent = getModuleProgress(module, questTaskProgress, statusValue);
-            const isOfficialNext = preAssessment?.band === 'experienced' && module.type === 'assessment';
-
+          {courseModules.map((mod) => {
+            const modStatus = getModuleStatus(mod, questStatus);
+            const percent = getModuleProgress(mod, questStatus, questTaskProgress);
             return (
-              <ModuleChoiceCard
-                key={module.id}
-                module={module}
-                status={statusValue}
+              <CourseModuleCard
+                key={mod.id}
+                module={mod}
+                status={modStatus}
                 progress={percent}
-                isOfficialNext={isOfficialNext}
-                onOpen={() => onSelectModule(module)}
+                questStatus={questStatus}
               />
             );
           })}
         </div>
       </section>
     </div>
+  );
+}
+
+function CourseModuleCard({ module, status, progress, questStatus }) {
+  const { dispatch } = useApp();
+  const taskCount = (module.tasks || []).length;
+  const completedTasks = (module.tasks || []).filter((id) => questStatus[id] === 'complete').length;
+
+  function goToModule() {
+    dispatch({ type: 'SELECT_MODULE', moduleId: module.id });
+    dispatch({ type: 'NAV', page: 'tasks' });
+  }
+
+  return (
+    <button
+      className={`module-card ${status === 'locked' ? 'module-card--locked' : ''}`}
+      onClick={goToModule}
+      disabled={status === 'locked'}
+    >
+      <div className="module-card__top">
+        <span className={`status-dot status-dot--${status === 'available' ? 'unlocked' : status}`} />
+        <span>{status === 'complete' ? 'Complete' : status === 'locked' ? 'Locked' : status === 'available' ? 'Available' : 'In progress'}</span>
+      </div>
+      <h3>{module.title}</h3>
+      <p>{module.description}</p>
+      <div className="module-card__footer">
+        <span>{completedTasks}/{taskCount} tasks</span>
+        <div className="module-card__bar">
+          <div className="module-card__bar-fill" style={{ width: `${progress}%` }} />
+        </div>
+      </div>
+    </button>
   );
 }
 

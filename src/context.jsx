@@ -177,7 +177,9 @@ const BASE_PROGRESS = {
   aiChatOpen: false,
   aiMessages: [],
   selectedCourseId: 'renal-dialysis',
+  activeCourseId: null,
   selectedQuestId: null,
+  selectedModuleId: null,
   assessmentActive: false,
   assessmentScore: null,
   assessmentScoreRecord: {},
@@ -230,8 +232,29 @@ function reducer(state, action) {
 
     case 'SELECT_QUEST': return { ...state, selectedQuestId: action.questId };
 
+    case 'SELECT_MODULE': return { ...state, selectedModuleId: action.moduleId, selectedQuestId: null };
+
     case 'SELECT_COURSE':
       return { ...state, selectedCourseId: action.courseId, page: 'catalogue', selectedQuestId: null };
+
+    case 'ENTER_COURSE':
+      return {
+        ...state,
+        activeCourseId: action.courseId,
+        selectedCourseId: action.courseId,
+        selectedModuleId: null,
+        selectedQuestId: null,
+        page: 'catalogue',
+      };
+
+    case 'EXIT_COURSE':
+      return {
+        ...state,
+        activeCourseId: null,
+        selectedModuleId: null,
+        selectedQuestId: null,
+        page: 'catalogue',
+      };
 
     case 'ENROLL_COURSE':
       return {

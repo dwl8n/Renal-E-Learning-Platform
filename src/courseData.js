@@ -1,5 +1,68 @@
 import { QUESTS } from './data';
 
+// ─── Module definitions ────────────────────────────────────────────────────────
+// Modules group related tasks (quests). Each course references module IDs.
+// Tasks within a module still carry their own prereq/lock state from QUESTS.
+export const MODULES = [
+  {
+    id: 'm-introduction',
+    title: 'Introduction',
+    description: 'Get oriented to the dialysis unit, infection prevention, and emergency response.',
+    tasks: ['introduction', 'infection-control', 'emergency-codes'],
+  },
+  {
+    id: 'm-vascular-access',
+    title: 'Vascular Access',
+    description: 'Learn arteriovenous access assessment, cannulation, and central venous catheter care.',
+    tasks: ['avg-avf', 'cvc'],
+  },
+  {
+    id: 'm-patient-care-fluids',
+    title: 'Patient Care: Fluids',
+    description: 'Assess fluid status, manage intradialytic fluid removal, and administer common medications.',
+    tasks: ['fluid-volume', 'intradialytic-fluid', 'medication-admin'],
+  },
+  {
+    id: 'm-patient-care-assessment',
+    title: 'Patient Care: Assessment',
+    description: 'Interpret bloodwork values, respond to critical results, and manage complications.',
+    tasks: ['bloodwork-values', 'potassium-protocol', 'complications'],
+  },
+  {
+    id: 'm-software',
+    title: 'Software Use',
+    description: 'Document treatments and manage care plans using Renal Insight and Cerner.',
+    tasks: ['renal-insight', 'cerner'],
+  },
+];
+
+const MODULES_BY_ID = Object.fromEntries(MODULES.map((m) => [m.id, m]));
+
+export function getModuleById(moduleId) {
+  return MODULES_BY_ID[moduleId] || null;
+}
+
+export function getTasksForModule(module) {
+  return (module.tasks || []).map((id) => QUESTS[id]).filter(Boolean);
+}
+
+export function getModuleProgress(module, questStatus, questTaskProgress) {
+  const tasks = getTasksForModule(module);
+  if (!tasks.length) return 0;
+  const complete = tasks.filter((t) => questStatus[t.id] === 'complete').length;
+  return Math.round((complete / tasks.length) * 100);
+}
+
+export function getModuleStatus(module, questStatus) {
+  const tasks = getTasksForModule(module);
+  if (!tasks.length) return 'locked';
+  const statuses = tasks.map((t) => questStatus[t.id] || 'locked');
+  if (statuses.every((s) => s === 'complete')) return 'complete';
+  if (statuses.some((s) => s === 'in-progress' || s === 'complete' || s === 'unlocked')) return 'available';
+  return 'locked';
+}
+
+// ─── Course catalog ────────────────────────────────────────────────────────────
 export const COURSE_CATALOG = [
   {
     id: 'renal-dialysis',
@@ -14,7 +77,7 @@ export const COURSE_CATALOG = [
     image: '/assets/potassium/dialysis-machine.png',
     accent: '#005a9e',
     description: 'Core dialysis onboarding with self-paced modules, practice, and official assessments.',
-    modules: ['introduction', 'emergency-codes', 'infection-control', 'fluid-volume', 'intradialytic-fluid', 'bloodwork-values'],
+    modules: ['m-introduction', 'm-vascular-access', 'm-patient-care-fluids', 'm-patient-care-assessment', 'm-software'],
   },
   {
     id: 'neurology-orientation',
@@ -428,14 +491,24 @@ export const KNOWLEDGE_BAND_COPY = {
 };
 
 export function getCourseProgress(course, questStatus) {
-  if (!course.modules.length) return 0;
-  const complete = course.modules.filter((id) => questStatus[id] === 'complete').length;
-  return Math.round((complete / course.modules.length) * 100);
+  const modules = getCourseModulesForCourse(course);
+  if (!modules.length) return 0;
+  const allTasks = modules.flatMap((m) => getTasksForModule(m));
+  if (!allTasks.length) return 0;
+  const complete = allTasks.filter((t) => questStatus[t.id] === 'complete').length;
+  return Math.round((complete / allTasks.length) * 100);
 }
 
+export function getCourseModulesForCourse(course) {
+  const modules = (course.modules || []).map((id) => MODULES_BY_ID[id]).filter(Boolean);
+  return modules.length ? modules : [];
+}
+
+// Legacy: returns the flat task list for a course (used by CourseCatalogue module detail flow)
 export function getCourseModules(course) {
-  const liveModules = course.modules.map((id) => QUESTS[id]).filter(Boolean);
-  return liveModules.length ? liveModules : PREVIEW_MODULES[course.id] || [];
+  const modules = getCourseModulesForCourse(course);
+  if (modules.length) return modules.flatMap((m) => getTasksForModule(m));
+  return PREVIEW_MODULES[course.id] || [];
 }
 
 export function getCourseDetail(course) {

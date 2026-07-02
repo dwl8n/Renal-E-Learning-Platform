@@ -17,18 +17,35 @@ export const QUESTS = {
     xp: 100, prereqs: ['introduction'],
     description: 'Dialysis-specific infection prevention: hand hygiene, PPE, clean/contaminated zones, isolation, screening, cleaning, and Hepatitis B surveillance.',
     taskCount: 4,
+    tasks: [
+      { key: 'reading',          label: 'Source material & Hep B overview', type: 'reading' },
+      { key: 'ppe-lab',          label: 'PPE sequencing exercise',           type: 'exercise' },
+      { key: 'station-safety',   label: 'Station turnover checklist',        type: 'exercise' },
+      { key: 'isolation-cases',  label: 'Isolation precaution scenarios',    type: 'scenario' },
+    ],
   },
   'fluid-volume': {
-    id: 'fluid-volume', title: 'Fluid Volume Calculation', type: 'task',
+    id: 'fluid-volume', title: 'Fluid Assessment', type: 'task',
     xp: 150, prereqs: ['introduction'],
     description: 'Learn to calculate ultrafiltration volumes and assess whether fluid removal rates are within safe limits.',
     taskCount: 4,
+    tasks: [
+      { key: 'reading',    label: 'Fluid assessment overview',         type: 'reading' },
+      { key: 'scenario1',  label: 'UF volume calculation practice',    type: 'exercise' },
+      { key: 'scenario2',  label: 'Safe removal rate checks',          type: 'exercise' },
+      { key: 'scenario3',  label: 'Combined worksheet scenarios',      type: 'exercise' },
+    ],
   },
   'intradialytic-fluid': {
     id: 'intradialytic-fluid', title: 'Intradialytic Fluid Removal', type: 'task',
     xp: 150, prereqs: ['fluid-volume'],
     description: 'Monitor and manage fluid removal during a treatment: symptoms, adjustment strategies, and documentation.',
     taskCount: 3,
+    tasks: [
+      { key: 'reading',    label: 'Blood volume monitoring overview',  type: 'reading' },
+      { key: 'scenario1',  label: 'Symptom recognition & response',   type: 'scenario' },
+      { key: 'scenario2',  label: 'Fluid removal decision cases',      type: 'scenario' },
+    ],
   },
   'avg-avf': {
     id: 'avg-avf', title: 'AVG / AVF Access', type: 'mixed',
@@ -47,6 +64,12 @@ export const QUESTS = {
     xp: 250, prereqs: ['introduction'],
     description: 'Understand which lab values are monitored, their normal ranges, critical thresholds, and the nursing response to abnormal results.',
     taskCount: 4,
+    tasks: [
+      { key: 'reading',     label: 'What we test and why',             type: 'reading' },
+      { key: 'flashcards',  label: 'Critical values flashcards',       type: 'exercise' },
+      { key: 'ranges',      label: 'Critical range identification',    type: 'exercise' },
+      { key: 'assessment',  label: 'Official assessment',              type: 'assessment' },
+    ],
   },
   'medication-admin': {
     id: 'medication-admin', title: 'Medication Administration', type: 'task',

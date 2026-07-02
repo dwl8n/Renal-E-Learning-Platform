@@ -223,7 +223,7 @@ export default function FluidRemovalModule({ questId, onTaskComplete, taskProgre
     <div className="module-layout">
       <aside className="module-sidebar">
         <div className="module-sidebar__header">
-          <span className="tag tag--task">Module</span>
+          <span className="tag tag--task">Task</span>
           <h3 className="module-sidebar__title">Intradialytic Fluid Removal</h3>
         </div>
         <div className="module-tasklist">
