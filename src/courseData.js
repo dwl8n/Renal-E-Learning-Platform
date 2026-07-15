@@ -8,7 +8,7 @@ export const MODULES = [
     id: 'm-introduction',
     title: 'Introduction',
     description: 'Get oriented to the dialysis unit, infection prevention, and emergency response.',
-    tasks: ['introduction', 'infection-control', 'emergency-codes'],
+    tasks: ['introduction', 'emergency-codes', 'infection-control'],
   },
   {
     id: 'm-vascular-access',

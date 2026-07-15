@@ -251,7 +251,7 @@ function XPQuestCard({ quest, pendingXP, dispatch }) {
 function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
   return (
     <div style={{overflowX:'auto'}}>
-      <svg viewBox="0 0 1024 2048" style={{width:'100%', minWidth:700, display:'block'}}>
+      <svg viewBox="0 0 900 1160" style={{width:'100%', minWidth:600, display:'block'}}>
         {QUEST_EDGES.map(([from, to]) => {
           const f = QUEST_POSITIONS[from];
           const t = QUEST_POSITIONS[to];

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useApp } from '../context';
 import { QUESTS } from '../data';
 import { COURSE_CATALOG, MODULES, getCourseModulesForCourse, getTasksForModule, getModuleStatus } from '../courseData';
+import EmergencyCodesModule from '../modules/EmergencyCodesModule';
 import InfectionControlModule from '../modules/InfectionControlModule';
 import FluidModule from '../modules/FluidModule';
 import FluidRemovalModule from '../modules/FluidRemovalModule';
@@ -242,6 +243,15 @@ function TaskContent({ quest, questStatus, questTaskProgress, assessmentScore, o
   const status = questStatus[quest.id];
 
   function renderContent() {
+    if (quest.id === 'emergency-codes') {
+      return (
+        <EmergencyCodesModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['emergency-codes'] || {}}
+        />
+      );
+    }
     if (quest.id === 'infection-control') {
       return (
         <InfectionControlModule

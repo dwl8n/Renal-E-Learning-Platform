@@ -9,8 +9,13 @@ export const QUESTS = {
   'emergency-codes': {
     id: 'emergency-codes', title: 'Emergency Codes', type: 'task',
     xp: 75, prereqs: ['introduction'],
-    description: 'Learn the facility emergency codes: Code Blue, Code Red, Code Pink, and the correct response procedures.',
-    taskCount: 2,
+    description: 'Learn the facility emergency codes and dialysis-specific response procedures for Code Red, Code Green, and Code Blue.',
+    taskCount: 3,
+    tasks: [
+      { key: 'card-red',   label: 'Code Red — Fire',             type: 'reading' },
+      { key: 'card-green', label: 'Code Green — Evacuation',      type: 'reading' },
+      { key: 'card-blue',  label: 'Code Blue — Medical Emergency', type: 'reading' },
+    ],
   },
   'infection-control': {
     id: 'infection-control', title: 'Infection Control & Hep B', type: 'task',
@@ -61,7 +66,7 @@ export const QUESTS = {
   },
   'bloodwork-values': {
     id: 'bloodwork-values', title: 'Bloodwork Values', type: 'assessment',
-    xp: 250, prereqs: ['introduction'],
+    xp: 250, prereqs: ['intradialytic-fluid', 'medication-admin'],
     description: 'Understand which lab values are monitored, their normal ranges, critical thresholds, and the nursing response to abnormal results.',
     taskCount: 4,
     tasks: [
@@ -306,37 +311,47 @@ Inadequate dialysis is associated with increased mortality, hospitalisation, and
 
 // Quest layout positions for the SVG tree (1000 × 720 viewBox)
 export const QUEST_POSITIONS = {
-  'introduction':      { x: 500, y: 100 },
-  'emergency-codes':   { x: 400, y: 250 },
-  'infection-control': { x: 600, y: 250 },
-  'fluid-volume':      { x: 500, y: 400 },
-  'intradialytic-fluid':{ x: 500, y: 550 },
-  'avg-avf':           { x: 350, y: 700 },
-  'cvc':               { x: 350, y: 800 },
-  'medication-admin':  { x: 600, y: 700 },
-  'bloodwork-values':  { x: 500, y: 850 },
-  'potassium-protocol':{ x: 400, y: 1000 },
-  'complications':     { x: 400, y: 1150 },
-  'renal-insight':     { x: 600, y: 1000 },
-  'cerner':            { x: 600, y: 1100 },
+  // Introduction module
+  'introduction':        { x: 500, y: 100 },
+  'emergency-codes':     { x: 270, y: 265 },
+  'infection-control':   { x: 730, y: 265 },
+  // Machine & Access (left branch)
+  'avg-avf':             { x: 170, y: 440 },
+  'cvc':                 { x: 170, y: 590 },
+  // Patient Care: Fluids (centre)
+  'fluid-volume':        { x: 500, y: 440 },
+  'intradialytic-fluid': { x: 500, y: 590 },
+  'medication-admin':    { x: 730, y: 590 },
+  // Patient Care: Assessment (centre)
+  'bloodwork-values':    { x: 500, y: 750 },
+  'potassium-protocol':  { x: 340, y: 910 },
+  'complications':       { x: 560, y: 910 },
+  // Software
+  'renal-insight':       { x: 380, y: 1060 },
+  'cerner':              { x: 600, y: 1060 },
 };
 
-// Edges (from → to)
+// Edges (from → to). Matches module dependency rules in DESIGN.md §6.
 export const QUEST_EDGES = [
+  // Introduction → all first tasks
   ['introduction', 'emergency-codes'],
   ['introduction', 'infection-control'],
-  // ['introduction', 'fluid-volume'],
+  ['introduction', 'avg-avf'],
+  ['introduction', 'fluid-volume'],
+  // Machine & Access sequence
+  ['avg-avf', 'cvc'],
+  // Patient Care: Fluids sequence
   ['fluid-volume', 'intradialytic-fluid'],
-  ['intradialytic-fluid', 'avg-avf'],
-  ['intradialytic-fluid', 'cvc'],
-  ['intradialytic-fluid', 'medication-admin'],
-  // ['cvc', 'bloodwork-values'],
-  // ['avg-avf', 'bloodwork-values'],
-  // ['medication-admin', 'bloodwork-values'],
+  ['fluid-volume', 'medication-admin'],
+  // Patient Care: Fluids → Patient Care: Assessment (both fluids tasks must be done)
+  ['intradialytic-fluid', 'bloodwork-values'],
+  ['medication-admin', 'bloodwork-values'],
+  // Patient Care: Assessment
   ['bloodwork-values', 'potassium-protocol'],
-  ['potassium-protocol', 'complications'],
-  ['bloodwork-values', 'renal-insight'],
-  // ['bloodwork-values', 'cerner'],
+  ['bloodwork-values', 'complications'],
+  // Software (after complications)
+  ['complications', 'renal-insight'],
+  ['complications', 'cerner'],
 ];
 
 // ─── Bloodwork Flashcards ────────────────────────────────────────────────────
