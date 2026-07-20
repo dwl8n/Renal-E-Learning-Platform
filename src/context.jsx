@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer } from 'react';
 
 const AppContext = createContext(null);
 
-const LEVEL_THRESHOLDS = [0, 1200, 2800, 5000, 8000];
+const LEVEL_THRESHOLDS = [0, 850, 1600, 2500, 3500];
 
 function getLevel(xp) {
   let level = 1;
@@ -36,7 +36,7 @@ export const MOCK_USERS = [
 // ─── Pre-baked student progress snapshots ─────────────────────────────────────
 export const STUDENT_SNAPSHOTS = {
   emma: {
-    xp: 975,
+    xp: 750,
     questStatus: {
       'introduction':               'complete',
       'emergency-codes':            'complete',
@@ -64,7 +64,7 @@ export const STUDENT_SNAPSHOTS = {
       'bloodwork-values': {},
       'intradialytic-fluid': {},
     },
-    pendingXP: { 'introduction': 25 },
+    pendingXP: { 'introduction': 150 },
     assessmentScoreRecord: {},
     preAssessmentResults: {
       'renal-dialysis': { score: 5, band: 'experienced' },
@@ -75,12 +75,12 @@ export const STUDENT_SNAPSHOTS = {
     courseRequests: [],
     courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [
-      { id: 'n-initial-xp', type: 'xp', questId: 'introduction', questTitle: 'Starting Assessment', amount: 25, dismissed: false, ts: Date.now() - 7200000 },
+      { id: 'n-initial-xp', type: 'xp', questId: 'introduction', questTitle: 'Starting Assessment', amount: 150, dismissed: false, ts: Date.now() - 7200000 },
     ],
     journalEntries: [],
   },
   liam: {
-    xp: 600,
+    xp: 150,
     questStatus: {
       'introduction':               'complete',
       'emergency-codes':            'unlocked',
@@ -119,7 +119,7 @@ export const STUDENT_SNAPSHOTS = {
     journalEntries: [],
   },
   priya: {
-    xp: 2450,
+    xp: 2950,
     questStatus: {
       'introduction':               'complete',
       'emergency-codes':            'complete',

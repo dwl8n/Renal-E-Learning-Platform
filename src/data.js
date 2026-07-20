@@ -2,7 +2,7 @@
 export const QUESTS = {
   'introduction': {
     id: 'introduction', title: 'Starting Assessment', type: 'pre-assessment',
-    xp: 25, prereqs: [],
+    xp: 150, prereqs: [],
     description: 'A quick baseline survey before you begin. Your answers help your trainer see where you\'re starting from — they\'re not evaluative.',
     taskCount: 1,
     tasks: [
@@ -11,7 +11,7 @@ export const QUESTS = {
   },
   'emergency-codes': {
     id: 'emergency-codes', title: 'Emergency Codes', type: 'task',
-    xp: 75, prereqs: ['introduction'],
+    xp: 300, prereqs: ['introduction'],
     description: 'Learn the facility emergency codes and dialysis-specific response procedures for Code Red, Code Green, and Code Blue.',
     taskCount: 3,
     tasks: [
@@ -22,7 +22,7 @@ export const QUESTS = {
   },
   'infection-control': {
     id: 'infection-control', title: 'Infection Control & Hep B', type: 'task',
-    xp: 100, prereqs: ['introduction'],
+    xp: 400, prereqs: ['introduction'],
     description: 'Dialysis-specific infection prevention: hand hygiene, PPE, clean/contaminated zones, isolation, screening, cleaning, and Hepatitis B surveillance.',
     taskCount: 4,
     tasks: [
@@ -34,21 +34,21 @@ export const QUESTS = {
   },
   'vascular-access-pa': {
     id: 'vascular-access-pa', title: 'Vascular Access Check-In', type: 'pre-assessment',
-    xp: 25, prereqs: ['introduction'],
+    xp: 50, prereqs: ['introduction'],
     description: 'A quick check-in before the Vascular Access module. Your answers help your trainer see where you\'re starting from.',
     taskCount: 1,
     tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
   },
   'patient-care-fluids-pa': {
     id: 'patient-care-fluids-pa', title: 'Patient Care: Fluids Check-In', type: 'pre-assessment',
-    xp: 25, prereqs: ['introduction'],
+    xp: 50, prereqs: ['introduction'],
     description: 'A quick check-in before the Patient Care: Fluids module.',
     taskCount: 1,
     tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
   },
   'fluid-volume': {
     id: 'fluid-volume', title: 'Fluid Assessment', type: 'task',
-    xp: 150, prereqs: ['patient-care-fluids-pa'],
+    xp: 250, prereqs: ['patient-care-fluids-pa'],
     description: 'Learn to calculate ultrafiltration volumes and assess whether fluid removal rates are within safe limits.',
     taskCount: 4,
     tasks: [
@@ -60,7 +60,7 @@ export const QUESTS = {
   },
   'intradialytic-fluid': {
     id: 'intradialytic-fluid', title: 'Intradialytic Fluid Removal', type: 'task',
-    xp: 150, prereqs: ['fluid-volume'],
+    xp: 250, prereqs: ['fluid-volume'],
     description: 'Monitor and manage fluid removal during a treatment: symptoms, adjustment strategies, and documentation.',
     taskCount: 3,
     tasks: [
@@ -71,26 +71,26 @@ export const QUESTS = {
   },
   'avg-avf': {
     id: 'avg-avf', title: 'AVG / AVF Access', type: 'mixed',
-    xp: 200, prereqs: ['vascular-access-pa'],
+    xp: 350, prereqs: ['vascular-access-pa'],
     description: 'Assessment and cannulation of arteriovenous grafts and fistulas — technique, troubleshooting, and documentation.',
     taskCount: 5,
   },
   'cvc': {
     id: 'cvc', title: 'CVC Access', type: 'mixed',
-    xp: 200, prereqs: ['avg-avf'],
+    xp: 350, prereqs: ['avg-avf'],
     description: 'Central venous catheter care, connection/disconnection procedures, and CVC-related complications.',
     taskCount: 4,
   },
   'patient-care-assessment-pa': {
     id: 'patient-care-assessment-pa', title: 'Patient Care: Assessment Check-In', type: 'pre-assessment',
-    xp: 25, prereqs: ['intradialytic-fluid', 'medication-admin'],
+    xp: 50, prereqs: ['intradialytic-fluid', 'medication-admin'],
     description: 'A quick check-in before the Patient Care: Assessment module.',
     taskCount: 1,
     tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
   },
   'bloodwork-values': {
     id: 'bloodwork-values', title: 'Bloodwork Values', type: 'assessment',
-    xp: 250, prereqs: ['patient-care-assessment-pa'],
+    xp: 350, prereqs: ['patient-care-assessment-pa'],
     description: 'Understand which lab values are monitored, their normal ranges, critical thresholds, and the nursing response to abnormal results.',
     taskCount: 4,
     tasks: [
@@ -102,38 +102,38 @@ export const QUESTS = {
   },
   'medication-admin': {
     id: 'medication-admin', title: 'Medication Administration', type: 'task',
-    xp: 125, prereqs: ['fluid-volume'],
+    xp: 200, prereqs: ['fluid-volume'],
     description: 'Common medications given during dialysis — EPO, heparin, IV iron — indications, dosing, and charting.',
     taskCount: 3,
   },
   'potassium-protocol': {
     id: 'potassium-protocol', title: 'Potassium Protocol', type: 'task',
-    xp: 100, prereqs: ['bloodwork-values'],
+    xp: 150, prereqs: ['bloodwork-values'],
     description: 'Step-by-step response to critically high pre-dialysis potassium, including dialysate orders and physician notification.',
     taskCount: 2,
   },
   'complications': {
     id: 'complications', title: 'Complications & Monitoring', type: 'mixed',
-    xp: 200, prereqs: ['bloodwork-values'],
+    xp: 300, prereqs: ['bloodwork-values'],
     description: 'Recognise and respond to common intradialytic complications: hypotension, cramping, air embolism, and more.',
     taskCount: 5,
   },
   'software-pa': {
     id: 'software-pa', title: 'Software Check-In', type: 'pre-assessment',
-    xp: 25, prereqs: ['complications'],
+    xp: 50, prereqs: ['complications'],
     description: 'A quick check-in before the Software module.',
     taskCount: 1,
     tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
   },
   'renal-insight': {
     id: 'renal-insight', title: 'Renal Insight', type: 'task',
-    xp: 175, prereqs: ['software-pa'],
+    xp: 250, prereqs: ['software-pa'],
     description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
     taskCount: 3,
   },
   'cerner': {
     id: 'cerner', title: 'Cerner', type: 'task',
-    xp: 175, prereqs: ['software-pa'],
+    xp: 250, prereqs: ['software-pa'],
     description: 'Introduction to Cerner documentation — isolation orders, care plans, and end-of-shift notes.',
     taskCount: 3,
   },
