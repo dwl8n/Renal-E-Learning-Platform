@@ -38,57 +38,72 @@ export const STUDENT_SNAPSHOTS = {
   emma: {
     xp: 975,
     questStatus: {
-      'introduction':       'complete',
-      'emergency-codes':    'complete',
-      'infection-control':  'complete',
-      'fluid-volume':       'in-progress',
-      'avg-avf':            'locked',
-      'cvc':                'locked',
-      'intradialytic-fluid':'unlocked',
-      'bloodwork-values':   'unlocked',
-      'medication-admin':   'locked',
-      'potassium-protocol': 'locked',
-      'complications':      'locked',
-      'renal-insight':      'locked',
-      'cerner':             'locked',
+      'introduction':               'complete',
+      'emergency-codes':            'complete',
+      'infection-control':          'complete',
+      'vascular-access-pa':         'unlocked',
+      'patient-care-fluids-pa':     'complete',
+      'avg-avf':                    'locked',
+      'cvc':                        'locked',
+      'fluid-volume':               'in-progress',
+      'intradialytic-fluid':        'unlocked',
+      'medication-admin':           'locked',
+      'patient-care-assessment-pa': 'unlocked',
+      'bloodwork-values':           'unlocked',
+      'potassium-protocol':         'locked',
+      'complications':              'locked',
+      'software-pa':                'locked',
+      'renal-insight':              'locked',
+      'cerner':                     'locked',
     },
     questTaskProgress: {
+      'introduction': { 'pre-assessment': true },
       'infection-control': { reading: true, 'ppe-lab': true, 'station-safety': true, 'isolation-cases': true },
+      'patient-care-fluids-pa': { 'pre-assessment': true },
       'fluid-volume': { reading: true, scenario1: true },
       'bloodwork-values': {},
       'intradialytic-fluid': {},
     },
-    pendingXP: { 'introduction': 600 },
+    pendingXP: { 'introduction': 25 },
     assessmentScoreRecord: {},
     preAssessmentResults: {
       'renal-dialysis': { score: 5, band: 'experienced' },
     },
+    modulePreAssessments: {
+      'm-introduction': { done: true, score: 3, answers: [1, 1, 2, 1, 1, 3] },
+    },
     courseRequests: [],
     courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [
-      { id: 'n-initial-xp', type: 'xp', questId: 'introduction', questTitle: 'Introduction', amount: 600, dismissed: false, ts: Date.now() - 7200000 },
+      { id: 'n-initial-xp', type: 'xp', questId: 'introduction', questTitle: 'Starting Assessment', amount: 25, dismissed: false, ts: Date.now() - 7200000 },
     ],
     journalEntries: [],
   },
   liam: {
     xp: 600,
     questStatus: {
-      'introduction':       'complete',
-      'emergency-codes':    'unlocked',
-      'infection-control':  'unlocked',
-      'fluid-volume':       'unlocked',
-      'avg-avf':            'locked',
-      'cvc':                'locked',
-      'intradialytic-fluid':'locked',
-      'bloodwork-values':   'unlocked',
-      'medication-admin':   'locked',
-      'potassium-protocol': 'locked',
-      'complications':      'locked',
-      'renal-insight':      'locked',
-      'cerner':             'locked',
+      'introduction':               'complete',
+      'emergency-codes':            'unlocked',
+      'infection-control':          'unlocked',
+      'vascular-access-pa':         'unlocked',
+      'patient-care-fluids-pa':     'complete',
+      'avg-avf':                    'locked',
+      'cvc':                        'locked',
+      'fluid-volume':               'unlocked',
+      'intradialytic-fluid':        'locked',
+      'medication-admin':           'locked',
+      'patient-care-assessment-pa': 'unlocked',
+      'bloodwork-values':           'unlocked',
+      'potassium-protocol':         'locked',
+      'complications':              'locked',
+      'software-pa':                'locked',
+      'renal-insight':              'locked',
+      'cerner':                     'locked',
     },
     questTaskProgress: {
+      'introduction': { 'pre-assessment': true },
       'infection-control': { reading: true },
+      'patient-care-fluids-pa': { 'pre-assessment': true },
       'fluid-volume': {},
       'bloodwork-values': {},
       'intradialytic-fluid': {},
@@ -106,22 +121,31 @@ export const STUDENT_SNAPSHOTS = {
   priya: {
     xp: 2450,
     questStatus: {
-      'introduction':       'complete',
-      'emergency-codes':    'complete',
-      'infection-control':  'complete',
-      'fluid-volume':       'complete',
-      'avg-avf':            'complete',
-      'cvc':                'complete',
-      'intradialytic-fluid':'complete',
-      'bloodwork-values':   'complete',
-      'medication-admin':   'complete',
-      'potassium-protocol': 'complete',
-      'complications':      'unlocked',
-      'renal-insight':      'unlocked',
-      'cerner':             'locked',
+      'introduction':               'complete',
+      'emergency-codes':            'complete',
+      'infection-control':          'complete',
+      'vascular-access-pa':         'complete',
+      'patient-care-fluids-pa':     'complete',
+      'avg-avf':                    'complete',
+      'cvc':                        'complete',
+      'fluid-volume':               'complete',
+      'intradialytic-fluid':        'complete',
+      'medication-admin':           'complete',
+      'patient-care-assessment-pa': 'complete',
+      'bloodwork-values':           'complete',
+      'potassium-protocol':         'complete',
+      'complications':              'unlocked',
+      'software-pa':                'complete',
+      'renal-insight':              'unlocked',
+      'cerner':                     'locked',
     },
     questTaskProgress: {
+      'introduction': { 'pre-assessment': true },
       'infection-control': { reading: true, 'ppe-lab': true, 'station-safety': true, 'isolation-cases': true },
+      'vascular-access-pa': { 'pre-assessment': true },
+      'patient-care-fluids-pa': { 'pre-assessment': true },
+      'patient-care-assessment-pa': { 'pre-assessment': true },
+      'software-pa': { 'pre-assessment': true },
       'fluid-volume': {},
       'bloodwork-values': {},
       'intradialytic-fluid': {},
@@ -133,6 +157,12 @@ export const STUDENT_SNAPSHOTS = {
     preAssessmentResults: {
       'renal-dialysis': { score: 4, band: 'developing' },
     },
+    modulePreAssessments: {
+      'm-introduction':         { done: true, score: 5, answers: [1, 1, 2, 1, 1, 3] },
+      'm-vascular-access':      { done: true, score: 4, answers: [0, 1, 2, 1] },
+      'm-patient-care-fluids':  { done: true, score: 3, answers: [1, 0, 1, 2] },
+      'm-patient-care-assessment': { done: true, score: 4, answers: [1, 1, 0, 2] },
+    },
     courseRequests: [],
     courseEnrollments: ['renal-dialysis', 'hospital-policy'],
     notifications: [],
@@ -142,19 +172,23 @@ export const STUDENT_SNAPSHOTS = {
 
 // ─── Base state template ───────────────────────────────────────────────────────
 const FRESH_QUEST_STATUS = {
-  'introduction':       'unlocked',
-  'emergency-codes':    'locked',
-  'infection-control':  'locked',
-  'fluid-volume':       'locked',
-  'avg-avf':            'locked',
-  'cvc':                'locked',
-  'intradialytic-fluid':'locked',
-  'bloodwork-values':   'locked',
-  'medication-admin':   'locked',
-  'potassium-protocol': 'locked',
-  'complications':      'locked',
-  'renal-insight':      'locked',
-  'cerner':             'locked',
+  'introduction':               'unlocked',
+  'emergency-codes':            'locked',
+  'infection-control':          'locked',
+  'vascular-access-pa':         'locked',
+  'patient-care-fluids-pa':     'locked',
+  'avg-avf':                    'locked',
+  'cvc':                        'locked',
+  'fluid-volume':               'locked',
+  'intradialytic-fluid':        'locked',
+  'medication-admin':           'locked',
+  'patient-care-assessment-pa': 'locked',
+  'bloodwork-values':           'locked',
+  'potassium-protocol':         'locked',
+  'complications':              'locked',
+  'software-pa':                'locked',
+  'renal-insight':              'locked',
+  'cerner':                     'locked',
 };
 
 const BASE_PROGRESS = {
@@ -184,6 +218,7 @@ const BASE_PROGRESS = {
   assessmentScore: null,
   assessmentScoreRecord: {},
   preAssessmentResults: {},
+  modulePreAssessments: {},
   courseRequests: [],
   courseEnrollments: ['renal-dialysis'],
 };
@@ -209,6 +244,7 @@ function reducer(state, action) {
           pendingXP:             snap.pendingXP             ?? {},
           assessmentScoreRecord: snap.assessmentScoreRecord ?? {},
           preAssessmentResults:  snap.preAssessmentResults  ?? {},
+          modulePreAssessments:  snap.modulePreAssessments  ?? {},
           courseRequests:        snap.courseRequests        ?? [],
           courseEnrollments:     snap.courseEnrollments     ?? BASE_PROGRESS.courseEnrollments,
           notifications:         snap.notifications         ?? [],
@@ -287,6 +323,15 @@ function reducer(state, action) {
         preAssessmentResults: {
           ...state.preAssessmentResults,
           [action.courseId]: { score: action.score, band: action.band },
+        },
+      };
+
+    case 'COMPLETE_MODULE_PRE_ASSESSMENT':
+      return {
+        ...state,
+        modulePreAssessments: {
+          ...state.modulePreAssessments,
+          [action.moduleId]: { done: true, score: action.score, answers: action.answers },
         },
       };
 
@@ -436,6 +481,16 @@ function reducer(state, action) {
       return { ...state, recentlyUnlocked: state.recentlyUnlocked.filter(id => id !== action.questId) };
 
     // ─── Journal ─────────────────────────────────────────────────────────────
+    case 'ADD_TO_JOURNAL': {
+      if (state.journalEntries.includes(action.questId)) return state;
+      const newJournalEntries = [...state.journalEntries, action.questId];
+      const newNotifications = [
+        ...state.notifications,
+        { id: `n-journal-${Date.now()}`, type: 'journal', questId: action.questId, text: 'New pages added to your Journal', dismissed: false, ts: Date.now() },
+      ];
+      return { ...state, journalEntries: newJournalEntries, notifications: newNotifications, badges: { ...state.badges, journal: true } };
+    }
+
     case 'JOURNAL_OPEN':
       return {
         ...state,

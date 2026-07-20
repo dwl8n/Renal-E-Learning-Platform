@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context';
 import { QUESTS } from '../data';
 import { COURSE_CATALOG, MODULES, getCourseModulesForCourse, getTasksForModule, getModuleStatus } from '../courseData';
@@ -10,18 +10,21 @@ import BloodworkModule from '../modules/BloodworkModule';
 import './Tasks.css';
 
 const TASK_TYPE_ICON = {
-  reading:    '📖',
-  exercise:   '🧮',
-  scenario:   '🩺',
-  lab:        '🔬',
-  assessment: '⭐',
+  reading:        '📖',
+  exercise:       '🧮',
+  scenario:       '🩺',
+  lab:            '🔬',
+  assessment:     '⭐',
+  'pre-assessment': '📋',
 };
 
 const TYPE_LABEL = { task: 'Task', mixed: 'Practice' };
 
+const PRE_ASSESSMENT_INTRO = "These questions give us a baseline snapshot of where you're starting from. There are no right or wrong answers that affect your progress or your trainer's assessment of you — this is purely for learning research.";
+
 export default function Tasks() {
   const { state, dispatch } = useApp();
-  const { activeCourseId, selectedCourseId, selectedModuleId, selectedQuestId, questStatus, questTaskProgress, recentlyUnlocked } = state;
+  const { activeCourseId, selectedCourseId, selectedModuleId, selectedQuestId, questStatus, questTaskProgress, recentlyUnlocked, modulePreAssessments } = state;
 
   const courseId = activeCourseId || selectedCourseId;
   const course = COURSE_CATALOG.find((c) => c.id === courseId);
@@ -53,6 +56,13 @@ export default function Tasks() {
 
   function handleTaskComplete(questId, taskKey) {
     dispatch({ type: 'COMPLETE_TASK', questId, taskKey, questData: QUESTS });
+  }
+
+  function handlePreAssessmentComplete(score, answers) {
+    if (selectedModule) {
+      dispatch({ type: 'COMPLETE_MODULE_PRE_ASSESSMENT', moduleId: selectedModule.id, score, answers });
+    }
+    dispatch({ type: 'COMPLETE_TASK', questId: 'introduction', taskKey: 'pre-assessment', questData: QUESTS });
   }
 
   function handleAssessmentComplete(questId, score, passed) {
@@ -110,7 +120,30 @@ export default function Tasks() {
 
       {/* Main content area */}
       <div className="tasks-main">
-        {selectedQuest ? (
+        {selectedQuest?.id === 'introduction' ? (
+          <div className="task-content-wrap">
+            <div className="task-content-topbar">
+              <button className="btn btn--ghost btn--sm" onClick={backToModule}>← Back to module</button>
+              <span className="task-content-topbar__title">Starting Assessment</span>
+            </div>
+            {questStatus['introduction'] === 'complete' ? (
+              <div className="pre-assessment fade-in">
+                <div className="pre-assessment__card card">
+                  <div className="pre-assessment__check">✓</div>
+                  <h2 className="pre-assessment__title">Starting Assessment — Done</h2>
+                  <p className="pre-assessment__intro">Your baseline responses are on file.</p>
+                  <button className="btn btn--primary" onClick={backToModule}>Back to module</button>
+                </div>
+              </div>
+            ) : (
+              <ModulePreAssessment
+                module={selectedModule}
+                onComplete={handlePreAssessmentComplete}
+                onDone={backToModule}
+              />
+            )}
+          </div>
+        ) : selectedQuest ? (
           <TaskContent
             quest={selectedQuest}
             questStatus={questStatus}
@@ -142,6 +175,7 @@ export default function Tasks() {
 
 function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, onOpenTask }) {
   const allTasks = getTasksForModule(module);
+  const preAssessmentTask = allTasks.find((t) => t.type === 'pre-assessment');
   const learningTasks = allTasks.filter((t) => t.type === 'task' || t.type === 'mixed');
   const assessmentTasks = allTasks.filter((t) => t.type === 'assessment');
   const completedTasks = allTasks.filter((t) => questStatus[t.id] === 'complete').length;
@@ -166,6 +200,13 @@ function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, 
         </div>
       </div>
 
+      {preAssessmentTask && (
+        <div className="module-home__task-list module-home__pre-assessment-section">
+          <h3>Before you begin</h3>
+          <TaskRow quest={preAssessmentTask} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} isPreAssessment />
+        </div>
+      )}
+
       <div className="module-home__task-list">
         <h3>Tasks</h3>
         {learningTasks.map((quest) => <TaskRow key={quest.id} quest={quest} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} />)}
@@ -189,7 +230,7 @@ function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, 
   );
 }
 
-function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOpen, isAssessment = false }) {
+function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOpen, isAssessment = false, isPreAssessment = false }) {
   const status = questStatus[quest.id] || 'locked';
   const isLocked = status === 'locked';
   const isNew = recentlyUnlocked.includes(quest.id);
@@ -199,7 +240,7 @@ function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOp
 
   return (
     <button
-      className={`module-task-row ${isLocked ? 'module-task-row--locked' : ''} ${status === 'complete' ? 'module-task-row--complete' : ''} ${isAssessment ? 'module-task-row--assessment' : ''}`}
+      className={`module-task-row ${isLocked ? 'module-task-row--locked' : ''} ${status === 'complete' ? 'module-task-row--complete' : ''} ${isAssessment ? 'module-task-row--assessment' : ''} ${isPreAssessment ? 'module-task-row--pre-assessment' : ''}`}
       onClick={() => !isLocked && onOpen(quest.id)}
       disabled={isLocked}
     >
@@ -324,6 +365,92 @@ function StubTask({ quest }) {
           <li>Case studies with decision-branching</li>
           {quest.type === 'mixed' && <li>Video demonstrations</li>}
         </ul>
+      </div>
+    </div>
+  );
+}
+
+function ModulePreAssessment({ module, onComplete, onDone }) {
+  const [phase, setPhase] = useState('intro'); // 'intro' | 'questions' | 'done'
+  const [idx, setIdx] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const questions = module.preAssessment;
+
+  function startQuestions() {
+    setPhase('questions');
+    setIdx(0);
+    setSelected(null);
+    setAnswers([]);
+  }
+
+  function next() {
+    const newAnswers = [...answers, selected];
+    if (idx < questions.length - 1) {
+      setAnswers(newAnswers);
+      setIdx((i) => i + 1);
+      setSelected(null);
+    } else {
+      const score = newAnswers.filter((a, i) => a === questions[i].correct).length;
+      setPhase('done');
+      onComplete(score, newAnswers);
+    }
+  }
+
+  if (phase === 'intro') {
+    return (
+      <div className="pre-assessment fade-in">
+        <div className="pre-assessment__card card">
+          <span className="tag tag--assessment">Pre-assessment</span>
+          <h2 className="pre-assessment__title">Before you start: {module.title}</h2>
+          <p className="pre-assessment__intro">{PRE_ASSESSMENT_INTRO}</p>
+          <p className="pre-assessment__count">{questions.length} quick questions · No score shown</p>
+          <button className="btn btn--primary" onClick={startQuestions}>Let's go →</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'done') {
+    return (
+      <div className="pre-assessment fade-in">
+        <div className="pre-assessment__card card">
+          <div className="pre-assessment__check">✓</div>
+          <h2 className="pre-assessment__title">Thanks for sharing your starting point.</h2>
+          <p className="pre-assessment__intro">Your responses have been recorded. Now let's get into it.</p>
+          <p className="pre-assessment__hint">Your score is available to your trainer and will be compared with your results after completing the module.</p>
+          {onDone && (
+            <button className="btn btn--primary" onClick={onDone}>Continue to module →</button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const q = questions[idx];
+  return (
+    <div className="pre-assessment fade-in">
+      <div className="pre-assessment__card card">
+        <div className="pre-assessment__progress-row">
+          <span className="tag tag--assessment">Pre-assessment</span>
+          <span className="pre-assessment__counter">Question {idx + 1} of {questions.length}</span>
+        </div>
+        <p className="pre-assessment__question">{q.q}</p>
+        <div className="pre-assessment__options">
+          {q.options.map((opt, i) => (
+            <button
+              key={i}
+              className={`pre-assessment__option ${selected === i ? 'pre-assessment__option--selected' : ''}`}
+              onClick={() => setSelected(i)}
+            >
+              <span className="pre-assessment__option-letter">{String.fromCharCode(65 + i)}</span>
+              {opt}
+            </button>
+          ))}
+        </div>
+        <button className="btn btn--primary" onClick={next} disabled={selected === null}>
+          {idx < questions.length - 1 ? 'Next →' : 'Submit'}
+        </button>
       </div>
     </div>
   );

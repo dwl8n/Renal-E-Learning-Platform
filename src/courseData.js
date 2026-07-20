@@ -9,30 +9,125 @@ export const MODULES = [
     title: 'Introduction',
     description: 'Get oriented to the dialysis unit, infection prevention, and emergency response.',
     tasks: ['introduction', 'emergency-codes', 'infection-control'],
+    preAssessment: [
+      {
+        q: 'During a Code Red, what does the "C" in R.A.C.E. stand for?',
+        options: ['Call for help immediately', 'Confine — close doors to contain the fire area', 'Clear the corridor of patients', 'Check for victims in the room'],
+        correct: 1,
+      },
+      {
+        q: 'A Code Green Level 3 requires patients to be moved to:',
+        options: ['The end of the hall on the same floor', 'Outside the hospital building', 'A different floor via stairwells', 'A private isolation room'],
+        correct: 2,
+      },
+      {
+        q: 'How long must Virex II 256 remain wet when disinfecting a dialysis machine between patients?',
+        options: ['2 minutes', '5 minutes', '10 minutes', '30 minutes'],
+        correct: 2,
+      },
+      {
+        q: 'A patient is new to the renal program with no known ARO history. What screening is indicated?',
+        options: ['No screening is required for new patients', 'Screen for MRSA and VRE', 'Influenza and COVID-19 swabs only', 'Begin contact precautions immediately without screening'],
+        correct: 1,
+      },
+      {
+        q: 'How is Hepatitis B transmitted in a dialysis setting?',
+        options: ['Only through airborne particles', 'Through food and water contamination', 'Only through needlestick injuries', 'Through blood, infected bodily fluids, and contaminated equipment'],
+        correct: 3,
+      },
+      {
+        q: 'How often is Hepatitis B surveillance bloodwork drawn for stable dialysis patients at WRHN?',
+        options: ['Every treatment', 'Monthly', 'Every 6 months', 'Annually, in January'],
+        correct: 3,
+      },
+    ],
   },
   {
     id: 'm-vascular-access',
     title: 'Vascular Access',
     description: 'Learn arteriovenous access assessment, cannulation, and central venous catheter care.',
-    tasks: ['avg-avf', 'cvc'],
+    tasks: ['vascular-access-pa', 'avg-avf', 'cvc'],
+    preAssessment: [
+      {
+        q: 'Which type of vascular access is generally preferred for long-term hemodialysis?',
+        options: ['Central venous catheter (CVC)', 'Arteriovenous graft (AVG)', 'Arteriovenous fistula (AVF)', 'Femoral line'],
+        correct: 2,
+      },
+      {
+        q: 'Before needling an AVF, which finding would prompt you to escalate rather than proceed?',
+        options: ['Audible bruit on auscultation', 'Palpable thrill along the vessel', 'New swelling or redness at the access site', 'Skin warm to touch along the arm'],
+        correct: 2,
+      },
+      {
+        q: 'A CVC exit site that is red, warm, and tender should be:',
+        options: ['Documented and monitored at next visit', 'Reported and assessed before initiating treatment', 'Covered with a fresh dressing and treated as normal', 'Flushed with heparin and reassessed after treatment'],
+        correct: 1,
+      },
+    ],
   },
   {
     id: 'm-patient-care-fluids',
     title: 'Patient Care: Fluids',
     description: 'Assess fluid status, manage intradialytic fluid removal, and administer common medications.',
-    tasks: ['fluid-volume', 'intradialytic-fluid', 'medication-admin'],
+    tasks: ['patient-care-fluids-pa', 'fluid-volume', 'intradialytic-fluid', 'medication-admin'],
+    preAssessment: [
+      {
+        q: '"Dry weight" in hemodialysis refers to:',
+        options: ['The patient\'s weight on the day of treatment', 'Target post-dialysis weight with no excess fluid', 'Average of the patient\'s last three weights', 'Weight recorded at hospital admission'],
+        correct: 1,
+      },
+      {
+        q: 'A patient reports leg cramps 90 minutes into a treatment. Your first action is to:',
+        options: ['Increase the UF rate to finish faster', 'Reduce or pause fluid removal and reassess', 'Administer a full saline bolus immediately', 'Discontinue treatment and notify the physician'],
+        correct: 1,
+      },
+      {
+        q: 'EPO (erythropoietin) is most commonly given during dialysis to treat:',
+        options: ['Hyperkalemia', 'Fluid overload', 'Anemia from chronic kidney disease', 'Hypertension'],
+        correct: 2,
+      },
+    ],
   },
   {
     id: 'm-patient-care-assessment',
     title: 'Patient Care: Assessment',
     description: 'Interpret bloodwork values, respond to critical results, and manage complications.',
-    tasks: ['bloodwork-values', 'potassium-protocol', 'complications'],
+    tasks: ['patient-care-assessment-pa', 'bloodwork-values', 'potassium-protocol', 'complications'],
+    preAssessment: [
+      {
+        q: 'Which potassium result would most likely trigger a critical protocol before starting dialysis?',
+        options: ['3.8 mmol/L', '4.5 mmol/L', '5.2 mmol/L', '6.2 mmol/L or above'],
+        correct: 3,
+      },
+      {
+        q: 'A Kt/V of 1.2 or above during a dialysis session indicates:',
+        options: ['The patient needs more dialysis time', 'Adequate dialysis delivery for that session', 'Fluid overload is present', 'Hemoglobin is below target range'],
+        correct: 1,
+      },
+      {
+        q: 'Intradialytic hypotension is most commonly caused by:',
+        options: ['Fluid removal rate that is too rapid', 'Dialysate temperature set too high', 'Blood flow rate set too low', 'High potassium in the dialysate bath'],
+        correct: 0,
+      },
+    ],
   },
   {
     id: 'm-software',
     title: 'Software Use',
     description: 'Document treatments and manage care plans using Renal Insight and Cerner.',
-    tasks: ['renal-insight', 'cerner'],
+    tasks: ['software-pa', 'renal-insight', 'cerner'],
+    preAssessment: [
+      {
+        q: 'In Renal Insight, where would you document a patient\'s intradialytic blood pressures?',
+        options: ['Order Entry panel', 'Treatment record / flow sheet', 'Lab results viewer', 'Discharge summary'],
+        correct: 1,
+      },
+      {
+        q: 'When an adverse event occurs during dialysis, best practice for documentation is to:',
+        options: ['Call the charge nurse and let them document', 'Complete the incident report at end of shift only', 'Document in real time with accurate time-stamps', 'Note it verbally at handoff to oncoming nurse'],
+        correct: 2,
+      },
+    ],
   },
 ];
 
@@ -129,19 +224,19 @@ export const COURSE_CATALOG = [
 const COURSE_DETAIL = {
   'renal-dialysis': {
     overview:
-      'A staged learner pathway for dialysis orientation. Learners first understand the full course shape, then choose each module box for a deeper preview before starting the live activity or official assessment.',
+      'This orientation prepares you for safe, independent practice as a hemodialysis nurse. You\'ll work through emergency preparedness, infection control, vascular access, fluid management, bloodwork interpretation, and clinical documentation — covering the core knowledge your preceptor will build on during your in-person shifts.',
     onlineAspects: [
-      'Pre-assessment placement into novice, developing, or experienced knowledge bands.',
-      'Self-paced readings, scenarios, calculations, flashcards, and official assessment attempts.',
-      'Progress tracking across required modules so learners can return to unfinished work.',
+      'Self-paced modules with readings, exercises, and knowledge checks you can complete before or between shifts.',
+      'Practice scenarios and calculations that reinforce clinical reasoning — fluid volumes, PPE decisions, critical values, and more.',
+      'An official bloodwork assessment to demonstrate readiness before moving to independent practice.',
     ],
     inPersonAspects: [
-      'Preceptor discussion for unit workflow, emergency resources, and escalation expectations.',
-      'Observed practice for safety-critical steps such as PPE flow, station turnover, and fluid removal decision-making.',
-      'Trainer sign-off where policy requires a human review before independent practice.',
+      'Preceptor sessions that build on what you covered online — you\'ll spend less time on background and more time on hands-on practice.',
+      'Observed demonstrations for safety-critical skills: PPE sequencing, station turnover, access assessment, and emergency response.',
+      'Trainer sign-off for steps that must be verified in person before you practice independently.',
     ],
     completionRule:
-      'Official requirements remain visible for every learner. Experienced learners see the official assessment highlighted, while learning modules stay available for review.',
+      'You work through each module in sequence, unlocking the next when you\'re ready. The official bloodwork assessment becomes available once you\'ve completed the Patient Care: Assessment module.',
   },
   'neurology-orientation': {
     overview:

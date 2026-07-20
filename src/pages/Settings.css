@@ -75,4 +75,14 @@
 .settings-link { font-size: 13.5px; color: var(--teal-600); text-decoration: none; font-weight: 600; }
 .settings-link:hover { text-decoration: underline; }
 
+.settings-about-blurb {
+  padding: 16px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--grey-100);
+}
+.settings-about-blurb p { font-size: 13.5px; color: var(--text-600); line-height: 1.6; margin: 0; }
+.settings-about-note { font-size: 12px !important; color: var(--text-400) !important; font-style: italic; }
+
 .toggle-label--disabled { opacity: .5; cursor: not-allowed; }

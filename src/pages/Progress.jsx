@@ -5,6 +5,16 @@ import { LEVEL_THRESHOLDS } from '../context';
 import './Progress.css';
 
 const NODE_R = 34;
+const NODE_PA_R = 46; // larger radius for pre-assessment nodes
+
+// Horizontal zebra bands — one per module tier
+const MODULE_BANDS = [
+  { label: 'Introduction',              y: 20,   height: 315, shade: false },
+  { label: 'Machine & Access / Fluids', y: 335,  height: 400, shade: true  },
+  { label: 'Patient Care: Assessment',  y: 735,  height: 340, shade: false },
+  { label: 'Software',                  y: 1075, height: 235, shade: true  },
+];
+
 const STATUS_COLOR = {
   complete: 'var(--green-500)',
   'in-progress': 'var(--amber-500)',
@@ -251,7 +261,22 @@ function XPQuestCard({ quest, pendingXP, dispatch }) {
 function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
   return (
     <div style={{overflowX:'auto'}}>
-      <svg viewBox="0 0 900 1160" style={{width:'100%', minWidth:600, display:'block'}}>
+      <svg viewBox="0 0 900 1310" style={{width:'100%', minWidth:600, display:'block'}}>
+        {/* Zebra module bands */}
+        {MODULE_BANDS.map((band) =>
+          band.shade ? (
+            <rect key={band.label} x={0} y={band.y} width={900} height={band.height}
+              fill="var(--grey-50, #f8f8f8)" rx={0} />
+          ) : null
+        )}
+        {MODULE_BANDS.map((band) => (
+          <text key={`lbl-${band.label}`} x={14} y={band.y + 18} fontSize={10}
+            fill="var(--grey-400, #bbb)" fontFamily="var(--font-body)" fontWeight="600"
+            letterSpacing="0.06em">
+            {band.label.toUpperCase()}
+          </text>
+        ))}
+
         {QUEST_EDGES.map(([from, to]) => {
           const f = QUEST_POSITIONS[from];
           const t = QUEST_POSITIONS[to];
@@ -278,6 +303,8 @@ function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
           const isHovered = hovered === q.id;
           const hasPending = !!pendingXP[q.id];
           const completedLabel = status === 'complete' && !hasPending ? '✓' : status === 'locked' ? '🔒' : '';
+          const isPA = q.type === 'pre-assessment';
+          const r = isPA ? NODE_PA_R : NODE_R;
 
           return (
             <g
@@ -288,25 +315,25 @@ function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
               onMouseLeave={() => onHover(null)}
               onClick={() => onNodeClick(q.id)}
             >
-              {isHovered && <circle r={NODE_R + 8} fill={color} fillOpacity={.15} />}
-              <circle r={NODE_R} fill={status === 'locked' ? 'var(--grey-100)' : 'var(--surface)'} stroke={color} strokeWidth={isHovered ? 3.5 : 2.5} />
+              {isHovered && <circle r={r + 8} fill={color} fillOpacity={.15} />}
+              <circle r={r} fill={status === 'locked' ? 'var(--grey-100)' : 'var(--surface)'} stroke={color} strokeWidth={isHovered ? 3.5 : 2.5} />
 
               {status === 'in-progress' && (
-                <circle r={NODE_R - 4} fill="none" stroke={color} strokeWidth={4} strokeOpacity={.3}
-                  strokeDasharray={`${2 * Math.PI * (NODE_R - 4) * 0.6} ${2 * Math.PI * (NODE_R - 4)}`}
+                <circle r={r - 4} fill="none" stroke={color} strokeWidth={4} strokeOpacity={.3}
+                  strokeDasharray={`${2 * Math.PI * (r - 4) * 0.6} ${2 * Math.PI * (r - 4)}`}
                   transform="rotate(-90)" />
               )}
 
-              {hasPending && <circle r={NODE_R + 4} fill="none" stroke="var(--amber-400)" strokeWidth={2} strokeOpacity={0.8} strokeDasharray="4 3" />}
+              {hasPending && <circle r={r + 4} fill="none" stroke="var(--amber-400)" strokeWidth={2} strokeOpacity={0.8} strokeDasharray="4 3" />}
 
               <foreignObject x={-14} y={-16} width={28} height={28}>
                 <TypeShape type={q.type} locked={status === 'locked'} />
               </foreignObject>
 
-              {hasPending && <text y={14} textAnchor="middle" fontSize={13} fontFamily="system-ui">⭐</text>}
-              {!hasPending && completedLabel && <text y={14} textAnchor="middle" fontSize={14} fontFamily="system-ui">{completedLabel}</text>}
+              {hasPending && <text y={isPA ? 18 : 14} textAnchor="middle" fontSize={13} fontFamily="system-ui">⭐</text>}
+              {!hasPending && completedLabel && <text y={isPA ? 18 : 14} textAnchor="middle" fontSize={14} fontFamily="system-ui">{completedLabel}</text>}
 
-              <text y={NODE_R + 14} textAnchor="middle" fontSize={11} fill={status === 'locked' ? 'var(--grey-400)' : 'var(--text-700)'}
+              <text y={r + 14} textAnchor="middle" fontSize={11} fill={status === 'locked' ? 'var(--grey-400)' : 'var(--text-700)'}
                 fontWeight={isHovered ? '600' : '400'} fontFamily="var(--font-body)">
                 {q.title.length > 14 ? q.title.slice(0, 14) + '…' : q.title}
               </text>
@@ -348,10 +375,20 @@ function QuestTooltip({ questId, questStatus, pendingXP }) {
 }
 
 function TypeShape({ type, locked }) {
-  const color = locked ? 'var(--grey-200)' : type === 'task' ? 'var(--teal-100)' : type === 'assessment' ? 'var(--red-100)' : 'var(--amber-100)';
-  const iconColor = locked ? 'var(--grey-400)' : type === 'task' ? 'var(--teal-600)' : type === 'assessment' ? 'var(--red-500)' : 'var(--amber-600)';
+  const isPA = type === 'pre-assessment';
+  const color = locked ? 'var(--grey-200)'
+    : isPA ? 'var(--teal-50)'
+    : type === 'task' ? 'var(--teal-100)'
+    : type === 'assessment' ? 'var(--red-100)'
+    : 'var(--amber-100)';
+  const iconColor = locked ? 'var(--grey-400)'
+    : isPA ? 'var(--teal-500)'
+    : type === 'task' ? 'var(--teal-600)'
+    : type === 'assessment' ? 'var(--red-500)'
+    : 'var(--amber-600)';
   return (
-    <div style={{width:32,height:32,background:color,borderRadius:type==='task'?'50%':type==='assessment'?'4px':'8px',display:'flex',alignItems:'center',justifyContent:'center',color:iconColor}}>
+    <div style={{width:32,height:32,background:color,borderRadius:isPA?'6px':type==='task'?'50%':type==='assessment'?'4px':'8px',display:'flex',alignItems:'center',justifyContent:'center',color:iconColor}}>
+      {isPA && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>}
       {type === 'task' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>}
       {type === 'assessment' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
       {type === 'mixed' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="2" width="20" height="20" rx="4"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>}

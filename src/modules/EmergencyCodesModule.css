@@ -29,6 +29,145 @@
   opacity: 0.8;
 }
 
+.ec-overview__journal-note {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--text-400);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ec-journal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--teal-50);
+  border: 1px solid var(--teal-200);
+  color: var(--teal-700);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ec-journal-badge {
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  animation: ec-journal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes ec-journal-pop {
+  from { opacity: 0; transform: scale(0.85) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ec-card__band-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* ── Journal banner ────────────────────────────────────────────────── */
+
+.ec-journal-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  border: 1.5px solid var(--teal-200);
+  border-radius: var(--radius-lg);
+  background: var(--teal-50);
+  flex-wrap: wrap;
+}
+
+.ec-journal-banner__icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.ec-journal-banner__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ec-journal-banner__text strong {
+  font-size: 13.5px;
+  color: var(--teal-800, #134e4a);
+}
+
+.ec-journal-banner__text span {
+  font-size: 12.5px;
+  color: var(--teal-700);
+  line-height: 1.4;
+}
+
+.ec-journal-banner__close {
+  background: none;
+  border: none;
+  color: var(--teal-600);
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.ec-journal-banner__close:hover {
+  opacity: 1;
+}
+
+/* ── Mark as Read button ───────────────────────────────────────────── */
+
+.ec-card__mark-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0 8px;
+}
+
+.ec-card__mark-btn {
+  padding: 10px 22px;
+  border: 2px solid var(--code-color);
+  border-radius: var(--radius-md);
+  background: var(--code-color);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+
+.ec-card__mark-btn:hover {
+  opacity: 0.88;
+}
+
+.ec-card__marked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  background: var(--green-100);
+  border: 1.5px solid var(--green-400);
+  color: var(--green-700);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
 .ec-overview__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

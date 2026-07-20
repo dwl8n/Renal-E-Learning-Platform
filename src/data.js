@@ -1,10 +1,13 @@
 // ─── Quest definitions ────────────────────────────────────────────────────────
 export const QUESTS = {
   'introduction': {
-    id: 'introduction', title: 'Introduction', type: 'task',
-    xp: 600, prereqs: [],
-    description: 'Welcome to the unit. Learn about the haemodialysis program, your role, and what to expect during orientation.',
-    taskCount: 4,
+    id: 'introduction', title: 'Starting Assessment', type: 'pre-assessment',
+    xp: 25, prereqs: [],
+    description: 'A quick baseline survey before you begin. Your answers help your trainer see where you\'re starting from — they\'re not evaluative.',
+    taskCount: 1,
+    tasks: [
+      { key: 'pre-assessment', label: 'Baseline survey', type: 'pre-assessment' },
+    ],
   },
   'emergency-codes': {
     id: 'emergency-codes', title: 'Emergency Codes', type: 'task',
@@ -29,9 +32,23 @@ export const QUESTS = {
       { key: 'isolation-cases',  label: 'Isolation precaution scenarios',    type: 'scenario' },
     ],
   },
+  'vascular-access-pa': {
+    id: 'vascular-access-pa', title: 'Vascular Access Check-In', type: 'pre-assessment',
+    xp: 25, prereqs: ['introduction'],
+    description: 'A quick check-in before the Vascular Access module. Your answers help your trainer see where you\'re starting from.',
+    taskCount: 1,
+    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
+  },
+  'patient-care-fluids-pa': {
+    id: 'patient-care-fluids-pa', title: 'Patient Care: Fluids Check-In', type: 'pre-assessment',
+    xp: 25, prereqs: ['introduction'],
+    description: 'A quick check-in before the Patient Care: Fluids module.',
+    taskCount: 1,
+    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
+  },
   'fluid-volume': {
     id: 'fluid-volume', title: 'Fluid Assessment', type: 'task',
-    xp: 150, prereqs: ['introduction'],
+    xp: 150, prereqs: ['patient-care-fluids-pa'],
     description: 'Learn to calculate ultrafiltration volumes and assess whether fluid removal rates are within safe limits.',
     taskCount: 4,
     tasks: [
@@ -54,19 +71,26 @@ export const QUESTS = {
   },
   'avg-avf': {
     id: 'avg-avf', title: 'AVG / AVF Access', type: 'mixed',
-    xp: 200, prereqs: ['introduction'],
+    xp: 200, prereqs: ['vascular-access-pa'],
     description: 'Assessment and cannulation of arteriovenous grafts and fistulas — technique, troubleshooting, and documentation.',
     taskCount: 5,
   },
   'cvc': {
     id: 'cvc', title: 'CVC Access', type: 'mixed',
-    xp: 200, prereqs: ['introduction'],
+    xp: 200, prereqs: ['avg-avf'],
     description: 'Central venous catheter care, connection/disconnection procedures, and CVC-related complications.',
     taskCount: 4,
   },
+  'patient-care-assessment-pa': {
+    id: 'patient-care-assessment-pa', title: 'Patient Care: Assessment Check-In', type: 'pre-assessment',
+    xp: 25, prereqs: ['intradialytic-fluid', 'medication-admin'],
+    description: 'A quick check-in before the Patient Care: Assessment module.',
+    taskCount: 1,
+    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
+  },
   'bloodwork-values': {
     id: 'bloodwork-values', title: 'Bloodwork Values', type: 'assessment',
-    xp: 250, prereqs: ['intradialytic-fluid', 'medication-admin'],
+    xp: 250, prereqs: ['patient-care-assessment-pa'],
     description: 'Understand which lab values are monitored, their normal ranges, critical thresholds, and the nursing response to abnormal results.',
     taskCount: 4,
     tasks: [
@@ -94,16 +118,23 @@ export const QUESTS = {
     description: 'Recognise and respond to common intradialytic complications: hypotension, cramping, air embolism, and more.',
     taskCount: 5,
   },
+  'software-pa': {
+    id: 'software-pa', title: 'Software Check-In', type: 'pre-assessment',
+    xp: 25, prereqs: ['complications'],
+    description: 'A quick check-in before the Software module.',
+    taskCount: 1,
+    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
+  },
   'renal-insight': {
     id: 'renal-insight', title: 'Renal Insight', type: 'task',
-    xp: 175, prereqs: ['complications'],
+    xp: 175, prereqs: ['software-pa'],
     description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
     taskCount: 3,
   },
   'cerner': {
     id: 'cerner', title: 'Cerner', type: 'task',
-    xp: 175, prereqs: ['complications'],
-    description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
+    xp: 175, prereqs: ['software-pa'],
+    description: 'Introduction to Cerner documentation — isolation orders, care plans, and end-of-shift notes.',
     taskCount: 3,
   },
 };
@@ -251,6 +282,126 @@ Routine screening includes ARI screening every treatment, Hepatitis B and C scre
       },
     ],
   },
+  {
+    title: 'Hepatitis B in Dialysis',
+    sections: [
+      {
+        heading: 'What Is Hepatitis B?',
+        body: `Hepatitis B is inflammation of the liver caused by the hepatitis B virus (HBV). Dialysis patients are at increased risk of acquiring HBV because treatment repeatedly accesses the bloodstream, and the immunosuppressive effect of kidney failure reduces the body's ability to fight infection.
+
+HBV is transmitted through blood, semen, and infected bodily fluids. In the dialysis setting, the most significant routes are contaminated equipment and multi-dose medication vials. HBV can survive on surfaces for at least 7 days — even dried blood should be treated as infectious.
+
+Hepatitis B is preventable with rigorous screening and immunization. Since the introduction of universal precautions, systematic screening, and vaccination, the incidence of HBV in dialysis patients has significantly decreased.`,
+      },
+      {
+        heading: 'Acute vs. Chronic Infection',
+        body: `Acute Hepatitis B: Ranges from asymptomatic to mild disease. Approximately 95% of adults recover completely and do not become chronically infected. Symptoms — if they occur — begin an average of 90 days after exposure and typically last several weeks but can persist up to 6 months.
+
+Chronic Hepatitis B: Risk of chronicity depends heavily on the age of infection. Approximately 90% of infants and 25–50% of children aged 1–5 years will remain chronically infected. For adults, the risk is much lower. Most people with chronic HBV have no symptoms and no evidence of active liver disease; however, some develop cirrhosis or hepatocellular carcinoma over time.
+
+Hepatitis B carriers are dialyzed using a dedicated dialysis machine, with contact isolation precautions maintained throughout treatment.`,
+      },
+    ],
+  },
+  {
+    title: 'HBV Screening and Immunization',
+    sections: [
+      {
+        heading: 'Who Is Screened and When',
+        body: `Per WRHN Medical Directive RNL-1-30, all patients with chronic kidney disease will have their hepatitis B and C immune status assessed as soon as possible after admission to the renal program. This includes:
+• Patients referred to the chronic kidney disease clinic
+• Patients requiring dialysis for progression of chronic renal disease
+• Patients receiving hemodialysis on a regular basis or initially starting dialysis
+• Patients who have received dialysis at an alternate centre (transients, screened on return)
+• Patients where acute viral hepatitis or exposure is suspected
+
+Annual surveillance bloodwork is drawn in January, or with initial bloodwork. Panels include HBsAg, HBc, anti-HBs, and Hep C (HCV). Patients who are not immune to hepatitis B — or whose immunity is no longer reactive — will be offered immunization. Patients must consent to be immunized.`,
+      },
+      {
+        heading: 'Immunization Schedule — Recombivax',
+        body: `WRHN has transitioned from Engerix-B to Recombivax for hepatitis B immunization. The current schedule is:
+
+• Dose 1: Recombivax 40 mcg IM — administered during dialysis
+• Dose 2: Recombivax 40 mcg IM — 1 month after the first dose
+• Dose 3: Recombivax 40 mcg IM — 6 months after the first dose
+
+If a patient began their series with Engerix-B, they may switch to Recombivax and continue; the total number of doses required becomes four (dates stay the same, brand changes).
+
+Watch for anaphylaxis for 20 minutes after each injection. Any serious active infection is a reason to delay the scheduled dose.`,
+      },
+    ],
+  },
+];
+
+export const EC_READING_PAGES = [
+  {
+    title: 'Code Red — Fire',
+    sections: [
+      {
+        heading: 'Overview',
+        body: 'Code Red is declared when a fire is detected or smoke is visible. In the dialysis unit, active treatment means patients are connected to machines — the Charge Nurse determines how urgently they need to be taken off.',
+      },
+      {
+        heading: 'R.A.C.E. Response',
+        body: `R — Rescue: Remove anyone from the room. Call out "Code Red, [location]."
+A — Alert: Activate the nearest fire pull station. Call Switchboard (ext. 77): "Code Red, [unit name]."
+C — Confine: Close all doors in the fire area. Clear equipment from corridors.
+E — Evacuate: Evacuate the fire area as directed by the Charge Nurse.`,
+      },
+      {
+        heading: 'Nursing Role',
+        body: `Begin discontinuation of dialysis as directed by the Charge Nurse. Switch O₂-dependent patients to portable tanks. Remove non-required IV lines or direct the DA to unplug required ones. If escalating to Code Green, perform emergency discontinuation. Once all patients are off machines, gather supplies and assist with transfer to the Evacuation Triage Centre.`,
+      },
+      {
+        heading: 'Know Before You Go',
+        body: 'Locate your unit\'s O₂ shutoff valve and emergency evacuation bundles (green bin) before you need them. Emergency disconnection steps differ by access type: fistula/graft vs. CVC vs. femoral catheter.',
+      },
+    ],
+  },
+  {
+    title: 'Code Green — Evacuation',
+    sections: [
+      {
+        heading: 'Overview',
+        body: 'Code Green is declared when evacuation of the unit is required — typically after a Code Red escalates. Patients must always leave in dialysis chairs, wheelchairs, or stretchers; never on foot if unsteady.',
+      },
+      {
+        heading: 'Escalation Levels',
+        body: `Level 1 — Stand By: Prepare for possible evacuation. Ready off supplies and green bins. Do not move patients yet.
+Level 2 — Horizontal: Move patients to another area on the same floor.
+Level 3 — Vertical: Move patients to a different floor via stairwells. Clear chairs and equipment from the stairwell entrance.`,
+      },
+      {
+        heading: 'Nursing Role',
+        body: `Begin emergency discontinuation as directed by the Charge Nurse. Non-imminent threat: discontinue per usual protocol. Imminent threat to life: stop pump → clamp and separate blood lines → evacuate. Transfer with patient, addressing O₂ and IV needs. Verify patient head count at the Evacuation Triage Centre.`,
+      },
+      {
+        heading: 'DA Role',
+        body: 'Distribute emergency evacuation bundles from the green bin. Assist with O₂ switchover and IV breakdown. Gather HD triage supplies: sodium citrate, saline syringes, 10cc syringes, gloves, masks, CVC caps, gauze, bandaids.',
+      },
+    ],
+  },
+  {
+    title: 'Code Blue — Medical Emergency',
+    sections: [
+      {
+        heading: 'Overview',
+        body: 'Code Blue is called when a patient or staff member is in cardiac or respiratory arrest. Start CPR immediately if the patient is unresponsive with no pulse or is not breathing.',
+      },
+      {
+        heading: 'Nursing Role',
+        body: `Call out "Code Blue, [location]" and activate the code button, or call Switchboard (ext. 77). Begin CPR immediately if indicated. Clear the area around the patient for the response team. Assess whether the patient needs to be disconnected from the dialysis machine for full team access. Stay with the patient and follow direction from the response team.`,
+      },
+      {
+        heading: 'DA and Support Role',
+        body: 'DAs: retrieve the crash cart if directed; clear the immediate area; assist the nurse as directed. Allied and clerical staff: keep other patients calm, direct the response team to the correct location, and clear corridors.',
+      },
+      {
+        heading: 'Dialysis Unit Note',
+        body: 'If the patient is connected to a dialysis machine during a Code Blue, the nurse must quickly assess whether disconnection is needed for full CPR and team access. Follow the Charge Nurse\'s direction.',
+      },
+    ],
+  },
 ];
 
 export const BLOODWORK_READING_SECTIONS = [
@@ -309,49 +460,60 @@ Inadequate dialysis is associated with increased mortality, hospitalisation, and
   },
 ];
 
-// Quest layout positions for the SVG tree (1000 × 720 viewBox)
+// Quest layout positions for the SVG tree
 export const QUEST_POSITIONS = {
   // Introduction module
-  'introduction':        { x: 500, y: 100 },
-  'emergency-codes':     { x: 270, y: 265 },
-  'infection-control':   { x: 730, y: 265 },
+  'introduction':               { x: 500, y: 100 },
+  'emergency-codes':            { x: 270, y: 265 },
+  'infection-control':          { x: 730, y: 265 },
+  // Module PA nodes (top of each band)
+  'vascular-access-pa':         { x: 200, y: 390 },
+  'patient-care-fluids-pa':     { x: 560, y: 390 },
   // Machine & Access (left branch)
-  'avg-avf':             { x: 170, y: 440 },
-  'cvc':                 { x: 170, y: 590 },
+  'avg-avf':                    { x: 200, y: 520 },
+  'cvc':                        { x: 200, y: 660 },
   // Patient Care: Fluids (centre)
-  'fluid-volume':        { x: 500, y: 440 },
-  'intradialytic-fluid': { x: 500, y: 590 },
-  'medication-admin':    { x: 730, y: 590 },
-  // Patient Care: Assessment (centre)
-  'bloodwork-values':    { x: 500, y: 750 },
-  'potassium-protocol':  { x: 340, y: 910 },
-  'complications':       { x: 560, y: 910 },
+  'fluid-volume':               { x: 560, y: 520 },
+  'intradialytic-fluid':        { x: 560, y: 660 },
+  'medication-admin':           { x: 760, y: 660 },
+  // Patient Care: Assessment
+  'patient-care-assessment-pa': { x: 560, y: 780 },
+  'bloodwork-values':           { x: 560, y: 895 },
+  'potassium-protocol':         { x: 380, y: 990 },
+  'complications':              { x: 600, y: 990 },
   // Software
-  'renal-insight':       { x: 380, y: 1060 },
-  'cerner':              { x: 600, y: 1060 },
+  'software-pa':                { x: 490, y: 1110 },
+  'renal-insight':              { x: 380, y: 1225 },
+  'cerner':                     { x: 600, y: 1225 },
 };
 
 // Edges (from → to). Matches module dependency rules in DESIGN.md §6.
 export const QUEST_EDGES = [
-  // Introduction → all first tasks
+  // Introduction → intro tasks + module PA nodes
   ['introduction', 'emergency-codes'],
   ['introduction', 'infection-control'],
-  ['introduction', 'avg-avf'],
-  ['introduction', 'fluid-volume'],
+  ['introduction', 'vascular-access-pa'],
+  ['introduction', 'patient-care-fluids-pa'],
+  // PA → first module tasks
+  ['vascular-access-pa', 'avg-avf'],
+  ['patient-care-fluids-pa', 'fluid-volume'],
   // Machine & Access sequence
   ['avg-avf', 'cvc'],
   // Patient Care: Fluids sequence
   ['fluid-volume', 'intradialytic-fluid'],
   ['fluid-volume', 'medication-admin'],
-  // Patient Care: Fluids → Patient Care: Assessment (both fluids tasks must be done)
-  ['intradialytic-fluid', 'bloodwork-values'],
-  ['medication-admin', 'bloodwork-values'],
+  // Patient Care: Fluids → Assessment PA
+  ['intradialytic-fluid', 'patient-care-assessment-pa'],
+  ['medication-admin', 'patient-care-assessment-pa'],
+  // Assessment PA → bloodwork-values
+  ['patient-care-assessment-pa', 'bloodwork-values'],
   // Patient Care: Assessment
   ['bloodwork-values', 'potassium-protocol'],
   ['bloodwork-values', 'complications'],
-  // Software (after complications)
-  ['complications', 'renal-insight'],
-  ['complications', 'cerner'],
+  // Software PA
+  ['complications', 'software-pa'],
+  ['software-pa', 'renal-insight'],
+  ['software-pa', 'cerner'],
 ];
 
 // ─── Bloodwork Flashcards ────────────────────────────────────────────────────

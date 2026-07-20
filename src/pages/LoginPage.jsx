@@ -3,18 +3,31 @@ import { useApp } from '../context';
 import { MOCK_USERS } from '../context';
 import './LoginPage.css';
 
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+const ROLE_LABEL = {
+  student: 'Trainee',
+  admin: 'Trainer / Admin',
+};
+
 export default function LoginPage() {
   const { dispatch } = useApp();
+  const [showForm, setShowForm] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const [loading, setLoading]   = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  function loginAs(user) {
+    dispatch({ type: 'LOGIN', user });
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     setTimeout(() => {
       const user = MOCK_USERS.find(
         u => u.username === username.trim() && u.password === password
@@ -28,9 +41,8 @@ export default function LoginPage() {
     }, 400);
   }
 
-  const master   = MOCK_USERS.filter(u => u.master);
-  const trainers = MOCK_USERS.filter(u => u.role === 'admin' && !u.master);
-  const trainees = MOCK_USERS.filter(u => u.role === 'student');
+  const noah = MOCK_USERS.find(u => u.username === 'noah');
+  const otherUsers = MOCK_USERS.filter(u => u.username !== 'noah');
 
   return (
     <div className="login-bg">
@@ -43,74 +55,107 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="login-card__title">Hospital Training Portal</h1>
-          <p className="login-card__subtitle">Sign in to access assigned courses and policy learning</p>
+          <p className="login-card__subtitle">Select your account to continue</p>
         </div>
 
-        {/* Form */}
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label htmlFor="username" className="login-label">Username</label>
-            <input
-              id="username"
-              type="text"
-              className="login-input"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              autoComplete="username"
-              required
-            />
+        {/* Noah tile — primary account */}
+        {!showForm && noah && (
+          <div className="login-accounts">
+            <p className="login-accounts__group-label">Continue as</p>
+            <AccountTile user={noah} onClick={() => loginAs(noah)} fullWidth />
           </div>
+        )}
 
-          <div className="login-field">
-            <label htmlFor="password" className="login-label">Password</label>
-            <input
-              id="password"
-              type="password"
-              className="login-input"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              required
-            />
-          </div>
-
-          {error && <p className="login-error">{error}</p>}
-
-          <button className="login-btn" type="submit" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign In'}
+        {/* "Sign in with a different account" toggle */}
+        <div className="login-alt">
+          <button
+            className="login-alt__toggle"
+            onClick={() => setShowForm(v => !v)}
+            aria-expanded={showForm}
+          >
+            {showForm ? '▴ Cancel' : '▾ Sign in with a different account'}
           </button>
-        </form>
 
-        {/* Sample credentials */}
-        <details className="login-creds">
-          <summary className="login-creds__toggle">Sample credentials</summary>
-          <div className="login-creds__body">
-            <p className="login-creds__group-label">Master Regulator</p>
-            {master.map(u => (
-              <div key={u.id} className="login-creds__row">
-                <span className="login-creds__name">{u.fullName}</span>
-                <code className="login-creds__code">{u.username} / {u.password}</code>
+          {showForm && (
+            <>
+              {/* Other accounts list */}
+              <div className="login-alt-accounts">
+                {otherUsers.map(u => (
+                  <button key={u.id} className="login-alt-account" onClick={() => loginAs(u)}>
+                    <div className={`login-alt-account__avatar ${u.master ? 'login-alt-account__avatar--master' : ''}`}>
+                      {getInitials(u.fullName)}
+                    </div>
+                    <div className="login-alt-account__info">
+                      <span className="login-alt-account__name">{u.fullName}</span>
+                      <span className="login-alt-account__role">
+                        {u.master ? 'Platform Admin' : u.title || ROLE_LABEL[u.role] || 'User'}
+                      </span>
+                    </div>
+                    <span className="login-alt-account__arrow">→</span>
+                  </button>
+                ))}
               </div>
-            ))}
-            <p className="login-creds__group-label" style={{ marginTop: 10 }}>Trainers</p>
-            {trainers.map(u => (
-              <div key={u.id} className="login-creds__row">
-                <span className="login-creds__name">{u.fullName}</span>
-                <code className="login-creds__code">{u.username} / {u.password}</code>
+
+              {/* Divider */}
+              <div className="login-alt-divider">
+                <span>or sign in with username</span>
               </div>
-            ))}
-            <p className="login-creds__group-label" style={{ marginTop: 10 }}>Trainees</p>
-            {trainees.map(u => (
-              <div key={u.id} className="login-creds__row">
-                <span className="login-creds__name">{u.fullName}</span>
-                <code className="login-creds__code">{u.username} / {u.password}</code>
-              </div>
-            ))}
-          </div>
-        </details>
+
+              {/* Username / password form */}
+              <form className="login-form" onSubmit={handleSubmit}>
+                <div className="login-field">
+                  <label htmlFor="username" className="login-label">Username</label>
+                  <input
+                    id="username"
+                    type="text"
+                    className="login-input"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    autoComplete="username"
+                    required
+                  />
+                </div>
+                <div className="login-field">
+                  <label htmlFor="password" className="login-label">Password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    className="login-input"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    required
+                  />
+                </div>
+                {error && <p className="login-error">{error}</p>}
+                <button className="login-btn" type="submit" disabled={loading}>
+                  {loading ? 'Signing in…' : 'Sign In'}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+function AccountTile({ user, onClick, fullWidth }) {
+  return (
+    <button
+      className={`account-tile ${fullWidth ? 'account-tile--full' : ''}`}
+      onClick={onClick}
+    >
+      <div className="account-tile__avatar">
+        {getInitials(user.fullName)}
+      </div>
+      <div className="account-tile__info">
+        <span className="account-tile__name">{user.fullName}</span>
+        <span className="account-tile__role">{user.title || ROLE_LABEL[user.role] || 'User'}</span>
+      </div>
+      <span className="account-tile__arrow">→</span>
+    </button>
   );
 }

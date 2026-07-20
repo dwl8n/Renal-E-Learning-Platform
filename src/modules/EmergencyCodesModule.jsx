@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useApp } from '../context';
 import './EmergencyCodesModule.css';
 
 const CODES = [
@@ -130,17 +131,28 @@ const CODES = [
 ];
 
 export default function EmergencyCodesModule({ questId, onTaskComplete, taskProgress }) {
+  const { state, dispatch } = useApp();
   const [selectedId, setSelectedId] = useState(null);
+  const [showJournalBanner, setShowJournalBanner] = useState(false);
 
   function openCode(id) {
     setSelectedId(id);
+  }
+
+  function markAsRead(id) {
     const key = `card-${id}`;
     if (!taskProgress[key]) {
       onTaskComplete(questId, key);
     }
+    if (!state.journalEntries.includes(questId)) {
+      dispatch({ type: 'ADD_TO_JOURNAL', questId });
+      setShowJournalBanner(true);
+    }
+    setSelectedId(null);
   }
 
   const selectedCode = selectedId ? CODES.find((c) => c.id === selectedId) : null;
+  const viewedCount = CODES.filter((c) => taskProgress[`card-${c.id}`]).length;
 
   if (selectedCode) {
     return (
@@ -148,8 +160,10 @@ export default function EmergencyCodesModule({ questId, onTaskComplete, taskProg
         code={selectedCode}
         allCodes={CODES}
         taskProgress={taskProgress}
+        isMarked={!!taskProgress[`card-${selectedCode.id}`]}
         onBack={() => setSelectedId(null)}
         onNavigate={openCode}
+        onMarkAsRead={() => markAsRead(selectedCode.id)}
       />
     );
   }
@@ -158,23 +172,46 @@ export default function EmergencyCodesModule({ questId, onTaskComplete, taskProg
     <CodeOverview
       codes={CODES}
       taskProgress={taskProgress}
+      viewedCount={viewedCount}
       onSelect={openCode}
+      journalAdded={state.journalEntries.includes(questId)}
+      showJournalBanner={showJournalBanner}
+      onDismissBanner={() => setShowJournalBanner(false)}
+      onOpenJournal={() => dispatch({ type: 'JOURNAL_OPEN', target: { tab: 'journal' } })}
     />
   );
 }
 
-function CodeOverview({ codes, taskProgress, onSelect }) {
-  const viewedCount = codes.filter((c) => taskProgress[`card-${c.id}`]).length;
-
+function CodeOverview({ codes, taskProgress, viewedCount, onSelect, journalAdded, showJournalBanner, onDismissBanner, onOpenJournal }) {
   return (
     <div className="ec-overview fade-in">
       <div className="ec-overview__header">
         <span className="tag tag--task">Task</span>
         <h2 className="ec-overview__title">Emergency Codes</h2>
+        <p className="ec-overview__hint">Read each code, then tap "Mark as Read" to log it.</p>
         {viewedCount > 0 && (
           <p className="ec-overview__progress">{viewedCount} of {codes.length} reviewed</p>
         )}
       </div>
+
+      {showJournalBanner && (
+        <div className="ec-journal-banner fade-in">
+          <div className="ec-journal-banner__icon">📖</div>
+          <div className="ec-journal-banner__text">
+            <strong>Added to your Journal</strong>
+            <span>These emergency code cards are now saved in your Journal — open it any time to review.</span>
+          </div>
+          <button className="btn btn--sm btn--primary" onClick={onOpenJournal}>Open Journal →</button>
+          <button className="ec-journal-banner__close" onClick={onDismissBanner} aria-label="Dismiss">×</button>
+        </div>
+      )}
+
+      {journalAdded && !showJournalBanner && (
+        <p className="ec-overview__journal-note">
+          <span className="ec-journal-chip">📖 Saved to Journal</span>
+          These cards are available in your Journal for later review.
+        </p>
+      )}
 
       <div className="ec-overview__grid">
         {codes.map((code) => {
@@ -199,7 +236,7 @@ function CodeOverview({ codes, taskProgress, onSelect }) {
               </div>
               <div className="ec-tile__body">
                 <p className="ec-tile__desc">{code.description}</p>
-                <span className="ec-tile__cta">{viewed ? 'Review again' : 'Learn this code'} →</span>
+                <span className="ec-tile__cta">{viewed ? 'Review again →' : 'Learn this code →'}</span>
               </div>
             </button>
           );
@@ -209,13 +246,15 @@ function CodeOverview({ codes, taskProgress, onSelect }) {
   );
 }
 
-function CodeCard({ code, allCodes, taskProgress, onBack, onNavigate }) {
+function CodeCard({ code, allCodes, taskProgress, isMarked, onBack, onNavigate, onMarkAsRead }) {
   return (
     <div className="ec-card">
       <div className="ec-card__band" style={{ background: code.color }}>
-        <button className="ec-card__back" onClick={onBack}>
-          ← All codes
-        </button>
+        <div className="ec-card__band-top">
+          <button className="ec-card__back" onClick={onBack}>
+            ← All codes
+          </button>
+        </div>
         <div className="ec-card__band-content">
           <p className="ec-card__name">{code.name}</p>
           <p className="ec-card__short">{code.short}</p>
@@ -274,6 +313,16 @@ function CodeCard({ code, allCodes, taskProgress, onBack, onNavigate }) {
         <div className="ec-callout" style={{ borderColor: code.color, background: code.bg }}>
           <strong className="ec-callout__label" style={{ color: code.color }}>Dialysis unit note</strong>
           <p>{code.callout}</p>
+        </div>
+
+        <div className="ec-card__mark-row">
+          {isMarked ? (
+            <span className="ec-card__marked-badge">✓ Reviewed</span>
+          ) : (
+            <button className="ec-card__mark-btn" style={{ '--code-color': code.color }} onClick={onMarkAsRead}>
+              Mark as Read
+            </button>
+          )}
         </div>
       </div>
 

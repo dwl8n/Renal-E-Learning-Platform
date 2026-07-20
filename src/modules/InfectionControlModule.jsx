@@ -1,15 +1,12 @@
 import { useState } from 'react';
-import { useApp } from '../context';
-import { INFECTION_READING_PAGES } from '../data';
-import { LinkedText } from '../utils/linkGlossary';
 import './FluidModule.css';
 import './InfectionControlModule.css';
 
 const TASKS = [
   { key: 'reading', label: 'Dialysis Infection Risks', type: 'reading' },
   { key: 'ppe-lab', label: 'PPE & Hand Hygiene Lab', type: 'ppe' },
-  { key: 'station-safety', label: 'Clean vs. Contaminated Station', type: 'station' },
-  { key: 'isolation-cases', label: 'Isolation & Screening Cases', type: 'isolation' },
+  { key: 'station-safety', label: 'Station Turnover Checklist', type: 'station' },
+  { key: 'isolation-cases', label: 'Spot the Mistake', type: 'isolation' },
 ];
 
 const SOURCE_FILES = [
@@ -24,12 +21,12 @@ const SOURCE_FILES = [
 ];
 
 const PPE_CHOICES = [
-  { id: 'hand-hygiene', label: 'Hand hygiene' },
-  { id: 'gloves', label: 'Gloves' },
-  { id: 'gown', label: 'Gown' },
-  { id: 'mask', label: 'Surgical mask' },
-  { id: 'eye', label: 'Eye protection' },
-  { id: 'n95', label: 'N95 respirator' },
+  { id: 'hand-hygiene', icon: '🧼', label: 'Hand hygiene' },
+  { id: 'gloves', icon: '🧤', label: 'Gloves' },
+  { id: 'gown', icon: '🥼', label: 'Gown' },
+  { id: 'mask', icon: '😷', label: 'Surgical mask' },
+  { id: 'eye', icon: '🥽', label: 'Eye protection' },
+  { id: 'n95', icon: '🔵', label: 'N95 respirator' },
 ];
 
 const PPE_SCENARIOS = [
@@ -130,66 +127,39 @@ const TIMER_CARDS = [
   { label: 'C. difficile clean', value: '10 min', note: 'Sporicidal/bleach-based terminal clean' },
 ];
 
-const ISOLATION_CASES = [
+// ─── Spot the Mistake scenarios ───────────────────────────────────────────────
+// Segments with err:true are the infection control mistakes to find.
+// ALL segments are tappable — the challenge is knowing which ones are actually wrong.
+const STM_SCENARIOS = [
   {
-    title: 'New to renal program',
-    context: 'A patient is new to the renal program and has no known ARO history.',
-    question: 'What screening is indicated?',
-    options: ['No screening', 'Screen for MRSA and VRE', 'Screen only if symptomatic', 'Start airborne precautions'],
-    correct: 1,
-    explanation:
-      'The ARO decision tree starts new renal-program patients with MRSA and VRE screening.',
-    source: 'RNL-2-43 Appendix A - ARO Screening Decision Tree',
-  },
-  {
-    title: 'Out-of-country dialysis',
-    context: 'A returning patient reports receiving dialysis at an out-of-country centre.',
-    question: 'What is the safest next action?',
-    options: [
-      'No further screening is needed',
-      'Screen for MDR-GNR, inform Infection Prevention and Control, and initiate contact precautions',
-      'Screen for influenza only',
-      'Discontinue all precautions after one negative swab',
+    title: 'C. difficile Precautions',
+    intro: 'A patient with confirmed C. difficile diarrhea has finished dialysis. Review the nurse\'s actions carefully and flag any infection control errors.',
+    segments: [
+      { text: 'Nurse L dons gown and gloves before entering, completes the necessary care, and removes her PPE in the anteroom. ', err: false },
+      { text: 'She then cleans her hands using the alcohol-based hand rub dispenser mounted near the exit.', err: true, why: 'C. difficile produces spores that are not destroyed by alcohol-based hand rubs. After caring for a C. difficile patient, hand hygiene must be performed with soap and water to mechanically remove spores — ABHR is insufficient.' },
+      { text: ' The charge nurse confirms the room requires terminal cleaning with a sporicidal disinfectant at the required contact time. ', err: false },
+      { text: 'The patient\'s diarrhea resolved yesterday morning. Nurse L documents that the patient is asymptomatic and removes the isolation precautions.', err: true, why: 'C. difficile isolation cannot be lifted based on symptom resolution alone. Precautions must remain in place until the patient has been free of diarrhea AND stools have returned to normal for at least 48 hours — one day is not sufficient.' },
     ],
-    correct: 1,
-    explanation:
-      'The ARO decision tree routes out-of-country dialysis or hospitalization to MDR-GNR screening, IPAC notification, and contact precautions.',
-    source: 'RNL-2-43 Appendix A - ARO Screening Decision Tree',
   },
   {
-    title: 'Negative flu swab, MRSA still active',
-    context: 'A patient was on Droplet/Contact precautions while awaiting influenza testing. The result is negative, but the chart also shows MRSA positivity.',
-    question: 'What should happen to isolation?',
-    options: ['Discontinue isolation completely', 'Change to Contact Precautions', 'Switch to airborne only', 'No chart update is required'],
-    correct: 1,
-    explanation:
-      'The Cerner isolation resource warns to verify all isolation reasons before discontinuing. If flu is negative but MRSA remains, isolation should be modified to Contact Precautions rather than stopped.',
-    source: 'Cerner Isolation Order Management · Page 3',
-  },
-  {
-    title: 'CPE patient uses sink',
-    context: 'A CPE-positive patient has emesis in a public washroom sink after dialysis.',
-    question: 'What should the nurse do?',
-    options: [
-      'Ask housekeeping to clean at the next routine pass',
-      'Notify the DA/resource so Oxivir Plus or TB is used in addition to regular cleaning',
-      'Flush with water only',
-      'Document only if symptoms continue',
+    title: 'Reading the Isolation Sign',
+    intro: 'Several patients on the unit have different isolation precautions in place. Review the decisions made and flag anything that does not follow GRH policy.',
+    segments: [
+      { text: 'Patient A has a green Droplet/Contact sign. Nurse M enters wearing gown and gloves and begins a head-to-toe assessment at the bedside, without adding a mask or eye protection. ', err: true, why: 'GRH Droplet/Contact precautions require mask and eye protection whenever you are within 2 metres of the patient. A bedside assessment places the nurse well within this range — gown and gloves alone are not sufficient.' },
+      { text: 'Patient B has a pink Contact sign for MRSA. Nurse M enters wearing gown and gloves to change a dressing, and does not add a mask. ', err: false },
+      { text: 'A physiotherapy student needs to drop a rehabilitation referral form in Patient A\'s room. Nurse M tells her that gown and gloves are only required for direct patient contact, so she can walk in without PPE. ', err: true, why: 'GRH Droplet/Contact precautions (green sign) require gown and gloves for all persons entering the room — not only direct care providers. The 2-metre rule determines whether mask and eye protection must be added, but entry itself requires gown and gloves regardless of purpose.' },
+      { text: 'Patient C is on Bed Space precautions (white/yellow sign). A family member arrives to sit with the patient and read to them. Nurse M confirms they do not need to don gown and gloves since they are not providing any direct care.', err: false },
     ],
-    correct: 1,
-    explanation:
-      'The CPE slide states that CPE-positive patients should avoid public washroom sinks and that bodily fluid contamination of a sink requires DA/resource notification and specific cleaning.',
-    source: 'Infection Prevention deck · Slide 14',
   },
   {
-    title: 'Hepatitis B vaccination timing',
-    context: 'A dialysis patient is scheduled for Engerix-B but has a serious active infection today.',
-    question: 'What should happen?',
-    options: ['Give the vaccine regardless', 'Delay the scheduled Hepatitis B vaccine', 'Give double dose and skip monitoring', 'Switch to C. difficile isolation'],
-    correct: 1,
-    explanation:
-      'The deleted Hepatitis B slide notes that serious active infection is a reason for delaying the scheduled Hepatitis B vaccine.',
-    source: 'Deleted Slides.pptx · HBV Immunization',
+    title: 'The Transient Patient',
+    intro: 'A patient who received hemodialysis at a clinic in Portugal for eight weeks returns to the WRHN renal program. Review the nurse\'s admission decisions and flag any errors.',
+    segments: [
+      { text: 'Nurse R initiates MRSA and VRE admission swabs as part of the standard ARO screening protocol for a returning transient. ', err: false },
+      { text: 'She completes the screening orders and prepares to start the patient\'s treatment, noting that results will be followed up when they come back.', err: true, why: 'A patient returning from out-of-country dialysis or hospitalization also requires MDR-GNR (multi-drug-resistant gram-negative rod) screening and notification to Infection Prevention and Control — in addition to standard MRSA and VRE swabs. International travel specifically triggers these additional steps, which were not completed.' },
+      { text: ' The patient mentions their hepatitis B vaccination was completed years ago at another centre and they feel well. Nurse R confirms that a hepatitis B and C serology panel is still required with the initial bloodwork, ', err: false },
+      { text: 'but defers repeating the hepatitis B serology since the patient\'s last result two years ago confirmed protective anti-HBs levels.', err: true, why: 'Annual hepatitis B serology (HBsAg, anti-HBc, anti-HBs) is required for all hemodialysis patients regardless of prior immune status. Immunity can wane in immunocompromised patients, and a protective result from two years ago does not satisfy the annual surveillance requirement.' },
+    ],
   },
 ];
 
@@ -260,52 +230,132 @@ export default function InfectionControlModule({ questId, onTaskComplete, taskPr
   );
 }
 
+const IC_CONCEPTS = [
+  {
+    icon: '🦠',
+    title: 'High Infection Risk',
+    summary: 'Dialysis patients face repeated bloodstream access, weakened immunity, and shared equipment exposure.',
+    bullets: [
+      'Major risks: Hepatitis B/C, Staphylococcus aureus bloodstream infections, AROs, influenza.',
+      'Each catheter or needle access point is a potential portal for bloodstream infection.',
+      'The shared unit environment (chairs, machines, water supply) amplifies transmission risk.',
+    ],
+  },
+  {
+    icon: '🧼',
+    title: 'Hand Hygiene — 4 Moments',
+    summary: 'Clean hands before patient contact, before aseptic procedures, after body fluid exposure, and after patient surroundings.',
+    bullets: [
+      'Alcohol-based hand rub is preferred unless hands are visibly soiled.',
+      'Gloves never replace hand hygiene — clean gloves are treated like clean hands.',
+      'Change gloves when moving from a contaminated to a clean task.',
+    ],
+  },
+  {
+    icon: '🧤',
+    title: 'PPE Selection',
+    summary: 'Gloves, gown, and face protection required during treatment initiation, discontinuation, and any splash-risk procedures.',
+    bullets: [
+      'Do not use the same gloves for more than one patient.',
+      'N95 respirator required for airborne/contact precautions — surgical mask is not sufficient.',
+      'Don PPE before entering the patient space; remove and discard before leaving.',
+    ],
+  },
+  {
+    icon: '📦',
+    title: 'Clean vs. Contaminated Zones',
+    summary: 'The patient station is contaminated while occupied. Anything taken there cannot return to the clean area.',
+    bullets: [
+      'Prepare medications in a clean area, away from patient stations.',
+      'Single-dose vials are for one patient only — discard after use, even if medication remains.',
+      'Needles and syringes are single-use and must never be re-capped or reused.',
+    ],
+  },
+  {
+    icon: '🏷️',
+    title: 'Isolation Precautions',
+    summary: 'The sign on the room or bed space tells you exactly what PPE to put on before entering.',
+    bullets: [
+      'C. difficile: private room when possible, sporicidal cleaning with 10 min contact time, dedicated toileting equipment.',
+      'CPE: private room required, notify Infection Prevention and Control.',
+      'When precautions are upgraded, replace all PPE — the existing set may be contaminated.',
+    ],
+  },
+  {
+    icon: '⏱️',
+    title: 'Disinfectant Contact Times',
+    summary: 'Surfaces must stay visibly wet for the full contact time — wiping early means disinfection did not occur.',
+    bullets: [
+      'Virex II 256: 10 minutes on dialysis machine surfaces and chair.',
+      'Oxivir Plus: 5 minutes for routine room or bed-space cleaning.',
+      'C. difficile terminal clean: 10 minutes with a sporicidal or bleach-based product.',
+    ],
+  },
+  {
+    icon: '💉',
+    title: 'Hepatitis B Screening',
+    summary: 'All renal patients are screened on admission and annually. Non-immune patients are offered immunization.',
+    bullets: [
+      'Recombivax 40 mcg IM: doses at month 0, 1, and 6. (Switched from Engerix-B — 4-dose series if started on Engerix-B.)',
+      'Watch for anaphylaxis for 20 minutes after each injection.',
+      'Serious active infection is a reason to delay the scheduled dose.',
+    ],
+  },
+];
+
 function ReadingTask({ done, onComplete }) {
-  const { dispatch } = useApp();
-  const [pageIdx, setPageIdx] = useState(0);
-  const page = INFECTION_READING_PAGES[pageIdx];
-  const isLast = pageIdx === INFECTION_READING_PAGES.length - 1;
+  const [expanded, setExpanded] = useState(null);
+
+  function toggle(i) {
+    setExpanded((prev) => (prev === i ? null : i));
+  }
 
   return (
     <div className="reading-task infection-reading fade-in">
       <div className="reading-task__header">
-        <h2>{page.title}</h2>
-        <span className="reading-task__page">{pageIdx + 1} / {INFECTION_READING_PAGES.length}</span>
+        <h2>Dialysis Infection Risks</h2>
+        <span className="reading-task__page">Key Concepts</span>
+      </div>
+      <p className="ic-overview__intro">
+        Tap any card to expand it. The full reading is saved to your Journal when you mark this task complete.
+      </p>
+
+      <div className="ic-concepts">
+        {IC_CONCEPTS.map((concept, i) => {
+          const isOpen = expanded === i;
+          return (
+            <button
+              key={i}
+              className={`ic-concept ${isOpen ? 'ic-concept--open' : ''}`}
+              onClick={() => toggle(i)}
+            >
+              <div className="ic-concept__header">
+                <span className="ic-concept__icon">{concept.icon}</span>
+                <div className="ic-concept__header-text">
+                  <span className="ic-concept__title">{concept.title}</span>
+                  <span className="ic-concept__summary">{concept.summary}</span>
+                </div>
+                <span className="ic-concept__arrow">{isOpen ? '▲' : '▼'}</span>
+              </div>
+              {isOpen && (
+                <ul className="ic-concept__detail">
+                  {concept.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                </ul>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {page.sections.map((section, index) => (
-        <div key={index} className="reading-section">
-          <h3 className="reading-section__heading">{section.heading}</h3>
-          <p className="reading-section__body">
-            <LinkedText
-              text={section.body}
-              onOpen={(target) => dispatch({ type: 'JOURNAL_OPEN', target })}
-            />
-          </p>
-        </div>
-      ))}
-
-      <div className="infection-micro-map">
-        {['Risk', 'Route', 'PPE', 'Clean zone', 'Isolation', 'Teach'].map((step, index) => (
-          <div key={step}>
-            <span>{index + 1}</span>
-            <strong>{step}</strong>
-          </div>
-        ))}
-      </div>
+      <p className="ic-overview__journal-note">
+        📖 The full reading will be added to your Journal when you mark this task complete.
+      </p>
 
       <div className="reading-task__actions">
-        {pageIdx > 0 && (
-          <button className="btn btn--outline" onClick={() => setPageIdx((current) => current - 1)}>← Previous</button>
-        )}
         <div style={{ flex: 1 }} />
-        {!isLast ? (
-          <button className="btn btn--primary" onClick={() => setPageIdx((current) => current + 1)}>Next →</button>
-        ) : (
-          <button className="btn btn--primary" onClick={onComplete} disabled={done}>
-            {done ? '✓ Completed' : 'Mark as Read'}
-          </button>
-        )}
+        <button className="btn btn--primary" onClick={onComplete} disabled={done}>
+          {done ? '✓ Completed' : 'Mark as Read'}
+        </button>
       </div>
     </div>
   );
@@ -442,7 +492,8 @@ function PPELabTask({ done, onComplete }) {
               onClick={() => toggle(choice.id)}
               disabled={submitted}
             >
-              {choice.label}
+              <span className="infection-ppe-choice__icon">{choice.icon}</span>
+              <span>{choice.label}</span>
             </button>
           ))}
         </div>
@@ -470,89 +521,135 @@ function PPELabTask({ done, onComplete }) {
   );
 }
 
+const TURNOVER_STEPS = [
+  { id: 'hh-before',     icon: '🧼', label: 'Hand hygiene',          detail: 'Before starting turnover' },
+  { id: 'ppe-on',        icon: '🧤', label: 'Don PPE',               detail: 'Gloves and gown' },
+  { id: 'dispose',       icon: '🗑️', label: 'Disconnect & dispose',  detail: 'Tubing, dialyzer, sharps' },
+  { id: 'clear-station', icon: '📦', label: 'Clear the station',     detail: 'Remove all single-use supplies' },
+  { id: 'virex',         icon: '🧴', label: 'Apply Virex II 256',    detail: 'Machine, chair, armrests, surfaces' },
+  { id: 'contact-time',  icon: '⏱️', label: 'Wait 10 min',           detail: 'Wet contact time — do not wipe early' },
+  { id: 'ppe-off',       icon: '🙌', label: 'Remove PPE',            detail: 'Then perform hand hygiene' },
+  { id: 'setup',         icon: '✅', label: 'Set up clean',          detail: 'Supplies for next patient' },
+];
+
 function StationSafetyTask({ done, onComplete }) {
-  const [idx, setIdx] = useState(0);
-  const [selected, setSelected] = useState(null);
+  const [sequence, setSequence] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [allDone, setAllDone] = useState(done);
-  const item = STATION_ITEMS[idx];
-  const correct = selected === item.correct;
+  const correctOrder = TURNOVER_STEPS.map((s) => s.id);
+  const sequenceCorrect = submitted && arraysEqual(sequence, correctOrder);
 
-  if (allDone) return <CompletionScreen title="Clean vs. Contaminated Station" onReview={() => setAllDone(false)} />;
+  if (allDone) return <CompletionScreen title="Station Turnover Checklist" onReview={() => setAllDone(false)} />;
 
-  function next() {
-    if (idx < STATION_ITEMS.length - 1) {
-      setIdx((current) => current + 1);
-      setSelected(null);
-      setSubmitted(false);
-    } else {
-      setAllDone(true);
-      onComplete();
-    }
+  function pickStep(id) {
+    if (submitted || sequence.includes(id)) return;
+    setSequence((prev) => [...prev, id]);
+  }
+
+  function reset() {
+    setSequence([]);
+    setSubmitted(false);
+  }
+
+  function finish() {
+    setAllDone(true);
+    onComplete();
   }
 
   return (
-    <div className="exercise infection-task infection-station-task fade-in">
+    <div className="exercise infection-task fade-in">
       <div className="exercise__header">
-        <h2>Clean vs. Contaminated Station</h2>
-        <span className="exercise__progress">{idx + 1} / {STATION_ITEMS.length}</span>
+        <h2>Station Turnover Checklist</h2>
+        <span className="exercise__progress">{sequence.length} / {TURNOVER_STEPS.length} placed</span>
       </div>
       <p className="exercise__instruction">
-        Dialysis stations become contaminated while patients are present. Choose what should happen before the workflow crosses back into a clean area.
+        Place the 8 steps in the order you would follow when turning over a dialysis station between patients.
       </p>
 
       <div className="infection-station-layout">
-        <div>
-          <div className="scenario-card card infection-scenario-card">
-            <div className="scenario-card__name"><strong>{item.title}</strong></div>
-            <p>{item.prompt}</p>
+        <div className="infection-turnover-main">
+          {/* Sequence slots */}
+          <div className="infection-slot-grid">
+            {TURNOVER_STEPS.map((_, i) => {
+              const placedStep = sequence[i] ? TURNOVER_STEPS.find((s) => s.id === sequence[i]) : null;
+              const isCorrect = submitted && placedStep && placedStep.id === correctOrder[i];
+              const isWrong   = submitted && placedStep && placedStep.id !== correctOrder[i];
+              return (
+                <div
+                  key={i}
+                  className={[
+                    'infection-slot',
+                    placedStep ? 'infection-slot--filled' : '',
+                    isCorrect  ? 'infection-slot--correct' : '',
+                    isWrong    ? 'infection-slot--wrong' : '',
+                  ].filter(Boolean).join(' ')}
+                >
+                  <span className="infection-slot__num">{i + 1}</span>
+                  {placedStep ? (
+                    <>
+                      <span className="infection-slot__icon">{placedStep.icon}</span>
+                      <span className="infection-slot__label">{placedStep.label}</span>
+                    </>
+                  ) : (
+                    <span className="infection-slot__empty">—</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          <div className="infection-options">
-            {item.options.map((option, optionIndex) => (
-              <button
-                key={option}
-                className={[
-                  'infection-option',
-                  selected === optionIndex ? 'infection-option--selected' : '',
-                  submitted && optionIndex === item.correct ? 'infection-option--correct' : '',
-                  submitted && selected === optionIndex && selected !== item.correct ? 'infection-option--wrong' : '',
-                ].filter(Boolean).join(' ')}
-                onClick={() => !submitted && setSelected(optionIndex)}
-                disabled={submitted}
-              >
-                <span>{String.fromCharCode(65 + optionIndex)}</span>
-                {option}
-              </button>
-            ))}
+          {/* Option pills */}
+          <div className="infection-step-options">
+            {TURNOVER_STEPS.map((step) => {
+              const used = sequence.includes(step.id);
+              return (
+                <button
+                  key={step.id}
+                  className={`infection-step-pill ${used ? 'infection-step-pill--used' : ''}`}
+                  onClick={() => pickStep(step.id)}
+                  disabled={used || submitted}
+                >
+                  <span className="infection-step-pill__icon">{step.icon}</span>
+                  <span className="infection-step-pill__label">{step.label}</span>
+                  <span className="infection-step-pill__detail">{step.detail}</span>
+                </button>
+              );
+            })}
           </div>
 
           {!submitted ? (
-            <button className="btn btn--primary" onClick={() => setSubmitted(true)} disabled={selected === null} style={{ marginTop: 14 }}>Submit</button>
-          ) : (
-            <div className={`feedback ${correct ? 'feedback--correct' : 'feedback--wrong'}`}>
-              <div className="feedback__icon">{correct ? '✓' : '✗'}</div>
+            <div className="infection-action-row">
+              <button className="btn btn--outline" onClick={reset} disabled={!sequence.length}>Reset</button>
+              <button className="btn btn--primary" onClick={() => setSubmitted(true)} disabled={sequence.length !== TURNOVER_STEPS.length}>Check order</button>
+            </div>
+          ) : sequenceCorrect ? (
+            <div className="feedback feedback--correct">
+              <div className="feedback__icon">✓</div>
               <div className="feedback__body">
-                <div className="feedback__title">{correct ? 'Correct workflow' : 'Unsafe workflow'}</div>
-                <div className="feedback__explanation">
-                  {item.explanation}
-                  <div className="infection-source-line">{item.source}</div>
-                </div>
+                <div className="feedback__title">Correct turnover sequence</div>
+                <div className="feedback__explanation">PPE before contaminated work, Virex contact time respected, clean setup only after hand hygiene. This order protects staff and the next patient.</div>
               </div>
-              <button className="btn btn--primary feedback__next" onClick={next}>
-                {idx < STATION_ITEMS.length - 1 ? 'Next Station →' : 'Complete Task ✓'}
-              </button>
+              <button className="btn btn--primary feedback__next" onClick={finish}>Complete Task ✓</button>
+            </div>
+          ) : (
+            <div className="feedback feedback--wrong">
+              <div className="feedback__icon">✗</div>
+              <div className="feedback__body">
+                <div className="feedback__title">Order needs adjustment</div>
+                <div className="feedback__explanation">Steps in red are out of place. Key rules: don PPE before touching contaminated items; apply Virex and wait the full 10 min before setting up.</div>
+              </div>
+              <button className="btn btn--primary feedback__next" onClick={reset}>Try Again</button>
             </div>
           )}
         </div>
 
         <aside className="infection-timer-stack">
           <div className="infection-zone-card infection-zone-card--clean">
-            <strong>Clean zone</strong>
+            <strong>🟢 Clean zone</strong>
             <p>Medication prep, unused supplies, clean storage.</p>
           </div>
           <div className="infection-zone-card infection-zone-card--dirty">
-            <strong>Contaminated zone</strong>
+            <strong>🟡 Contaminated zone</strong>
             <p>Patient station while occupied, used equipment, soiled items.</p>
           </div>
           {TIMER_CARDS.map((timer) => (
@@ -570,18 +667,36 @@ function StationSafetyTask({ done, onComplete }) {
 
 function IsolationCasesTask({ done, onComplete }) {
   const [idx, setIdx] = useState(0);
-  const [selected, setSelected] = useState(null);
+  const [marked, setMarked] = useState(new Set());
   const [submitted, setSubmitted] = useState(false);
   const [allDone, setAllDone] = useState(done);
-  const scenario = ISOLATION_CASES[idx];
-  const correct = selected === scenario.correct;
+  const scenario = STM_SCENARIOS[idx];
 
-  if (allDone) return <CompletionScreen title="Isolation & Screening Cases" onReview={() => setAllDone(false)} />;
+  if (allDone) return <CompletionScreen title="Spot the Mistake" onReview={() => setAllDone(false)} />;
 
-  function next() {
-    if (idx < ISOLATION_CASES.length - 1) {
-      setIdx((current) => current + 1);
-      setSelected(null);
+  const errorSegments = scenario.segments.filter((s) => s.err);
+  const markedErrors = [...marked].filter((i) => scenario.segments[i]?.err);
+  const missedErrors = errorSegments.filter((_, ei) => {
+    const segIdx = scenario.segments.indexOf(errorSegments[ei]);
+    return !marked.has(segIdx);
+  });
+  const falsePositives = [...marked].filter((i) => !scenario.segments[i]?.err);
+  const allCorrect = submitted && markedErrors.length === errorSegments.length && falsePositives.length === 0;
+
+  function toggle(i) {
+    if (submitted || !scenario.segments[i].err && false) return; // any segment is tappable
+    if (submitted) return;
+    setMarked((prev) => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+  }
+
+  function advance() {
+    if (idx < STM_SCENARIOS.length - 1) {
+      setIdx((i) => i + 1);
+      setMarked(new Set());
       setSubmitted(false);
     } else {
       setAllDone(true);
@@ -589,55 +704,97 @@ function IsolationCasesTask({ done, onComplete }) {
     }
   }
 
+  function retry() {
+    setMarked(new Set());
+    setSubmitted(false);
+  }
+
   return (
     <div className="exercise infection-task fade-in">
       <div className="exercise__header">
-        <h2>Isolation & Screening Cases</h2>
-        <span className="exercise__progress">{idx + 1} / {ISOLATION_CASES.length}</span>
+        <h2>Spot the Mistake</h2>
+        <span className="exercise__progress">{idx + 1} / {STM_SCENARIOS.length}</span>
       </div>
-      <p className="exercise__instruction">
-        Use the additional resources like a real shift: check the route, the organism, the chart, and the screening trigger before acting.
-      </p>
 
-      <div className="infection-case-card card">
+      <div className="stm-card card">
         <span className="infection-case-card__label">{scenario.title}</span>
-        <p>{scenario.context}</p>
-        <h3>{scenario.question}</h3>
+        <p className="stm-intro">{scenario.intro}</p>
+        <p className="stm-passage">
+          {scenario.segments.map((seg, i) => {
+            const isMarked = marked.has(i);
+            const isError = seg.err;
+            let cls = 'stm-seg stm-seg--clickable';
+            if (isMarked && !submitted) cls += ' stm-seg--marked';
+            if (submitted && isError && isMarked) cls += ' stm-seg--found';
+            if (submitted && isError && !isMarked) cls += ' stm-seg--missed';
+            if (submitted && !isError && isMarked) cls += ' stm-seg--false';
+            return (
+              <span
+                key={i}
+                className={cls}
+                onClick={() => toggle(i)}
+                title={submitted && isError ? seg.why : undefined}
+              >
+                {seg.text}
+              </span>
+            );
+          })}
+        </p>
+        {!submitted && (
+          <p className="stm-hint">Tap any phrase to flag it as an error. Tap again to unflag. Not every segment contains a mistake.</p>
+        )}
       </div>
 
-      <div className="infection-options">
-        {scenario.options.map((option, optionIndex) => (
-          <button
-            key={option}
-            className={[
-              'infection-option',
-              selected === optionIndex ? 'infection-option--selected' : '',
-              submitted && optionIndex === scenario.correct ? 'infection-option--correct' : '',
-              submitted && selected === optionIndex && selected !== scenario.correct ? 'infection-option--wrong' : '',
-            ].filter(Boolean).join(' ')}
-            onClick={() => !submitted && setSelected(optionIndex)}
-            disabled={submitted}
-          >
-            <span>{String.fromCharCode(65 + optionIndex)}</span>
-            {option}
-          </button>
-        ))}
-      </div>
+      {submitted && (
+        <div className="stm-results">
+          {scenario.segments.map((seg, i) => {
+            if (!seg.err) return null;
+            const found = marked.has(i);
+            return (
+              <div key={i} className={`stm-result-item ${found ? 'stm-result-item--found' : 'stm-result-item--missed'}`}>
+                <span className="stm-result-item__icon">{found ? '✓' : '✗'}</span>
+                <div>
+                  <div className="stm-result-item__label">"{seg.text.trim()}"</div>
+                  <div className="stm-result-item__why">{seg.why}</div>
+                </div>
+              </div>
+            );
+          })}
+          {falsePositives.length > 0 && (
+            <div className="stm-false-note">
+              {falsePositives.length} phrase{falsePositives.length > 1 ? 's' : ''} flagged incorrectly — re-read the highlighted sections to review.
+            </div>
+          )}
+        </div>
+      )}
 
       {!submitted ? (
-        <button className="btn btn--primary" onClick={() => setSubmitted(true)} disabled={selected === null} style={{ marginTop: 14 }}>Submit</button>
+        <div className="infection-action-row" style={{ marginTop: 16 }}>
+          <button className="btn btn--outline" onClick={() => setMarked(new Set())} disabled={!marked.size}>Clear flags</button>
+          <button className="btn btn--primary" onClick={() => setSubmitted(true)} disabled={!marked.size}>Submit</button>
+        </div>
       ) : (
-        <div className={`feedback ${correct ? 'feedback--correct' : 'feedback--wrong'}`}>
-          <div className="feedback__icon">{correct ? '✓' : '✗'}</div>
+        <div className={`feedback ${allCorrect ? 'feedback--correct' : 'feedback--wrong'}`}>
+          <div className="feedback__icon">{allCorrect ? '✓' : missedErrors.length > 0 ? '✗' : '⚠'}</div>
           <div className="feedback__body">
-            <div className="feedback__title">{correct ? 'Correct decision' : 'Review the isolation logic'}</div>
+            <div className="feedback__title">
+              {allCorrect
+                ? 'All mistakes found'
+                : missedErrors.length > 0
+                  ? `${missedErrors.length} mistake${missedErrors.length > 1 ? 's' : ''} missed`
+                  : 'Review the explanations above'}
+            </div>
             <div className="feedback__explanation">
-              {scenario.explanation}
-              <div className="infection-source-line">{scenario.source}</div>
+              {allCorrect
+                ? 'Good eye — you caught every infection control error in this scenario.'
+                : 'Review the explanations and try again, or move to the next scenario.'}
             </div>
           </div>
-          <button className="btn btn--primary feedback__next" onClick={next}>
-            {idx < ISOLATION_CASES.length - 1 ? 'Next Case →' : 'Complete Task ✓'}
+          {!allCorrect && (
+            <button className="btn btn--outline feedback__next" onClick={retry}>Try Again</button>
+          )}
+          <button className="btn btn--primary feedback__next" onClick={advance}>
+            {idx < STM_SCENARIOS.length - 1 ? 'Next Scenario →' : 'Complete Task ✓'}
           </button>
         </div>
       )}

@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context';
-import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, QUESTS } from '../data';
+import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, EC_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, QUESTS } from '../data';
 import './JournalPanel.css';
 
 const JOURNAL_CONTENT = {
+  'emergency-codes': {
+    title: 'Emergency Codes',
+    pages: EC_READING_PAGES,
+  },
   'fluid-volume': {
     title: 'Fluid Volume Calculation',
     pages: FLUID_READING_PAGES,

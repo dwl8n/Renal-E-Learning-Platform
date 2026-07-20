@@ -61,6 +61,106 @@
   font-size: 11px;
 }
 
+/* ── Concept Overview (IC Reading task) ────────────────────────────── */
+
+.ic-overview__intro {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  color: var(--text-500);
+  line-height: 1.5;
+}
+
+.ic-concepts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ic-concept {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1.5px solid var(--grey-200);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.ic-concept:hover {
+  border-color: var(--teal-300);
+  background: var(--teal-50);
+}
+
+.ic-concept--open {
+  border-color: var(--teal-400);
+  background: var(--teal-50);
+}
+
+.ic-concept__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ic-concept__icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ic-concept__header-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ic-concept__title {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text-900);
+  line-height: 1.3;
+}
+
+.ic-concept__summary {
+  font-size: 12.5px;
+  color: var(--text-500);
+  line-height: 1.4;
+}
+
+.ic-concept__arrow {
+  font-size: 10px;
+  color: var(--text-300);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.ic-concept__detail {
+  margin: 12px 0 0 34px;
+  padding: 0;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ic-concept__detail li {
+  font-size: 12.5px;
+  color: var(--text-600);
+  line-height: 1.5;
+}
+
+.ic-overview__journal-note {
+  margin: 0 0 20px;
+  font-size: 12.5px;
+  color: var(--text-400);
+  font-style: italic;
+}
+
 .infection-task {
   max-width: 840px;
 }
@@ -335,6 +435,269 @@
   line-height: 1.3;
 }
 
+/* ── PPE choice icons ──────────────────────────────────────────────────────── */
+
+.infection-ppe-choice {
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infection-ppe-choice__icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* ── Station Turnover redesign ─────────────────────────────────────────────── */
+
+.infection-turnover-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.infection-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.infection-slot {
+  min-height: 64px;
+  padding: 8px 10px;
+  border: 1.5px dashed var(--grey-200);
+  border-radius: var(--radius-md);
+  background: var(--grey-50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.infection-slot--filled {
+  border-style: solid;
+  border-color: var(--teal-200);
+  background: var(--teal-50);
+}
+
+.infection-slot--correct {
+  border-color: var(--green-500);
+  background: var(--green-100);
+}
+
+.infection-slot--wrong {
+  border-color: var(--red-400);
+  background: var(--red-100);
+}
+
+.infection-slot__num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--teal-600);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.infection-slot--correct .infection-slot__num { background: var(--green-600); }
+.infection-slot--wrong .infection-slot__num { background: var(--red-500); }
+
+.infection-slot__icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.infection-slot__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-700);
+  line-height: 1.2;
+}
+
+.infection-slot__empty {
+  font-size: 18px;
+  color: var(--grey-300);
+}
+
+.infection-step-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.infection-step-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 8px;
+  border: 1.5px solid var(--grey-200);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .12s, background .12s;
+}
+
+.infection-step-pill:hover:not(:disabled) {
+  border-color: var(--teal-400);
+  background: var(--teal-50);
+}
+
+.infection-step-pill--used {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.infection-step-pill__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.infection-step-pill__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-700);
+}
+
+.infection-step-pill__detail {
+  font-size: 10px;
+  color: var(--text-400);
+  line-height: 1.2;
+}
+
+/* ── Spot the Mistake ──────────────────────────────────────────────────────── */
+
+.stm-card {
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.stm-intro {
+  font-size: 13px;
+  color: var(--text-500);
+  margin: 8px 0 14px;
+  line-height: 1.5;
+}
+
+.stm-passage {
+  font-size: 14px;
+  color: var(--text-700);
+  line-height: 1.75;
+  margin: 0 0 10px;
+}
+
+.stm-seg {
+  display: inline;
+}
+
+.stm-seg--clickable {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 2px;
+  transition: background .1s;
+}
+
+.stm-seg--clickable:hover {
+  background: rgba(0, 120, 212, 0.08);
+}
+
+.stm-seg--marked {
+  background: rgba(251, 191, 36, 0.25);
+  border-bottom: 2px solid var(--amber-400, #f59e0b);
+  border-radius: 3px;
+  padding-bottom: 0;
+}
+
+.stm-seg--found {
+  background: var(--green-100);
+  border-bottom: 2px solid var(--green-500);
+}
+
+.stm-seg--missed {
+  background: var(--red-100);
+  border-bottom: 2px dashed var(--red-400);
+}
+
+.stm-seg--false {
+  background: var(--amber-100, #fef3c7);
+  border-bottom: 2px solid var(--amber-400, #f59e0b);
+}
+
+.stm-hint {
+  font-size: 11.5px;
+  color: var(--text-300);
+  margin: 4px 0 0;
+  font-style: italic;
+}
+
+.stm-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stm-result-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--grey-100);
+  background: var(--surface);
+}
+
+.stm-result-item--found {
+  border-color: var(--green-400);
+  background: var(--green-100);
+}
+
+.stm-result-item--missed {
+  border-color: var(--red-300);
+  background: var(--red-100);
+}
+
+.stm-result-item__icon {
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+
+.stm-result-item--found .stm-result-item__icon { color: var(--green-600); }
+.stm-result-item--missed .stm-result-item__icon { color: var(--red-600); }
+
+.stm-result-item__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-700);
+  font-style: italic;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.stm-result-item__why {
+  font-size: 12px;
+  color: var(--text-500);
+  line-height: 1.5;
+}
+
+.stm-false-note {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--amber-800, #92400e);
+  background: var(--amber-100, #fef3c7);
+  border: 1px solid var(--amber-300, #fcd34d);
+  border-radius: var(--radius-md);
+}
+
 @media (max-width: 980px) {
   .infection-station-layout {
     grid-template-columns: 1fr;
@@ -349,7 +712,9 @@
   .infection-micro-map,
   .infection-ppe-grid,
   .infection-sequence-board__picked,
-  .infection-timer-stack {
-    grid-template-columns: 1fr;
+  .infection-timer-stack,
+  .infection-slot-grid,
+  .infection-step-options {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

@@ -88,12 +88,14 @@ export default function Settings() {
         </SettingsSection>
 
         {/* About */}
-        <SettingsSection title="About">
-          <SettingsRow label="App Version" desc=""><span className="settings-value">0.1.0 — Proof of Concept</span></SettingsRow>
-          <SettingsRow label="Content Version" desc=""><span className="settings-value">Hemodialysis Orientation v1</span></SettingsRow>
-          <SettingsRow label="Feedback" desc="Report issues or suggestions">
-            <a href="#" className="settings-link" onClick={e => e.preventDefault()}>Send Feedback ↗</a>
-          </SettingsRow>
+        <SettingsSection title="About eTrainer">
+          <div className="settings-about-blurb">
+            <p>eTrainer is a blended e-learning platform for hemodialysis nurse onboarding, developed in partnership with the <strong>WRHN Renal Program</strong>.</p>
+            <p>Built to answer three questions: <em>Is the learner prepared? Is the trainer informed? Is competency protected?</em></p>
+            <p className="settings-about-note">This is a working proof of concept. Clinical competency sign-off remains with the trainer — the platform supports preparation, not replacement of in-person supervision.</p>
+          </div>
+          <SettingsRow label="Version" desc="Prototype build"><span className="settings-value">0.1.0 — Proof of Concept</span></SettingsRow>
+          <SettingsRow label="Content" desc="Orientation package"><span className="settings-value">WRHN Hemodialysis Orientation v1</span></SettingsRow>
         </SettingsSection>
       </div>
     </div>
