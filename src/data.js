@@ -29,7 +29,7 @@ export const QUESTS = {
       { key: 'reading',          label: 'Source material & Hep B overview', type: 'reading' },
       { key: 'ppe-lab',          label: 'PPE sequencing exercise',           type: 'exercise' },
       { key: 'station-safety',   label: 'Station turnover checklist',        type: 'exercise' },
-      { key: 'isolation-cases',  label: 'Isolation precaution scenarios',    type: 'scenario' },
+      { key: 'isolation-cases',  label: 'Spot the Mistake',                  type: 'scenario' },
     ],
   },
   'vascular-access-pa': {

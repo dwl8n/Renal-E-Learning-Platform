@@ -2,6 +2,13 @@ import { useState } from 'react';
 import './FluidModule.css';
 import './InfectionControlModule.css';
 
+// TODO (glossary regression): DESIGN.md §10.2 specs glossary-linked terms and
+// (?) buttons that deep-link into the Journal. This module previously used a
+// shared <LinkedText> helper for that; it was dropped in the concept-card
+// rewrite and is not wired up anywhere else yet. Re-introduce the glossary /
+// (?)-lookup affordance across task content when the Journal linking work is
+// picked back up. Tracked outside DESIGN.md per request.
+
 const TASKS = [
   { key: 'reading', label: 'Dialysis Infection Risks', type: 'reading' },
   { key: 'ppe-lab', label: 'PPE & Hand Hygiene Lab', type: 'ppe' },
