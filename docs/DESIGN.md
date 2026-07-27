@@ -614,8 +614,9 @@ Small notification dots appear on the nav rail (`tasks`, `journal`, `assessments
 
 ## Changelog
 
-| Date       | Change                                                                                                                           |
-| ------------| ----------------------------------------------------------------------------------------------------------------------------------|
+| Date       | Change                                                                                                                                                                                                                                                                                             |
+| ------------| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 2026-07-21 | Split pedagogical model & content-authoring craft into a new companion doc `LEARNING-DESIGN.md` (create-the-gap loop, research grounding, recurring-character scenario patterns, authoring checklist); linked from the header and §10.3 to keep this spec focused                                  |
 | 2026-07-21 | Documented the XP & Levels progression system (new §18); updated §10.2 Journal for the explicit "Mark as Read" add; updated §11 Emergency Codes (Mark as Read) and Infection Control (concept cards, harder Spot the Mistake); flagged glossary-linking as a known regression (in §11 and in-code) |
-| 2026-07-17 | Added format #20 (Spot the Mistake); updated IC module plan — task 4 is now Spot the Mistake replacing Isolation & Screening Cases |
-| 2026-07-08 | Initial consolidated document — derived from eTrainer Prototype.md, SPEC.md, modules.md, WRHN meetings, and orientation schedule |
+| 2026-07-17 | Added format #20 (Spot the Mistake); updated IC module plan — task 4 is now Spot the Mistake replacing Isolation & Screening Cases                                                                                                                                                                 |
+| 2026-07-08 | Initial consolidated document — derived from eTrainer Prototype.md, SPEC.md, modules.md, WRHN meetings, and orientation schedule                                                                                                                                                                   |
