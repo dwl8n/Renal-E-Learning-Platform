@@ -1,4 +1,4 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-npm install # --> un hastag it bro
+npm install
 npm run dev
