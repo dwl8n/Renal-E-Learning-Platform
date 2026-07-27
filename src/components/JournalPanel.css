@@ -307,6 +307,11 @@
   background: var(--grey-50);
 }
 
+.formula-card--highlight {
+  border-color: var(--teal-400);
+  box-shadow: 0 0 0 2px var(--teal-200, #c7e0f4);
+}
+
 .formula-card__name {
   font-weight: 700;
   font-size: 13.5px;
@@ -362,3 +367,8 @@
 }
 
 .critical-table tr:hover td { background: var(--grey-50); }
+
+.critical-table tr.critical-row--highlight td {
+  background: var(--teal-50, #f0fdfa);
+  box-shadow: inset 3px 0 0 var(--teal-400);
+}

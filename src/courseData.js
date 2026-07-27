@@ -54,6 +54,31 @@ export const MODULES = [
         correct: 2,
       },
       {
+        // Hook: a strong, pulsatile "thrill" feels reassuring but is abnormal.
+        // Grounded in the WRHN AVF/AVG Core Competency doc (Look/Listen/Feel):
+        // normal bruit = continuous low-pitched whoosh; abnormal = high-pitched,
+        // discontinuous. Normal thrill = buzzing/vibration; abnormal = feels like a pulse.
+        q: 'You assess a mature AVF before cannulation. Which finding points to a problem rather than a healthy access?',
+        options: [
+          'A soft, continuous, low-pitched bruit',
+          'A gentle buzzing or vibration over the vessel',
+          'A thrill that feels like a strong, distinct pulse',
+          'A whooshing sound that continues without interruption',
+        ],
+        correct: 2,
+      },
+      {
+        // Hook: tourniquets must NEVER be used on grafts (WRHN AVF/AVG competency doc).
+        q: 'During cannulation, when is it appropriate to apply a tourniquet to engorge the vessel?',
+        options: [
+          'For both fistulas and grafts',
+          'For grafts only',
+          'For fistulas only, without fully occluding blood flow',
+          'For neither — tourniquets are never used on an access',
+        ],
+        correct: 2,
+      },
+      {
         q: 'Before needling an AVF, which finding would prompt you to escalate rather than proceed?',
         options: ['Audible bruit on auscultation', 'Palpable thrill along the vessel', 'New swelling or redness at the access site', 'Skin warm to touch along the arm'],
         correct: 2,
@@ -77,9 +102,30 @@ export const MODULES = [
         correct: 1,
       },
       {
+        // Hook: plants the gap the "When Stable Isn't" scenario pays off — a normal
+        // RBV with unchanged settings can still drop sharply. The correct option is
+        // kept deliberately generic (a patient-side change) so it does NOT give away
+        // the scenario's specific reveal (eating during treatment). Grounded in the
+        // Fresenius BVM UF Control deck (food intake named as a cause of a serious
+        // first-half RBV drop).
+        q: 'A patient is 90 minutes into treatment. Their blood volume monitor reads a stable 92%, blood pressure is normal, and you have changed no settings. Which of these could still make RBV drop sharply within minutes?',
+        options: [
+          'Nothing — with stable settings and a normal RBV, a sudden drop would not be expected',
+          'A change in the patient that reduces their circulating blood volume',
+          'A slightly cooler dialysate temperature',
+          'A mildly elevated pre-dialysis potassium',
+        ],
+        correct: 1,
+      },
+      {
         q: 'A patient reports leg cramps 90 minutes into a treatment. Your first action is to:',
         options: ['Increase the UF rate to finish faster', 'Reduce or pause fluid removal and reassess', 'Administer a full saline bolus immediately', 'Discontinue treatment and notify the physician'],
         correct: 1,
+      },
+      {
+        q: 'Removing fluid faster than the body can refill the bloodstream most directly puts the patient at risk of:',
+        options: ['Intradialytic hypotension', 'Hyperkalemia', 'Access infection', 'Circuit clotting'],
+        correct: 0,
       },
       {
         q: 'EPO (erythropoietin) is most commonly given during dialysis to treat:',

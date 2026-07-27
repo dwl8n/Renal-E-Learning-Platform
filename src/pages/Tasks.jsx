@@ -7,6 +7,9 @@ import InfectionControlModule from '../modules/InfectionControlModule';
 import FluidModule from '../modules/FluidModule';
 import FluidRemovalModule from '../modules/FluidRemovalModule';
 import BloodworkModule from '../modules/BloodworkModule';
+import AvgAvfModule from '../modules/AvgAvfModule';
+import CvcModule from '../modules/CvcModule';
+import MedicationModule from '../modules/MedicationModule';
 import './Tasks.css';
 
 const TASK_TYPE_ICON = {
@@ -62,7 +65,11 @@ export default function Tasks() {
     if (selectedModule) {
       dispatch({ type: 'COMPLETE_MODULE_PRE_ASSESSMENT', moduleId: selectedModule.id, score, answers });
     }
-    dispatch({ type: 'COMPLETE_TASK', questId: 'introduction', taskKey: 'pre-assessment', questData: QUESTS });
+    // Complete whichever pre-assessment check-in is currently open (introduction,
+    // vascular-access-pa, patient-care-fluids-pa, …) — all use the 'pre-assessment' task key.
+    if (selectedQuestId) {
+      dispatch({ type: 'COMPLETE_TASK', questId: selectedQuestId, taskKey: 'pre-assessment', questData: QUESTS });
+    }
   }
 
   function handleAssessmentComplete(questId, score, passed) {
@@ -120,17 +127,17 @@ export default function Tasks() {
 
       {/* Main content area */}
       <div className="tasks-main">
-        {selectedQuest?.id === 'introduction' ? (
+        {selectedQuest?.type === 'pre-assessment' ? (
           <div className="task-content-wrap">
             <div className="task-content-topbar">
               <button className="btn btn--ghost btn--sm" onClick={backToModule}>← Back to module</button>
-              <span className="task-content-topbar__title">Starting Assessment</span>
+              <span className="task-content-topbar__title">{selectedQuest.title}</span>
             </div>
-            {questStatus['introduction'] === 'complete' ? (
+            {questStatus[selectedQuest.id] === 'complete' ? (
               <div className="pre-assessment fade-in">
                 <div className="pre-assessment__card card">
                   <div className="pre-assessment__check">✓</div>
-                  <h2 className="pre-assessment__title">Starting Assessment — Done</h2>
+                  <h2 className="pre-assessment__title">{selectedQuest.title} — Done</h2>
                   <p className="pre-assessment__intro">Your baseline responses are on file.</p>
                   <button className="btn btn--primary" onClick={backToModule}>Back to module</button>
                 </div>
@@ -317,6 +324,33 @@ function TaskContent({ quest, questStatus, questTaskProgress, assessmentScore, o
           questId={quest.id}
           onTaskComplete={onTaskComplete}
           taskProgress={questTaskProgress['intradialytic-fluid'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'avg-avf') {
+      return (
+        <AvgAvfModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['avg-avf'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'cvc') {
+      return (
+        <CvcModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['cvc'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'medication-admin') {
+      return (
+        <MedicationModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['medication-admin'] || {}}
         />
       );
     }

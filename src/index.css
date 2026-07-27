@@ -237,6 +237,38 @@ input {
   text-decoration-style: solid;
 }
 
+/* Inline "(?)" reference tip — deep-links to a Journal entry */
+.ref-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px;
+  padding: 0;
+  position: relative;
+  top: -2px;
+  vertical-align: middle;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--teal-600);
+  background: var(--teal-50, #f0fdfa);
+  border: 1px solid var(--teal-200, #c7e0f4);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .1s, color .1s, border-color .1s;
+}
+.ref-tip:hover {
+  color: #fff;
+  background: var(--teal-600);
+  border-color: var(--teal-600);
+}
+.ref-tip:focus-visible {
+  outline: 2px solid var(--teal-500, #0078d4);
+  outline-offset: 1px;
+}
+
 /* Page layout */
 .page {
   flex: 1;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context';
-import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, EC_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, QUESTS } from '../data';
+import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, EC_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, AVF_READING_PAGES, CVC_READING_PAGES, MEDICATION_READING_PAGES, QUESTS } from '../data';
 import './JournalPanel.css';
 
 const JOURNAL_CONTENT = {
@@ -23,6 +23,18 @@ const JOURNAL_CONTENT = {
   'intradialytic-fluid': {
     title: 'Intradialytic Fluid Removal',
     pages: BVM_READING_PAGES,
+  },
+  'avg-avf': {
+    title: 'AVG / AVF Access',
+    pages: AVF_READING_PAGES,
+  },
+  'cvc': {
+    title: 'CVC Access',
+    pages: CVC_READING_PAGES,
+  },
+  'medication-admin': {
+    title: 'Medication Administration',
+    pages: MEDICATION_READING_PAGES,
   },
 };
 
@@ -131,8 +143,12 @@ export default function JournalPanel() {
               targetSlug={journalOpen && journalTarget?.tab === 'glossary' ? journalTarget.termSlug : null}
             />
           )}
-          {activeTab === 'formulas' && <FormulasTab />}
-          {activeTab === 'critical' && <CriticalValuesTab />}
+          {activeTab === 'formulas' && (
+            <FormulasTab targetSlug={journalOpen && journalTarget?.tab === 'formulas' ? journalTarget.formulaSlug : null} />
+          )}
+          {activeTab === 'critical' && (
+            <CriticalValuesTab targetSlug={journalOpen && journalTarget?.tab === 'critical' ? journalTarget.testSlug : null} />
+          )}
           {activeTab === 'policies' && <StubTab />}
         </div>
       </div>
@@ -249,22 +265,43 @@ function GlossaryTab({ search, setSearch, targetSlug }) {
 }
 
 // ─── Formulas subtab ──────────────────────────────────────────────────────────
-function FormulasTab() {
+function FormulasTab({ targetSlug }) {
+  useEffect(() => {
+    if (targetSlug) {
+      document.getElementById(`formula-${targetSlug}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [targetSlug]);
+
   return (
     <div className="formulas-list">
-      {FORMULAS.map(f => (
-        <div key={f.name} className="formula-card">
-          <div className="formula-card__name">{f.name}</div>
-          <code className="formula-card__formula">{f.formula}</code>
-          <p className="formula-card__notes">{f.notes}</p>
-        </div>
-      ))}
+      {FORMULAS.map(f => {
+        const slug = slugify(f.name);
+        return (
+          <div
+            key={f.name}
+            id={`formula-${slug}`}
+            className={`formula-card ${targetSlug === slug ? 'formula-card--highlight' : ''}`}
+          >
+            <div className="formula-card__name">{f.name}</div>
+            <code className="formula-card__formula">{f.formula}</code>
+            <p className="formula-card__notes">{f.notes}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 // ─── Critical Values subtab ───────────────────────────────────────────────────
-function CriticalValuesTab() {
+function CriticalValuesTab({ targetSlug }) {
+  useEffect(() => {
+    if (targetSlug) {
+      document.getElementById(`critical-${targetSlug}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [targetSlug]);
+
   return (
     <div className="critical-wrap">
       <table className="critical-table">
@@ -274,14 +311,21 @@ function CriticalValuesTab() {
           </tr>
         </thead>
         <tbody>
-          {CRITICAL_VALUES_TABLE.map(row => (
-            <tr key={row.test}>
-              <td>{row.test}</td><td>{row.unit}</td><td>{row.normal}</td>
-              <td style={{color: row.critLow !== '—' ? 'var(--red-400)' : undefined}}>{row.critLow}</td>
-              <td style={{color: row.critHigh !== '—' ? 'var(--red-400)' : undefined}}>{row.critHigh}</td>
-              <td>{row.action}</td>
-            </tr>
-          ))}
+          {CRITICAL_VALUES_TABLE.map(row => {
+            const slug = slugify(row.test);
+            return (
+              <tr
+                key={row.test}
+                id={`critical-${slug}`}
+                className={targetSlug === slug ? 'critical-row--highlight' : ''}
+              >
+                <td>{row.test}</td><td>{row.unit}</td><td>{row.normal}</td>
+                <td style={{color: row.critLow !== '—' ? 'var(--red-400)' : undefined}}>{row.critLow}</td>
+                <td style={{color: row.critHigh !== '—' ? 'var(--red-400)' : undefined}}>{row.critHigh}</td>
+                <td>{row.action}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

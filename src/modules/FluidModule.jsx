@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context';
 import { QUESTS, UF_VOLUME_SCENARIOS, UF_RATE_SCENARIOS, COMBINED_SCENARIOS, FLUID_READING_PAGES } from '../data';
 import { LinkedText } from '../utils/linkGlossary';
+import RefTip from '../components/RefTip';
 import './FluidModule.css';
 
 export default function FluidModule({ questId, onTaskComplete, taskProgress }) {
@@ -96,7 +97,10 @@ function ReadingTask({ pages, done, onComplete }) {
       </div>
       {page.sections.map((section, i) => (
         <div key={i} className="reading-section">
-          <h3 className="reading-section__heading">{section.heading}</h3>
+          <h3 className="reading-section__heading">
+            {section.heading}
+            {section.ref && <RefTip {...section.ref} />}
+          </h3>
           <p className="reading-section__body">
             <LinkedText text={section.body} onOpen={openJournal} />
           </p>

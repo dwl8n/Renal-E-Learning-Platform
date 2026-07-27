@@ -168,6 +168,44 @@ export const STUDENT_SNAPSHOTS = {
     notifications: [],
     journalEntries: ['introduction', 'fluid-volume', 'bloodwork-values', 'intradialytic-fluid'],
   },
+  // ─── Noah: QA / testing account ─────────────────────────────────────────────
+  // Not a realistic persona like the others — every module and every module
+  // pre-assessment is left UNLOCKED with fresh (empty) progress, so a tester can
+  // reach and exercise all content, including check-ins that show their questions
+  // only when not yet complete. Login: noah / student4.
+  noah: {
+    xp: 0,
+    questStatus: {
+      'introduction':               'unlocked',
+      'emergency-codes':            'unlocked',
+      'infection-control':          'unlocked',
+      'vascular-access-pa':         'unlocked',
+      'patient-care-fluids-pa':     'unlocked',
+      'avg-avf':                    'unlocked',
+      'cvc':                        'unlocked',
+      'fluid-volume':               'unlocked',
+      'intradialytic-fluid':        'unlocked',
+      'medication-admin':           'unlocked',
+      'patient-care-assessment-pa': 'unlocked',
+      'bloodwork-values':           'unlocked',
+      'potassium-protocol':         'unlocked',
+      'complications':              'unlocked',
+      'software-pa':                'unlocked',
+      'renal-insight':              'unlocked',
+      'cerner':                     'unlocked',
+    },
+    questTaskProgress: {},
+    pendingXP: {},
+    assessmentScoreRecord: {},
+    preAssessmentResults: {
+      'renal-dialysis': { score: 5, band: 'experienced' },
+    },
+    modulePreAssessments: {},
+    courseRequests: [],
+    courseEnrollments: ['renal-dialysis', 'hospital-policy'],
+    notifications: [],
+    journalEntries: [],
+  },
 };
 
 // ─── Base state template ───────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
-import { useState, useRef, useLayoutEffect, useEffect } from 'react';
-import { BVM_READING_PAGES } from '../data';
+import { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react';
+import { BVM_READING_PAGES, INTRADIALYTIC_REFILL_SCENARIO } from '../data';
+import TaskRunner from '../components/TaskRunner';
 import './FluidModule.css';
 import './FluidRemovalModule.css';
 
@@ -217,6 +218,7 @@ export default function FluidRemovalModule({ questId, onTaskComplete, taskProgre
     { key: 'reading',   label: 'The BVM Explained'   },
     { key: 'graph-tour',    label: 'Reading the Graph'   },
     { key: 'graph-predict', label: 'Predict the Outcome' },
+    { key: 'refill-scenario', label: 'When Stable Isn’t' },
   ];
 
   return (
@@ -261,6 +263,15 @@ export default function FluidRemovalModule({ questId, onTaskComplete, taskProgre
         )}
         {tasks[activeTask].key === 'graph-predict' && (
           <GraphPredictTask done={taskProgress['graph-predict']} onComplete={() => onTaskComplete(questId, 'graph-predict')} />
+        )}
+        {tasks[activeTask].key === 'refill-scenario' && (
+          <TaskRunner
+            title="When Stable Isn’t"
+            segments={INTRADIALYTIC_REFILL_SCENARIO}
+            figureRenderers={{ 'bvm-curve': BvmCurveFigure }}
+            done={taskProgress['refill-scenario']}
+            onComplete={() => onTaskComplete(questId, 'refill-scenario')}
+          />
         )}
       </main>
     </div>
@@ -619,6 +630,40 @@ function BVMGraphDisplay({ pathD, ufrPath, revealPct = 1, animDuration = 1500 })
         />
         {revealPct > 0 && <circle cx={toX(0)} cy={toY(100)} r="4" fill="var(--teal-600)" />}
       </svg>
+    </div>
+  );
+}
+
+// ─── Figure renderer for the segmented scenario ("bvm-curve" kind) ────────────
+// Reuses the module's existing graph engine. Shows the curve up to the meal,
+// then extends it — revealing the post-meal drop — on demand.
+function BvmCurveFigure({ seg }) {
+  const { keypoints, mealAtHr = 1.58 } = seg.data;
+  const path = useMemo(
+    () => generatePath(keypoints, { jitter: 0.55, stepsPerHour: 12, seed: 707 }),
+    [keypoints]
+  );
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <div>
+      <BVMGraphDisplay
+        pathD={path}
+        ufrPath={UFR.constant}
+        revealPct={revealed ? 1 : mealAtHr / 4}
+        animDuration={1400}
+      />
+      <div style={{ textAlign: 'center', marginTop: 10 }}>
+        {!revealed ? (
+          <button className="btn btn--outline btn--sm" onClick={() => setRevealed(true)}>
+            Advance treatment — watch what happens →
+          </button>
+        ) : (
+          <p className="fade-in" style={{ margin: 0, fontWeight: 600, color: 'var(--red-600, #dc2626)' }}>
+            The line just dropped toward the 85% floor. What happened?
+          </p>
+        )}
+      </div>
     </div>
   );
 }

@@ -62,11 +62,12 @@ export const QUESTS = {
     id: 'intradialytic-fluid', title: 'Intradialytic Fluid Removal', type: 'task',
     xp: 250, prereqs: ['fluid-volume'],
     description: 'Monitor and manage fluid removal during a treatment: symptoms, adjustment strategies, and documentation.',
-    taskCount: 3,
+    taskCount: 4,
     tasks: [
-      { key: 'reading',    label: 'Blood volume monitoring overview',  type: 'reading' },
-      { key: 'scenario1',  label: 'Symptom recognition & response',   type: 'scenario' },
-      { key: 'scenario2',  label: 'Fluid removal decision cases',      type: 'scenario' },
+      { key: 'reading',         label: 'The BVM Explained',            type: 'reading' },
+      { key: 'graph-tour',      label: 'Reading the Graph',            type: 'exercise' },
+      { key: 'graph-predict',   label: 'Predict the Outcome',          type: 'exercise' },
+      { key: 'refill-scenario', label: 'When Stable Isn’t',            type: 'scenario' },
     ],
   },
   'avg-avf': {
@@ -74,12 +75,25 @@ export const QUESTS = {
     xp: 350, prereqs: ['vascular-access-pa'],
     description: 'Assessment and cannulation of arteriovenous grafts and fistulas — technique, troubleshooting, and documentation.',
     taskCount: 5,
+    tasks: [
+      { key: 'reading',               label: 'Vascular Access Types',    type: 'reading' },
+      { key: 'assess-lab',            label: 'Look, Listen, Feel',       type: 'scenario' },
+      { key: 'site-select',           label: 'Site Selection',           type: 'scenario' },
+      { key: 'cannulation-technique', label: 'Cannulation Sequence',     type: 'exercise' },
+      { key: 'documentation',         label: 'Chart the Assessment',     type: 'exercise' },
+    ],
   },
   'cvc': {
     id: 'cvc', title: 'CVC Access', type: 'mixed',
     xp: 350, prereqs: ['avg-avf'],
     description: 'Central venous catheter care, connection/disconnection procedures, and CVC-related complications.',
     taskCount: 4,
+    tasks: [
+      { key: 'reading',           label: 'CVC Types & Assessment',   type: 'reading' },
+      { key: 'connect-checklist', label: 'Connection Sequence',      type: 'exercise' },
+      { key: 'complications',     label: 'Complication Scenarios',   type: 'scenario' },
+      { key: 'documentation',     label: 'Chart the Assessment',     type: 'exercise' },
+    ],
   },
   'patient-care-assessment-pa': {
     id: 'patient-care-assessment-pa', title: 'Patient Care: Assessment Check-In', type: 'pre-assessment',
@@ -105,6 +119,11 @@ export const QUESTS = {
     xp: 200, prereqs: ['fluid-volume'],
     description: 'Common medications given during dialysis — EPO, heparin, IV iron — indications, dosing, and charting.',
     taskCount: 3,
+    tasks: [
+      { key: 'reading',        label: 'Medications During Dialysis',  type: 'reading' },
+      { key: 'matching',       label: 'Medication Matching',          type: 'exercise' },
+      { key: 'documentation',  label: 'Chart the Administration',     type: 'exercise' },
+    ],
   },
   'potassium-protocol': {
     id: 'potassium-protocol', title: 'Potassium Protocol', type: 'task',
@@ -166,6 +185,7 @@ Dry weight must be reassessed regularly, as it changes with muscle mass, nutriti
       },
       {
         heading: 'The Ultrafiltration Goal',
+        ref: { formula: 'Ultrafiltration Volume' },
         body: `Ultrafiltration (UF) is the process of removing excess fluid across the dialysis membrane using a pressure gradient. The UF volume for a given treatment is calculated from the difference between the patient's pre-dialysis weight and their target dry weight.
 
 The challenge is removing enough fluid to achieve dry weight while minimizing cardiovascular stress. This requires careful calculation of the UF volume and UF rate.`,
@@ -1061,6 +1081,218 @@ export const PHOEBE_CASE = {
 };
 
 // ─── BVM Reading Pages (Intradialytic Fluid Removal module) ───────────────────
+// ─── Segmented scenario: "When Stable Isn’t" (Intradialytic Fluid Removal) ────
+// Demonstrates the create-the-gap loop (see docs/LEARNING-DESIGN.md §1 & §5):
+// the anomaly is shown, the obvious explanations are ruled out, and the learner
+// is left wanting the mechanism BEFORE it is revealed. The cause — a sharp RBV
+// drop after eating — is grounded in the Fresenius BVM UF Control deck (food
+// intake named as a cause of a serious first-half RBV drop). Clinical specifics
+// are illustrative pending WRHN sign-off.
+export const INTRADIALYTIC_REFILL_SCENARIO = [
+  {
+    type: 'character', id: 'diallo', name: 'Mr. Diallo, 64',
+    context: 'Ninety minutes into a four-hour treatment, fluid goal 3.2 L. He is comfortable, chatting with the patient beside him, and every number in front of you is unremarkable.',
+    vitals: { bp: '138/82', rbv: '92%', ufr: '850 mL/hr' },
+  },
+  {
+    type: 'hook', id: 'step-away',
+    prompt: 'Everything about Mr. Diallo reads normal, and your other patients need attention. Would you feel comfortable stepping away from his chair for the next twenty minutes?',
+    options: [
+      { text: 'Yes — he is stable and well within range' },
+      { text: 'No — I would want to keep a closer eye' },
+    ],
+    teaser: 'Hold onto your answer. In a few minutes, his BVM line is going to do something none of these numbers gave you any warning of.',
+  },
+  {
+    type: 'figure', kind: 'bvm-curve',
+    data: {
+      keypoints: [[0,100],[0.4,95],[0.8,92.6],[1.3,92],[1.5,91.8],[1.58,91.4],[1.75,87],[1.9,85.2],[2,85]],
+      mealAtHr: 1.58,
+      critical: 85,
+    },
+    caption: 'Mr. Diallo’s Relative Blood Volume across the treatment.',
+  },
+  {
+    type: 'question', id: 'rule-out', gating: 'reveal',
+    prompt: 'The line has fallen to the 85% floor. Your first move is to check the machine — and the UF rate, blood flow, and dialysate are all exactly as you set them. No alarms have sounded. So what is driving the drop?',
+    options: [
+      { text: 'The UF rate must have crept upward on its own', correct: false,
+        feedback: 'You just confirmed it hasn’t. When the settings haven’t moved, the machine isn’t the story — the change is coming from the patient.' },
+      { text: 'Something has changed in the patient, not the equipment', correct: true,
+        feedback: 'Exactly. The machine is doing precisely what you asked of it. This drop is physiological — so the real question becomes: what just changed for Mr. Diallo?' },
+    ],
+  },
+  {
+    type: 'prose', heading: 'What the line is actually telling you',
+    ref: { term: 'Vascular Refill' },
+    body: `As fluid is removed, RBV falls — but the body pushes back through vascular refill, drawing fluid from the tissues into the bloodstream to defend circulating volume. While refill keeps pace, the line declines gently and predictably.
+
+One everyday event breaks that balance almost at once: eating. When a patient eats during treatment, blood is redirected to the gut to support digestion — splanchnic pooling — and effective circulating volume drops. There is suddenly less blood for the monitor to measure, so RBV falls sharply, even though nothing in your settings has moved.
+
+Now glance at Mr. Diallo’s tray table. His lunch arrived ten minutes ago, half-eaten. The line was never lying — it was reporting a change the numbers could not have predicted.`,
+  },
+  {
+    type: 'question', id: 'apply', gating: 'reveal',
+    prompt: 'Two chairs down, Ms. Okonkwo finishes a snack. Within minutes her RBV slides from 90% to 85%, with her UF rate set at 900 mL/hr. What is your first action?',
+    options: [
+      { text: 'Reduce the UF rate — or set a minimum rate — and reassess', correct: true,
+        feedback: 'Right. Easing the demand on circulating volume gives the body room to recover as digestion settles, before symptoms ever appear.' },
+      { text: 'Hold off — post-meal dips always recover on their own', correct: false,
+        feedback: 'At the 85% floor, waiting invites a blood-volume-driven hypotensive episode. This one calls for action, not patience.' },
+    ],
+  },
+  {
+    type: 'callback', refHook: 'step-away',
+    text: 'Come back to the question you answered earlier — whether you would step away from Mr. Diallo. His RBV was genuinely normal in that moment. What it could not tell you was that lunch was on its way.',
+  },
+  {
+    type: 'decision',
+    situation: 'Mr. Diallo’s RBV is sitting at 85% and he mentions he feels a little lightheaded. What do you do?',
+    options: [
+      { text: 'Reduce the UF rate (or set a minimum rate) and reassess in five minutes', outcome: 'good',
+        consequence: 'His RBV steadies and the lightheadedness passes. Treatment continues on an adjusted goal.',
+        debrief: 'Easing removal is first-line when a post-meal drop pushes RBV to the floor — you protect the patient without abandoning the fluid target.' },
+      { text: 'Carry on — he still has some reserve left', outcome: 'bad',
+        consequence: 'His blood pressure falls to 78/44; he turns clammy and nauseated. This is now symptomatic intradialytic hypotension, needing rapid intervention.',
+        debrief: '“He still has reserve” is exactly the assumption this scenario is built to challenge. At the floor, with symptoms, you act — you don’t wait for confirmation.' },
+    ],
+  },
+  {
+    type: 'prose', heading: 'The takeaway',
+    ref: { formula: 'UF Rate per kg' },
+    body: `A BVM line tells you about this moment — not the next twenty minutes. Read it alongside the UF rate, how far into the treatment you are, and what the patient has just done. A meal, a shift in position, a warm room: any of them can move the line faster than your settings ever will.`,
+  },
+];
+
+// ─── Reading content: AVG/AVF, CVC, Medication Administration ────────────────
+// Illustrative content grounded loosely in the WRHN AVF/AVG Core Competency doc
+// (Look/Listen/Feel framework, site-spacing and tourniquet rules). Clinical
+// specifics pending WRHN validation — prototype prioritizes clean, reusable
+// implementation over exhaustive accuracy (see docs/LEARNING-DESIGN.md).
+export const AVF_READING_PAGES = [
+  {
+    title: 'Vascular Access Types',
+    sections: [
+      {
+        heading: 'AVF — Arteriovenous Fistula',
+        body: `A surgically created connection between an artery and vein, usually in the forearm or upper arm. This is the preferred long-term access — lower infection and thrombosis rates than a graft, and it typically lasts longer once mature.
+
+Fistulas take weeks to months to mature before they're ready for cannulation. A mature AVF should have a strong, palpable thrill and an audible bruit along its length.`,
+      },
+      {
+        heading: 'AVG — Arteriovenous Graft',
+        body: `A synthetic tube connecting an artery to a vein, used when a patient's native vessels aren't suitable for a fistula. Grafts can be used sooner after placement than fistulas, but carry a higher risk of infection and thrombosis over time.
+
+Grafts have a distinct feel from fistulas — the whole graft may feel firmer, and there is no native vessel wall to protect the same way.`,
+      },
+      {
+        heading: 'When Not to Proceed',
+        body: `Do not cannulate — escalate instead — if you find signs of infection (redness, warmth, drainage, tenderness), a new or enlarging aneurysm, absent thrill or bruit, or any sign of arm swelling suggestive of central vein stenosis.`,
+      },
+    ],
+  },
+  {
+    title: 'Assessing the Access — Look, Listen, Feel',
+    sections: [
+      {
+        heading: 'Look',
+        body: `Compare both arms for swelling. Check skin integrity along the whole access, and look for aneurysms — localized ballooning of the vessel wall.`,
+      },
+      {
+        heading: 'Listen',
+        ref: { term: 'Arteriovenous Fistula (AVF)' },
+        body: `A healthy access has a continuous, low-pitched "whooshing" bruit. An abnormal bruit is high-pitched and discontinuous — a sign of narrowing (stenosis) that changes how fast blood is moving through the vessel.`,
+      },
+      {
+        heading: 'Feel',
+        body: `A healthy thrill feels like a gentle buzzing or vibration under your fingers. A thrill that feels like a strong, distinct pulse is abnormal — it usually means blood is being forced through a narrowed segment, the same mechanism that produces an abnormal bruit. A strong, easily-felt pulse can feel reassuring to a new nurse; it isn't.`,
+      },
+    ],
+  },
+  {
+    title: 'Cannulation Principles',
+    sections: [
+      {
+        heading: 'Site selection',
+        body: `Cannulation sites should be at least 2.5 cm from the anastomosis, and arterial and venous sites should be at least 5 cm apart. This protects the anastomosis and reduces recirculation between the two needles.`,
+      },
+      {
+        heading: 'Technique',
+        body: `Use a rope-ladder technique, rotating sites along the length of the access rather than repeatedly using the same spot. Insert at a 20–35° angle for a fistula, or a steeper ~45° angle for a graft, adjusting for depth.`,
+      },
+      {
+        heading: 'Tourniquets',
+        body: `A tourniquet may be used on a fistula to help engorge the vessel — without fully occluding blood flow. Tourniquets must never be used on a graft.`,
+      },
+    ],
+  },
+];
+
+export const CVC_READING_PAGES = [
+  {
+    title: 'CVC Types & Exit Site Assessment',
+    sections: [
+      {
+        heading: 'Tunnelled vs. non-tunnelled',
+        body: `A central venous catheter (CVC) is used when no permanent access is available. Tunnelled catheters run under the skin before entering the vein, which reduces infection risk and is more common for longer-term use. Non-tunnelled catheters enter the vein directly and are typically for short-term, urgent access.`,
+      },
+      {
+        heading: 'Exit site assessment',
+        ref: { term: 'Central Venous Catheter (CVC)' },
+        body: `Before connecting, assess the exit site for redness, warmth, tenderness, and drainage. The dressing should be clean, dry, and intact. Any of these findings should be reported and assessed before treatment begins — not simply documented and monitored.`,
+      },
+    ],
+  },
+  {
+    title: 'Infection Signs & When to Escalate',
+    sections: [
+      {
+        heading: 'Local vs. systemic infection',
+        body: `A red, warm, tender exit site suggests a local infection. Fever, chills, or feeling unwell during or shortly after connecting to a CVC is more concerning — it can indicate catheter-related bacteremia, an infection in the bloodstream itself.`,
+      },
+      {
+        heading: 'When in doubt, escalate',
+        body: `Signs of infection at a CVC — local or systemic — are reported and assessed before initiating treatment through that line. This is different from an AVF/AVG, where a well-established access can sometimes tolerate a "monitor and reassess" approach for minor findings.`,
+      },
+    ],
+  },
+];
+
+export const MEDICATION_READING_PAGES = [
+  {
+    title: 'Medications Given During Dialysis',
+    sections: [
+      {
+        heading: 'EPO — Erythropoiesis-Stimulating Agent',
+        ref: { term: 'Erythropoiesis-Stimulating Agent (ESA)' },
+        body: `Stimulates red blood cell production to treat the anemia of chronic kidney disease. Given IV during treatment. Effectiveness depends on adequate iron stores — a patient can be EPO-resistant if they're iron deficient.`,
+      },
+      {
+        heading: 'Heparin',
+        ref: { term: 'Heparin' },
+        body: `An anticoagulant used to prevent clotting in the extracorporeal circuit. Typically given as a bolus at the start of treatment, sometimes with a continuous infusion. Often held or reduced toward the end of treatment to lower post-treatment bleeding risk, and used cautiously — or avoided — in patients with active bleeding or a bleeding disorder.`,
+      },
+      {
+        heading: 'IV Iron',
+        body: `Replaces iron stores so EPO can work effectively. Given IV during treatment; some formulations require a test dose to watch for a reaction before giving the full dose.`,
+      },
+    ],
+  },
+  {
+    title: 'Timing & Documentation',
+    sections: [
+      {
+        heading: 'Why timing matters',
+        body: `Medication timing relative to the treatment isn't incidental. Heparin given too close to the end of treatment increases bleeding risk after needle removal. EPO and IV iron are generally given once vascular access is established and stable, not at the very start while a patient is still being assessed.`,
+      },
+      {
+        heading: 'Charting',
+        body: `Every medication given during dialysis is charted with the medication, dose, route, time given, and the patient's response — the same standard as any other medication administration.`,
+      },
+    ],
+  },
+];
+
 export const BVM_READING_PAGES = [
   {
     title: 'How Fluid Removal Works',

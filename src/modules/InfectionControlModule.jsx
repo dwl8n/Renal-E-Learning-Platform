@@ -3,11 +3,13 @@ import './FluidModule.css';
 import './InfectionControlModule.css';
 
 // TODO (glossary regression): DESIGN.md §10.2 specs glossary-linked terms and
-// (?) buttons that deep-link into the Journal. This module previously used a
-// shared <LinkedText> helper for that; it was dropped in the concept-card
-// rewrite and is not wired up anywhere else yet. Re-introduce the glossary /
-// (?)-lookup affordance across task content when the Journal linking work is
-// picked back up. Tracked outside DESIGN.md per request.
+// (?) buttons that deep-link into the Journal. The reusable pieces now exist —
+// <LinkedText> (utils/linkGlossary) for inline terms and <RefTip> (components/
+// RefTip) for the (?) button. They are NOT wired into this module yet: the
+// concept cards are full <button>s, so inline links (role="button" spans) would
+// nest illegally and steal the expand click. To restore linking here, split each
+// card into a header <button> + a sibling detail block, then wrap the detail
+// bullets in <LinkedText>. Tracked outside DESIGN.md per request.
 
 const TASKS = [
   { key: 'reading', label: 'Dialysis Infection Risks', type: 'reading' },
