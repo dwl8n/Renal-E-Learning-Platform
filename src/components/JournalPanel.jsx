@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context';
-import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, EC_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, AVF_READING_PAGES, CVC_READING_PAGES, MEDICATION_READING_PAGES, QUESTS } from '../data';
+import { GLOSSARY, FORMULAS, CRITICAL_VALUES_TABLE, FLUID_READING_PAGES, INFECTION_READING_PAGES, EC_READING_PAGES, BLOODWORK_READING_SECTIONS, BVM_READING_PAGES, AVF_READING_PAGES, CVC_READING_PAGES, MEDICATION_READING_PAGES, POTASSIUM_READING_PAGES, COMPLICATIONS_READING_PAGES, QUESTS } from '../data';
 import './JournalPanel.css';
 
 const JOURNAL_CONTENT = {
@@ -35,6 +35,14 @@ const JOURNAL_CONTENT = {
   'medication-admin': {
     title: 'Medication Administration',
     pages: MEDICATION_READING_PAGES,
+  },
+  'potassium-protocol': {
+    title: 'Potassium Protocol',
+    pages: POTASSIUM_READING_PAGES,
+  },
+  'complications': {
+    title: 'Complications & Monitoring',
+    pages: COMPLICATIONS_READING_PAGES,
   },
 };
 

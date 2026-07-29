@@ -129,13 +129,25 @@ export const QUESTS = {
     id: 'potassium-protocol', title: 'Potassium Protocol', type: 'task',
     xp: 150, prereqs: ['bloodwork-values'],
     description: 'Step-by-step response to critically high pre-dialysis potassium, including dialysate orders and physician notification.',
-    taskCount: 2,
+    taskCount: 3,
+    tasks: [
+      { key: 'reading',       label: 'Understanding the Protocol',  type: 'reading' },
+      { key: 'bath-picker',   label: 'Set the Dialysate Bath',      type: 'exercise' },
+      { key: 'documentation', label: 'Document the Change',         type: 'exercise' },
+    ],
   },
   'complications': {
     id: 'complications', title: 'Complications & Monitoring', type: 'mixed',
     xp: 300, prereqs: ['bloodwork-values'],
     description: 'Recognise and respond to common intradialytic complications: hypotension, cramping, air embolism, and more.',
     taskCount: 5,
+    tasks: [
+      { key: 'reading',       label: 'Complications Overview',  type: 'reading' },
+      { key: 'hypotension',   label: 'Case: Hypotension',       type: 'scenario' },
+      { key: 'cramps',        label: 'Case: Muscle Cramps',     type: 'scenario' },
+      { key: 'air-embolism',  label: 'Case: Air Embolism',      type: 'scenario' },
+      { key: 'triage',        label: 'Rapid Recognition',       type: 'exercise' },
+    ],
   },
   'software-pa': {
     id: 'software-pa', title: 'Software Check-In', type: 'pre-assessment',
@@ -149,12 +161,22 @@ export const QUESTS = {
     xp: 250, prereqs: ['software-pa'],
     description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
     taskCount: 3,
+    tasks: [
+      { key: 'tour',      label: 'Interface Tour',                   type: 'reading' },
+      { key: 'day-order', label: 'Set the Day Hemo Order',           type: 'exercise' },
+      { key: 'k-note',    label: 'Complete the K Protocol Note',     type: 'exercise' },
+    ],
   },
   'cerner': {
     id: 'cerner', title: 'Cerner', type: 'task',
     xp: 250, prereqs: ['software-pa'],
     description: 'Introduction to Cerner documentation — isolation orders, care plans, and end-of-shift notes.',
     taskCount: 3,
+    tasks: [
+      { key: 'tour',      label: 'Interface Tour',            type: 'reading' },
+      { key: 'isolation', label: 'Place Isolation Orders',    type: 'exercise' },
+      { key: 'handoff',   label: 'End-of-Shift Handoff',      type: 'exercise' },
+    ],
   },
 };
 
@@ -1340,6 +1362,125 @@ UFR (Ultrafiltration Rate) — how fast fluid is being removed, in mL/h. Lower U
 RBV (Relative Blood Volume) — real-time percentage of blood volume remaining relative to the start of treatment. Starts at 100%. Policy minimum: 85%.
 
 UF Profile — a programmed pattern of UFR changes over the session. Some patients benefit from starting at a higher rate and tapering toward the end as their interstitial reserve depletes.`,
+      },
+    ],
+  },
+];
+
+export const POTASSIUM_READING_PAGES = [
+  {
+    title: 'Why Potassium Matters',
+    sections: [
+      {
+        heading: 'The #1 Emergency Electrolyte',
+        ref: { critical: 'Potassium' },
+        body: `Potassium (K⁺) is the electrolyte most likely to kill a dialysis patient quickly. The heart depends on a narrow potassium range to conduct electrical impulses normally. When serum potassium climbs too high (hyperkalemia), the heart's rhythm becomes unstable — peaked T-waves, widened QRS, and ultimately fatal arrhythmia or cardiac arrest.
+
+Between treatments, patients with no kidney function cannot excrete the potassium they take in from food. It accumulates. One of the core jobs of each hemodialysis treatment is to pull that excess potassium back down into a safe range — without dropping it so fast or so low that it causes its own problems.`,
+      },
+      {
+        heading: 'How Dialysis Removes Potassium',
+        ref: { term: 'Dialysate' },
+        body: `Potassium moves from the blood (high concentration) across the dialyzer membrane into the dialysate (lower concentration) down its concentration gradient. The bigger the gradient, the faster potassium is removed.
+
+The dialysate potassium concentration — often called the "bath" or "K bath" — is what the nurse can adjust. A 1K bath (1.0 mmol/L) creates a large gradient and removes potassium aggressively. A 3K bath (3.0 mmol/L) creates a gentler gradient and removes less. Choosing the right bath for the patient's pre-dialysis potassium is exactly what the Potassium Protocol standardizes.`,
+      },
+      {
+        heading: 'Too Low Is Also Dangerous',
+        body: `Removing potassium too aggressively can cause hypokalemia — also arrhythmogenic. A very low bath in a patient who is already low can precipitate dangerous rhythm changes during or after treatment.
+
+This is why the protocol is a table, not a single rule: the correct bath depends on where the patient is starting from and what bath they are currently prescribed. It balances bringing high potassium down against not overshooting into a low.`,
+      },
+    ],
+  },
+  {
+    title: 'The Potassium Dialysate Protocol',
+    sections: [
+      {
+        heading: 'Who the Protocol Applies To',
+        body: `The Potassium Protocol at WRHN is a medical directive that lets nurses adjust the dialysate potassium without an individual physician order — but only for the right patients. Before applying it, confirm all of the following:
+
+• The patient is an outpatient receiving in-center hemodialysis (ICHD) three times per week
+• The patient has a chronic hemodialysis order
+• The patient does NOT have an ileostomy
+• There is NO nephrologist order excluding them from the protocol
+
+If any of these is not true, the protocol does not apply and you follow the individual order or escalate.`,
+      },
+      {
+        heading: 'Reading the Adjustment Table',
+        body: `Each time electrolytes are drawn, refer to the Dialysate Potassium Adjustment Table. You need two pieces of information:
+
+1. The patient's pre-dialysis serum potassium (from today's bloodwork)
+2. The patient's current acid concentrate prescription (their usual bath — 3K, 2K, or 1K)
+
+Find the row for the pre-dialysis potassium, then the column for the current prescription. Where they meet is the acid concentrate to use for this treatment.
+
+Key thresholds: potassium 4.8–5.4 or ≥ 5.5 triggers a move to a lower bath. And you must notify the nephrologist/provider if the pre-dialysis potassium is less than 3.0 mmol/L or greater than 6.5 mmol/L.`,
+      },
+      {
+        heading: 'Initial vs. Second Consecutive Change',
+        body: `Initial change: If the table indicates a change, you change the acid concentrate for the remainder of the current treatment only. The patient returns to their prescribed acid concentrate next treatment, and follow-up electrolytes are drawn at that next treatment.
+
+Second consecutive change: If the follow-up bloodwork again indicates the same change, the change becomes permanent — you update the standing order and chronic hemodialysis order.
+
+Every change must be documented: the bath change on the machine, the observation entry, the written order referencing the medical directive, and a K Protocol progress note.`,
+      },
+    ],
+  },
+];
+
+export const COMPLICATIONS_READING_PAGES = [
+  {
+    title: 'Intradialytic Complications: The Big Picture',
+    sections: [
+      {
+        heading: 'Why Complications Happen',
+        ref: { term: 'Ultrafiltration (UF)' },
+        body: `Hemodialysis asks a lot of the body in a short window: it pulls liters of fluid out of the vascular space, shifts electrolytes, and circulates blood through an extracorporeal circuit. Most complications are the predictable result of doing this too fast, too much, or in a patient whose cardiovascular system cannot compensate.
+
+The safe nurse recognizes the early signs, acts on the reversible causes first, and knows which complications are true emergencies that require stopping and calling for help.`,
+      },
+      {
+        heading: 'A General Response Pattern',
+        body: `Many intradialytic problems follow a similar first-response logic:
+
+• Reduce or stop the stress on the system (lower or pause ultrafiltration)
+• Support circulation (Trendelenburg position, saline as ordered)
+• Reassess — vital signs, symptoms, the trend
+• Escalate to the charge nurse or physician when the problem is severe, not improving, or outside your protocol
+
+Air embolism is the important exception — it demands an immediate, specific emergency response, not a graded one.`,
+      },
+    ],
+  },
+  {
+    title: 'Common Complications',
+    sections: [
+      {
+        heading: 'Intradialytic Hypotension (IDH)',
+        ref: { term: 'Dry Weight' },
+        body: `The most common complication of hemodialysis. It usually results from removing fluid faster than the vascular space can refill. Signs: a drop in blood pressure, dizziness, nausea, yawning, cramping, feeling hot or faint.
+
+First actions: reduce or stop ultrafiltration, place the patient flat or in Trendelenburg, and administer a saline bolus as ordered. Reassess. Look for causes — a dry weight set too low, antihypertensives taken before treatment, eating during dialysis, or too rapid a fluid removal target.`,
+      },
+      {
+        heading: 'Muscle Cramps',
+        body: `Painful and common, especially late in treatment. Often related to aggressive fluid removal or approaching dry weight too quickly.
+
+First actions: reduce the ultrafiltration rate, and give a fluid bolus (normal saline, or hypertonic saline if ordered) per protocol. Reassess the dry weight target — persistent cramping may mean it is set too low.`,
+      },
+      {
+        heading: 'Air Embolism — Emergency',
+        body: `Rare but potentially fatal. Air enters the bloodstream through the circuit. Signs: sudden shortness of breath, chest pain, a churning sound, coughing, cyanosis, neurological changes.
+
+Immediate actions: clamp the venous blood line and STOP the blood pump immediately. Position the patient on their LEFT side with the head down (left lateral Trendelenburg). Administer 100% oxygen, call for help, and stay with the patient. This is not a graded, reduce-and-reassess situation.`,
+      },
+      {
+        heading: 'Other Reactions to Recognise',
+        body: `Nausea/vomiting: often accompany hypotension — treat the blood pressure first. Chest pain: assess for cardiac causes, reduce UF, notify the physician. Fever/rigors during treatment: raise the possibility of a bloodstream infection, particularly in catheter patients.
+
+Across all of these: recognize early, address reversible causes, document, and escalate when severe.`,
       },
     ],
   },

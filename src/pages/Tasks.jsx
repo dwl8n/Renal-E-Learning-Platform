@@ -10,6 +10,10 @@ import BloodworkModule from '../modules/BloodworkModule';
 import AvgAvfModule from '../modules/AvgAvfModule';
 import CvcModule from '../modules/CvcModule';
 import MedicationModule from '../modules/MedicationModule';
+import PotassiumModule from '../modules/PotassiumModule';
+import ComplicationsModule from '../modules/ComplicationsModule';
+import RenalInsightModule from '../modules/RenalInsightModule';
+import CernerModule from '../modules/CernerModule';
 import './Tasks.css';
 
 const TASK_TYPE_ICON = {
@@ -363,6 +367,42 @@ function TaskContent({ quest, questStatus, questTaskProgress, assessmentScore, o
           assessmentScore={assessmentScore}
           onAssessmentComplete={(score, passed) => onAssessmentComplete(quest.id, score, passed)}
           onAssessmentReset={onAssessmentReset}
+        />
+      );
+    }
+    if (quest.id === 'potassium-protocol') {
+      return (
+        <PotassiumModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['potassium-protocol'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'complications') {
+      return (
+        <ComplicationsModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['complications'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'renal-insight') {
+      return (
+        <RenalInsightModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['renal-insight'] || {}}
+        />
+      );
+    }
+    if (quest.id === 'cerner') {
+      return (
+        <CernerModule
+          questId={quest.id}
+          onTaskComplete={onTaskComplete}
+          taskProgress={questTaskProgress['cerner'] || {}}
         />
       );
     }
