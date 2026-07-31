@@ -95,6 +95,39 @@ export const QUESTS = {
       { key: 'documentation',     label: 'Chart the Assessment',     type: 'exercise' },
     ],
   },
+  'medication-admin': {
+    id: 'medication-admin', title: 'Medication Administration', type: 'task',
+    xp: 200, prereqs: ['fluid-volume'],
+    description: 'Common medications given during dialysis — EPO, heparin, IV iron — indications, dosing, and charting.',
+    taskCount: 3,
+    tasks: [
+      { key: 'reading',        label: 'Medications During Dialysis',  type: 'reading' },
+      { key: 'matching',       label: 'Medication Matching',          type: 'exercise' },
+      { key: 'documentation',  label: 'Chart the Administration',     type: 'exercise' },
+    ],
+  },
+  // Software Use and Patient Care: Assessment both unlock directly off Patient
+  // Care: Fluids (WRHN runs Cerner training separately, so this module is now
+  // just the Renal Insight task) — see 'patient-care-assessment-pa' below for
+  // the sibling branch.
+  'software-pa': {
+    id: 'software-pa', title: 'Software Check-In', type: 'pre-assessment',
+    xp: 50, prereqs: ['intradialytic-fluid', 'medication-admin'],
+    description: 'A quick check-in before the Software module.',
+    taskCount: 1,
+    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
+  },
+  'renal-insight': {
+    id: 'renal-insight', title: 'Renal Insight', type: 'task',
+    xp: 250, prereqs: ['software-pa'],
+    description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
+    taskCount: 3,
+    tasks: [
+      { key: 'tour',      label: 'Interface Tour',                   type: 'reading' },
+      { key: 'day-order', label: 'Set the Day Hemo Order',           type: 'exercise' },
+      { key: 'k-note',    label: 'Complete the K Protocol Note',     type: 'exercise' },
+    ],
+  },
   'patient-care-assessment-pa': {
     id: 'patient-care-assessment-pa', title: 'Patient Care: Assessment Check-In', type: 'pre-assessment',
     xp: 50, prereqs: ['intradialytic-fluid', 'medication-admin'],
@@ -112,17 +145,6 @@ export const QUESTS = {
       { key: 'flashcards',  label: 'Critical values flashcards',       type: 'exercise' },
       { key: 'ranges',      label: 'Critical range identification',    type: 'exercise' },
       { key: 'assessment',  label: 'Official assessment',              type: 'assessment' },
-    ],
-  },
-  'medication-admin': {
-    id: 'medication-admin', title: 'Medication Administration', type: 'task',
-    xp: 200, prereqs: ['fluid-volume'],
-    description: 'Common medications given during dialysis — EPO, heparin, IV iron — indications, dosing, and charting.',
-    taskCount: 3,
-    tasks: [
-      { key: 'reading',        label: 'Medications During Dialysis',  type: 'reading' },
-      { key: 'matching',       label: 'Medication Matching',          type: 'exercise' },
-      { key: 'documentation',  label: 'Chart the Administration',     type: 'exercise' },
     ],
   },
   'potassium-protocol': {
@@ -147,35 +169,6 @@ export const QUESTS = {
       { key: 'cramps',        label: 'Case: Muscle Cramps',     type: 'scenario' },
       { key: 'air-embolism',  label: 'Case: Air Embolism',      type: 'scenario' },
       { key: 'triage',        label: 'Rapid Recognition',       type: 'exercise' },
-    ],
-  },
-  'software-pa': {
-    id: 'software-pa', title: 'Software Check-In', type: 'pre-assessment',
-    xp: 50, prereqs: ['complications'],
-    description: 'A quick check-in before the Software module.',
-    taskCount: 1,
-    tasks: [{ key: 'pre-assessment', label: 'Module check-in', type: 'pre-assessment' }],
-  },
-  'renal-insight': {
-    id: 'renal-insight', title: 'Renal Insight', type: 'task',
-    xp: 250, prereqs: ['software-pa'],
-    description: 'Introduction to Renal Insight documentation — charting a treatment, flagging events, and end-of-shift notes.',
-    taskCount: 3,
-    tasks: [
-      { key: 'tour',      label: 'Interface Tour',                   type: 'reading' },
-      { key: 'day-order', label: 'Set the Day Hemo Order',           type: 'exercise' },
-      { key: 'k-note',    label: 'Complete the K Protocol Note',     type: 'exercise' },
-    ],
-  },
-  'cerner': {
-    id: 'cerner', title: 'Cerner', type: 'task',
-    xp: 250, prereqs: ['software-pa'],
-    description: 'Introduction to Cerner documentation — isolation orders, care plans, and end-of-shift notes.',
-    taskCount: 3,
-    tasks: [
-      { key: 'tour',      label: 'Interface Tour',            type: 'reading' },
-      { key: 'isolation', label: 'Place Isolation Orders',    type: 'exercise' },
-      { key: 'handoff',   label: 'End-of-Shift Handoff',      type: 'exercise' },
     ],
   },
 };
@@ -509,24 +502,24 @@ export const QUEST_POSITIONS = {
   'emergency-codes':            { x: 270, y: 265 },
   'infection-control':          { x: 730, y: 265 },
   // Module PA nodes (top of each band)
-  'vascular-access-pa':         { x: 200, y: 390 },
+  'vascular-access-pa':         { x: 300, y: 390 },
   'patient-care-fluids-pa':     { x: 560, y: 390 },
   // Machine & Access (left branch)
-  'avg-avf':                    { x: 200, y: 520 },
-  'cvc':                        { x: 200, y: 660 },
+  'avg-avf':                    { x: 300, y: 520 },
+  'cvc':                        { x: 300, y: 660 },
   // Patient Care: Fluids (centre)
   'fluid-volume':               { x: 560, y: 520 },
-  'intradialytic-fluid':        { x: 560, y: 660 },
-  'medication-admin':           { x: 760, y: 660 },
-  // Patient Care: Assessment
-  'patient-care-assessment-pa': { x: 560, y: 780 },
-  'bloodwork-values':           { x: 560, y: 895 },
-  'potassium-protocol':         { x: 380, y: 990 },
-  'complications':              { x: 600, y: 990 },
-  // Software
-  'software-pa':                { x: 490, y: 1110 },
-  'renal-insight':              { x: 380, y: 1225 },
-  'cerner':                     { x: 600, y: 1225 },
+  'intradialytic-fluid':        { x: 460, y: 660 },
+  'medication-admin':           { x: 660, y: 660 },
+  // Software — a short parallel branch off Patient Care: Fluids (WRHN trains
+  // Cerner separately, so this module is just the Software Check-In + Renal Insight)
+  'software-pa':                { x: 360, y: 800 },
+  'renal-insight':              { x: 360, y: 915 },
+  // Patient Care: Assessment — the sibling branch off the same fluids tasks
+  'patient-care-assessment-pa': { x: 560, y: 1030 },
+  'bloodwork-values':           { x: 560, y: 1145 },
+  'potassium-protocol':         { x: 460, y: 1260 },
+  'complications':              { x: 660, y: 1260 },
 };
 
 // Edges (from → to). Matches module dependency rules in DESIGN.md §6.
@@ -544,18 +537,18 @@ export const QUEST_EDGES = [
   // Patient Care: Fluids sequence
   ['fluid-volume', 'intradialytic-fluid'],
   ['fluid-volume', 'medication-admin'],
-  // Patient Care: Fluids → Assessment PA
+  // Patient Care: Fluids completion unlocks two parallel branches: Software
+  // and Patient Care: Assessment
+  ['intradialytic-fluid', 'software-pa'],
+  ['medication-admin', 'software-pa'],
   ['intradialytic-fluid', 'patient-care-assessment-pa'],
   ['medication-admin', 'patient-care-assessment-pa'],
-  // Assessment PA → bloodwork-values
+  // Software branch
+  ['software-pa', 'renal-insight'],
+  // Patient Care: Assessment branch
   ['patient-care-assessment-pa', 'bloodwork-values'],
-  // Patient Care: Assessment
   ['bloodwork-values', 'potassium-protocol'],
   ['bloodwork-values', 'complications'],
-  // Software PA
-  ['complications', 'software-pa'],
-  ['software-pa', 'renal-insight'],
-  ['software-pa', 'cerner'],
 ];
 
 // ─── Bloodwork Flashcards ────────────────────────────────────────────────────

@@ -135,6 +135,24 @@ export const MODULES = [
     ],
   },
   {
+    id: 'm-software',
+    title: 'Software Use',
+    description: 'Document treatments and manage care plans using Renal Insight.',
+    tasks: ['software-pa', 'renal-insight'],
+    preAssessment: [
+      {
+        q: 'In Renal Insight, where would you document a patient\'s intradialytic blood pressures?',
+        options: ['Order Entry panel', 'Treatment record / flow sheet', 'Lab results viewer', 'Discharge summary'],
+        correct: 1,
+      },
+      {
+        q: 'When an adverse event occurs during dialysis, best practice for documentation is to:',
+        options: ['Call the charge nurse and let them document', 'Complete the incident report at end of shift only', 'Document in real time with accurate time-stamps', 'Note it verbally at handoff to oncoming nurse'],
+        correct: 2,
+      },
+    ],
+  },
+  {
     id: 'm-patient-care-assessment',
     title: 'Patient Care: Assessment',
     description: 'Interpret bloodwork values, respond to critical results, and manage complications.',
@@ -154,24 +172,6 @@ export const MODULES = [
         q: 'Intradialytic hypotension is most commonly caused by:',
         options: ['Fluid removal rate that is too rapid', 'Dialysate temperature set too high', 'Blood flow rate set too low', 'High potassium in the dialysate bath'],
         correct: 0,
-      },
-    ],
-  },
-  {
-    id: 'm-software',
-    title: 'Software Use',
-    description: 'Document treatments and manage care plans using Renal Insight and Cerner.',
-    tasks: ['software-pa', 'renal-insight', 'cerner'],
-    preAssessment: [
-      {
-        q: 'In Renal Insight, where would you document a patient\'s intradialytic blood pressures?',
-        options: ['Order Entry panel', 'Treatment record / flow sheet', 'Lab results viewer', 'Discharge summary'],
-        correct: 1,
-      },
-      {
-        q: 'When an adverse event occurs during dialysis, best practice for documentation is to:',
-        options: ['Call the charge nurse and let them document', 'Complete the incident report at end of shift only', 'Document in real time with accurate time-stamps', 'Note it verbally at handoff to oncoming nurse'],
-        correct: 2,
       },
     ],
   },
@@ -218,7 +218,7 @@ export const COURSE_CATALOG = [
     image: '/assets/potassium/dialysis-machine.png',
     accent: '#005a9e',
     description: 'Core dialysis onboarding with self-paced modules, practice, and official assessments.',
-    modules: ['m-introduction', 'm-vascular-access', 'm-patient-care-fluids', 'm-patient-care-assessment', 'm-software'],
+    modules: ['m-introduction', 'm-vascular-access', 'm-patient-care-fluids', 'm-software', 'm-patient-care-assessment'],
   },
   {
     id: 'neurology-orientation',

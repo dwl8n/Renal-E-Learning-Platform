@@ -13,7 +13,6 @@ import MedicationModule from '../modules/MedicationModule';
 import PotassiumModule from '../modules/PotassiumModule';
 import ComplicationsModule from '../modules/ComplicationsModule';
 import RenalInsightModule from '../modules/RenalInsightModule';
-import CernerModule from '../modules/CernerModule';
 import './Tasks.css';
 
 const TASK_TYPE_ICON = {
@@ -88,6 +87,10 @@ export default function Tasks() {
     dispatch({ type: 'SELECT_QUEST', questId: null });
   }
 
+  function showInMap(questId) {
+    dispatch({ type: 'FOCUS_MAP_QUEST', questId });
+  }
+
   return (
     <div className="tasks-page fade-in">
       {/* Sidebar: module list */}
@@ -104,26 +107,33 @@ export default function Tasks() {
             const isActive = selectedModuleId === mod.id;
 
             return (
-              <button
-                key={mod.id}
-                className={`tasks-module-item ${isActive ? 'tasks-module-item--active' : ''} ${isLocked ? 'tasks-module-item--locked' : ''}`}
-                onClick={() => !isLocked && openModule(mod)}
-                disabled={isLocked}
-              >
-                <div className="tasks-module-item__row">
-                  <span className={`status-dot status-dot--${modStatus === 'available' ? 'unlocked' : modStatus}`} />
-                  <span className="tasks-module-item__title">{mod.title}</span>
-                </div>
-                {!isLocked && tasks.length > 0 && (
-                  <div className="tasks-module-item__progress">
-                    <div className="progress-bar-wrap">
-                      <div className="progress-bar-fill" style={{ width: `${Math.round((completedTasks / tasks.length) * 100)}%` }} />
-                    </div>
-                    <span>{completedTasks}/{tasks.length}</span>
+              <div key={mod.id} className="tasks-module-item-wrap">
+                <div
+                  className={`tasks-module-item ${isActive ? 'tasks-module-item--active' : ''} ${isLocked ? 'tasks-module-item--locked' : ''}`}
+                  role="button"
+                  tabIndex={isLocked ? -1 : 0}
+                  aria-disabled={isLocked}
+                  onClick={() => !isLocked && openModule(mod)}
+                  onKeyDown={(e) => { if (!isLocked && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openModule(mod); } }}
+                >
+                  <div className="tasks-module-item__row">
+                    <span className={`status-dot status-dot--${modStatus === 'available' ? 'unlocked' : modStatus}`} />
+                    <span className="tasks-module-item__title">{mod.title}</span>
                   </div>
+                  {!isLocked && tasks.length > 0 && (
+                    <div className="tasks-module-item__progress">
+                      <div className="progress-bar-wrap">
+                        <div className="progress-bar-fill" style={{ width: `${Math.round((completedTasks / tasks.length) * 100)}%` }} />
+                      </div>
+                      <span>{completedTasks}/{tasks.length}</span>
+                    </div>
+                  )}
+                  {isLocked && <div className="tasks-module-item__locked">Locked</div>}
+                </div>
+                {tasks.length > 0 && (
+                  <RowMenu onShowInMap={() => showInMap(tasks[0].id)} />
                 )}
-                {isLocked && <div className="tasks-module-item__locked">Locked</div>}
-              </button>
+              </div>
             );
           })}
         </div>
@@ -172,6 +182,7 @@ export default function Tasks() {
             questTaskProgress={questTaskProgress}
             recentlyUnlocked={recentlyUnlocked}
             onOpenTask={openTask}
+            onShowInMap={showInMap}
           />
         ) : (
           <div className="tasks-empty">
@@ -184,7 +195,7 @@ export default function Tasks() {
   );
 }
 
-function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, onOpenTask }) {
+function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, onOpenTask, onShowInMap }) {
   const allTasks = getTasksForModule(module);
   const preAssessmentTask = allTasks.find((t) => t.type === 'pre-assessment');
   const learningTasks = allTasks.filter((t) => t.type === 'task' || t.type === 'mixed');
@@ -214,19 +225,19 @@ function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, 
       {preAssessmentTask && (
         <div className="module-home__task-list module-home__pre-assessment-section">
           <h3>Before you begin</h3>
-          <TaskRow quest={preAssessmentTask} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} isPreAssessment />
+          <TaskRow quest={preAssessmentTask} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} onShowInMap={onShowInMap} isPreAssessment />
         </div>
       )}
 
       <div className="module-home__task-list">
         <h3>Tasks</h3>
-        {learningTasks.map((quest) => <TaskRow key={quest.id} quest={quest} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} />)}
+        {learningTasks.map((quest) => <TaskRow key={quest.id} quest={quest} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} onShowInMap={onShowInMap} />)}
       </div>
 
       {assessmentTasks.length > 0 && (
         <div className="module-home__task-list module-home__assessment-list">
           <h3>Assessments</h3>
-          {assessmentTasks.map((quest) => <TaskRow key={quest.id} quest={quest} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} isAssessment />)}
+          {assessmentTasks.map((quest) => <TaskRow key={quest.id} quest={quest} questStatus={questStatus} questTaskProgress={questTaskProgress} recentlyUnlocked={recentlyUnlocked} onOpen={onOpenTask} onShowInMap={onShowInMap} isAssessment />)}
         </div>
       )}
 
@@ -241,7 +252,7 @@ function ModuleHome({ module, questStatus, questTaskProgress, recentlyUnlocked, 
   );
 }
 
-function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOpen, isAssessment = false, isPreAssessment = false }) {
+function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOpen, onShowInMap, isAssessment = false, isPreAssessment = false }) {
   const status = questStatus[quest.id] || 'locked';
   const isLocked = status === 'locked';
   const isNew = recentlyUnlocked.includes(quest.id);
@@ -250,44 +261,86 @@ function TaskRow({ quest, questStatus, questTaskProgress, recentlyUnlocked, onOp
   const taskDefs = quest.tasks || [];
 
   return (
-    <button
-      className={`module-task-row ${isLocked ? 'module-task-row--locked' : ''} ${status === 'complete' ? 'module-task-row--complete' : ''} ${isAssessment ? 'module-task-row--assessment' : ''} ${isPreAssessment ? 'module-task-row--pre-assessment' : ''}`}
-      onClick={() => !isLocked && onOpen(quest.id)}
-      disabled={isLocked}
-    >
-      <span className={`status-dot status-dot--${status === 'complete' ? 'complete' : isLocked ? 'locked' : 'unlocked'}`} />
-      <div className="module-task-row__body">
-        <div className="module-task-row__title">
-          <span>{quest.title}</span>
-          {isNew && <span className="badge badge--teal" style={{ fontSize: 10 }}>New</span>}
-          {status === 'complete' && <span className="badge badge--green" style={{ fontSize: 10 }}>Done</span>}
+    <div className="module-task-row-wrap">
+      <div
+        className={`module-task-row ${isLocked ? 'module-task-row--locked' : ''} ${status === 'complete' ? 'module-task-row--complete' : ''} ${isAssessment ? 'module-task-row--assessment' : ''} ${isPreAssessment ? 'module-task-row--pre-assessment' : ''}`}
+        role="button"
+        tabIndex={isLocked ? -1 : 0}
+        aria-disabled={isLocked}
+        onClick={() => !isLocked && onOpen(quest.id)}
+        onKeyDown={(e) => { if (!isLocked && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onOpen(quest.id); } }}
+      >
+        <span className={`status-dot status-dot--${status === 'complete' ? 'complete' : isLocked ? 'locked' : 'unlocked'}`} />
+        <div className="module-task-row__body">
+          <div className="module-task-row__title">
+            <span>{quest.title}</span>
+            {isNew && <span className="badge badge--teal" style={{ fontSize: 10 }}>New</span>}
+            {status === 'complete' && <span className="badge badge--green" style={{ fontSize: 10 }}>Done</span>}
+          </div>
+          {taskDefs.length > 0 && (
+            <div className="module-task-row__subtasks">
+              {taskDefs.map((t) => {
+                const done = progress[t.key];
+                return (
+                  <span key={t.key} className={`subtask-chip ${done ? 'subtask-chip--done' : ''}`}>
+                    {TASK_TYPE_ICON[t.type] || '·'} {t.label}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          {!taskDefs.length && !isLocked && (
+            <div className="module-task-row__count">
+              {doneTasks}/{quest.taskCount} tasks
+            </div>
+          )}
         </div>
-        {taskDefs.length > 0 && (
-          <div className="module-task-row__subtasks">
-            {taskDefs.map((t) => {
-              const done = progress[t.key];
-              return (
-                <span key={t.key} className={`subtask-chip ${done ? 'subtask-chip--done' : ''}`}>
-                  {TASK_TYPE_ICON[t.type] || '·'} {t.label}
-                </span>
-              );
-            })}
+        {isLocked && (
+          <div className="module-task-row__lock">
+            <LockIcon />
+            <span>{quest.prereqs.map((p) => QUESTS[p]?.title).filter(Boolean).join(', ')}</span>
           </div>
         )}
-        {!taskDefs.length && !isLocked && (
-          <div className="module-task-row__count">
-            {doneTasks}/{quest.taskCount} tasks
-          </div>
-        )}
+        {!isLocked && <ChevronIcon />}
       </div>
-      {isLocked && (
-        <div className="module-task-row__lock">
-          <LockIcon />
-          <span>{quest.prereqs.map((p) => QUESTS[p]?.title).filter(Boolean).join(', ')}</span>
-        </div>
+      {onShowInMap && <RowMenu onShowInMap={() => onShowInMap(quest.id)} />}
+    </div>
+  );
+}
+
+// ─── "⋮" row menu — currently just "Show in map", but a real menu so more
+// row-level actions have somewhere to live later. ───────────────────────────────
+function RowMenu({ onShowInMap }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="row-menu" onClick={(e) => e.stopPropagation()}>
+      <button
+        type="button"
+        className="row-menu__trigger"
+        aria-label="More options"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <KebabIcon />
+      </button>
+      {open && (
+        <>
+          <div className="row-menu__backdrop" onClick={() => setOpen(false)} />
+          <div className="row-menu__panel" role="menu">
+            <button
+              type="button"
+              className="row-menu__item"
+              role="menuitem"
+              onClick={() => { setOpen(false); onShowInMap(); }}
+            >
+              <MapPinIcon /> Show in map
+            </button>
+          </div>
+        </>
       )}
-      {!isLocked && <ChevronIcon />}
-    </button>
+    </div>
   );
 }
 
@@ -394,15 +447,6 @@ function TaskContent({ quest, questStatus, questTaskProgress, assessmentScore, o
           questId={quest.id}
           onTaskComplete={onTaskComplete}
           taskProgress={questTaskProgress['renal-insight'] || {}}
-        />
-      );
-    }
-    if (quest.id === 'cerner') {
-      return (
-        <CernerModule
-          questId={quest.id}
-          onTaskComplete={onTaskComplete}
-          taskProgress={questTaskProgress['cerner'] || {}}
         />
       );
     }
@@ -543,6 +587,23 @@ function ChevronIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  );
+}
+
+function KebabIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/>
+    </svg>
+  );
+}
+
+function MapPinIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+      <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
     </svg>
   );
 }

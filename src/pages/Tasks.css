@@ -192,6 +192,77 @@
 
 .module-home__cta { padding-top: 4px; }
 
+/* ─── Row menu ("⋮" → Show in map, etc.) ─────────────────────────────────────── */
+.tasks-module-item-wrap {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius-md);
+}
+.tasks-module-item-wrap .tasks-module-item { flex: 1; min-width: 0; }
+
+.module-task-row-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+.module-task-row-wrap .module-task-row { flex: 1; min-width: 0; }
+
+.row-menu { position: relative; flex-shrink: 0; display: flex; }
+
+.row-menu__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--text-300);
+  background: transparent;
+  opacity: 0;
+  transition: opacity .12s, background .12s, color .12s;
+}
+.tasks-module-item-wrap:hover .row-menu__trigger,
+.module-task-row-wrap:hover .row-menu__trigger,
+.row-menu__trigger:focus-visible,
+.row-menu__trigger[aria-expanded="true"] {
+  opacity: 1;
+}
+.row-menu__trigger:hover { background: var(--grey-100); color: var(--text-700); }
+
+.row-menu__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.row-menu__panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 61;
+  min-width: 150px;
+  background: var(--surface);
+  border: 1px solid var(--grey-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-700);
+  text-align: left;
+  white-space: nowrap;
+}
+.row-menu__item:hover { background: var(--teal-50); color: var(--teal-700); }
+
 /* ─── Task content wrapper ───────────────────────────────────────────────────── */
 .task-content-wrap {
   display: flex;

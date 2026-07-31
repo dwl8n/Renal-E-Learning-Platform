@@ -54,7 +54,6 @@ export const STUDENT_SNAPSHOTS = {
       'complications':              'locked',
       'software-pa':                'locked',
       'renal-insight':              'locked',
-      'cerner':                     'locked',
     },
     questTaskProgress: {
       'introduction': { 'pre-assessment': true },
@@ -98,7 +97,6 @@ export const STUDENT_SNAPSHOTS = {
       'complications':              'locked',
       'software-pa':                'locked',
       'renal-insight':              'locked',
-      'cerner':                     'locked',
     },
     questTaskProgress: {
       'introduction': { 'pre-assessment': true },
@@ -137,7 +135,6 @@ export const STUDENT_SNAPSHOTS = {
       'complications':              'unlocked',
       'software-pa':                'complete',
       'renal-insight':              'unlocked',
-      'cerner':                     'locked',
     },
     questTaskProgress: {
       'introduction': { 'pre-assessment': true },
@@ -192,7 +189,6 @@ export const STUDENT_SNAPSHOTS = {
       'complications':              'unlocked',
       'software-pa':                'unlocked',
       'renal-insight':              'unlocked',
-      'cerner':                     'unlocked',
     },
     questTaskProgress: {},
     pendingXP: {},
@@ -226,7 +222,6 @@ const FRESH_QUEST_STATUS = {
   'complications':              'locked',
   'software-pa':                'locked',
   'renal-insight':              'locked',
-  'cerner':                     'locked',
 };
 
 const BASE_PROGRESS = {
@@ -259,6 +254,7 @@ const BASE_PROGRESS = {
   modulePreAssessments: {},
   courseRequests: [],
   courseEnrollments: ['renal-dialysis'],
+  mapFocusQuestId: null,
 };
 
 const initialState = {
@@ -307,6 +303,14 @@ function reducer(state, action) {
     case 'SELECT_QUEST': return { ...state, selectedQuestId: action.questId };
 
     case 'SELECT_MODULE': return { ...state, selectedModuleId: action.moduleId, selectedQuestId: null };
+
+    // Navigates to the Progress page's course map, pre-scrolled/highlighted to
+    // a specific quest — used by the "Show in map" row menu action.
+    case 'FOCUS_MAP_QUEST':
+      return { ...state, page: 'progress', selectedQuestId: null, assessmentActive: false, mapFocusQuestId: action.questId };
+
+    case 'CLEAR_MAP_FOCUS':
+      return { ...state, mapFocusQuestId: null };
 
     case 'SELECT_COURSE':
       return { ...state, selectedCourseId: action.courseId, page: 'catalogue', selectedQuestId: null };

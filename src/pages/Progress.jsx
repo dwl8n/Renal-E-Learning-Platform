@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context';
 import { QUESTS, QUEST_POSITIONS, QUEST_EDGES } from '../data';
 import { LEVEL_THRESHOLDS } from '../context';
@@ -11,8 +11,8 @@ const NODE_PA_R = 46; // larger radius for pre-assessment nodes
 const MODULE_BANDS = [
   { label: 'Introduction',              y: 20,   height: 315, shade: false },
   { label: 'Machine & Access / Fluids', y: 335,  height: 400, shade: true  },
-  { label: 'Patient Care: Assessment',  y: 735,  height: 340, shade: false },
-  { label: 'Software',                  y: 1075, height: 235, shade: true  },
+  { label: 'Software',                  y: 735,  height: 230, shade: false },
+  { label: 'Patient Care: Assessment',  y: 965,  height: 345, shade: true  },
 ];
 
 const STATUS_COLOR = {
@@ -40,6 +40,20 @@ export default function Progress() {
 
   const totalXP = state.xp;
   const pendingCount = Object.keys(state.pendingXP).length;
+
+  // "Show in map" row-menu action lands here with mapFocusQuestId set — open
+  // the tree view, scroll/highlight that node, then consume the focus request.
+  useEffect(() => {
+    const questId = state.mapFocusQuestId;
+    if (!questId) return;
+    setTreeView(true);
+    const timer = setTimeout(() => {
+      document.getElementById(`quest-node-${questId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHoveredQuest(questId);
+      dispatch({ type: 'CLEAR_MAP_FOCUS' });
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [state.mapFocusQuestId]);
 
   const activeQuests = Object.values(QUESTS).filter(q => {
     const s = state.questStatus[q.id];
@@ -309,6 +323,7 @@ function QuestTree({ questStatus, pendingXP, hovered, onHover, onNodeClick }) {
           return (
             <g
               key={q.id}
+              id={`quest-node-${q.id}`}
               transform={`translate(${pos.x},${pos.y})`}
               style={{cursor: status !== 'locked' ? 'pointer' : 'default'}}
               onMouseEnter={() => onHover(q.id)}
